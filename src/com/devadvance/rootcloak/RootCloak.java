@@ -14,10 +14,13 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.pm.ApplicationInfo;
+import android.os.Build;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import de.robv.android.xposed.callbacks.XCallback;
 
@@ -27,6 +30,7 @@ public class RootCloak implements IXposedHookLoadPackage {
 	private boolean debugPref;
 	private static final String FAKE_COMMAND = "FAKEJUNKCOMMAND";
 	private static final String FAKE_FILE = "FAKEJUNKFILE";
+	private static final String FAKE_PACKAGE = "FAKE.JUNK.PACKAGE";
 	
 	public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
 		loadPrefs(); // Load prefs for any app. This way we can determine if it matches the list of apps to hide root from.
@@ -34,6 +38,8 @@ public class RootCloak implements IXposedHookLoadPackage {
 		if (!(appSet.contains(lpparam.packageName))) { // If the app doesn't match, don't hook into anything, and just return.
 			return;
 		}
+		
+		ClassLoader classLoader = lpparam.classLoader;
 		
 		if (debugPref) {
 			XposedBridge.log("Loaded app: " + lpparam.packageName);
@@ -81,8 +87,14 @@ public class RootCloak implements IXposedHookLoadPackage {
 				while(iter.hasNext()) {
 					tempService = iter.next();
 					tempProcessName = tempService.process;
-					if(tempProcessName != null && (tempProcessName.contains("supersu") || tempProcessName.contains("superuser"))) {
+					if(tempProcessName != null && (tempProcessName.contains("supersu") 
+							|| tempProcessName.contains("superuser") 
+							|| tempProcessName.contains("noshufou") 
+							|| tempProcessName.contains("chainfire"))) {
 						iter.remove();
+						if (debugPref) {
+							XposedBridge.log("Found and hid service: " + tempProcessName);
+						}
 					}
 				}
 				param.setResult(services);
@@ -106,8 +118,12 @@ public class RootCloak implements IXposedHookLoadPackage {
 				while(iter.hasNext()) {
 					tempTask = iter.next();
 					tempBaseActivity = tempTask.baseActivity.flattenToString();
-					if(tempBaseActivity != null && (tempBaseActivity.contains("supersu") || tempBaseActivity.contains("superuser"))) {
+					if(tempBaseActivity != null && (tempBaseActivity.contains("supersu") || tempBaseActivity.contains("superuser") 
+							|| tempBaseActivity.contains("chainfire") || tempBaseActivity.contains("noshufou"))) {
 						iter.remove();
+						if (debugPref) {
+							XposedBridge.log("Found and hid BaseActivity: " + tempBaseActivity);
+						}
 					}
 				}
 				param.setResult(services);
@@ -131,8 +147,12 @@ public class RootCloak implements IXposedHookLoadPackage {
 				while(iter.hasNext()) {
 					tempProcess = iter.next();
 					tempProcessName = tempProcess.processName;
-					if(tempProcessName != null && (tempProcessName.contains("supersu") || tempProcessName.contains("superuser"))) {
+					if(tempProcessName != null && (tempProcessName.contains("supersu") || tempProcessName.contains("superuser") 
+							|| tempProcessName.contains("chainfire") || tempProcessName.contains("noshufou"))) {
 						iter.remove();
+						if (debugPref) {
+							XposedBridge.log("Found and hid process: " + tempProcessName);
+						}
 					}
 				}
 				param.setResult(processes);
@@ -155,16 +175,34 @@ public class RootCloak implements IXposedHookLoadPackage {
 						}
 						XposedBridge.log(tempString);
 					}
-					if (firstParam.endsWith("su")) {
-						execArray[0] = FAKE_COMMAND;
-						param.args[0] = execArray;
+					
+					if (firstParam.equalsIgnoreCase("pm")) {
+						if (execArray.length >= 3 && execArray[1].equalsIgnoreCase("list") && execArray[2].equalsIgnoreCase("packages")) {
+							// If getting list of packages, exclude anything with su
+							param.args[0] = new String[] {"pm", "list", "packages", "-v", "grep", "-v", "\"su\""};
+						} else if (execArray.length >= 3 && (execArray[1].equalsIgnoreCase("dump") || execArray[1].equalsIgnoreCase("path"))) {
+							// If getting dumping or getting the path, don't let it work if it contains super, noshufou, or chainfire
+							if (execArray[2].contains("super") || execArray[2].contains("noshufou") || execArray[2].contains("chainfire")) {
+								param.args[0] = new String[] {execArray[0], execArray[1], FAKE_PACKAGE};
+							}
+						}
 					} else if (firstParam.contains("ps")) { // This is a process list command
 						//String[] newExecArray = new String[] {"ps", "|", "grep", "-v", "su"};
 						param.args[0] = new String[] {"ps", "|", "grep", "-v", "\"su\""};
+					} else if (firstParam.endsWith("su")) {
+						execArray[0] = FAKE_COMMAND;
+						param.args[0] = execArray;
 					} else if (firstParam.contains("which")) { // This is a busybox which command
 						if ((execArray.length >= 2)) {
 							execArray[0] = "/system/xbin/" + FAKE_COMMAND;
 							param.args[0] = execArray;
+						}
+					} else {
+						for (String tempString : execArray) {
+							if (tempString.contains("busybox")) {
+								param.args[0] = new String[] {FAKE_COMMAND, FAKE_COMMAND};
+								break;
+							}
 						}
 					}
 					
@@ -188,19 +226,22 @@ public class RootCloak implements IXposedHookLoadPackage {
 		XposedBridge.hookMethod(constructLayoutParams, new XC_MethodHook(XCallback.PRIORITY_HIGHEST) {
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-				if (((String)param.args[0]).equalsIgnoreCase("/system/xbin/su")) {
+				if (((String)param.args[0]).endsWith("su")) {
 					if (debugPref) {
-						XposedBridge.log("File: Found a File constructor with xbin su");
+						XposedBridge.log("File: Found a File constructor ending with su");
 					}
 					param.args[0] = "/system/xbin/" + FAKE_FILE;
-				} else if (((String)param.args[0]).equalsIgnoreCase("/system/app/Superuser.apk")) {
+				} else if (((String)param.args[0]).endsWith("busybox")) {
 					if (debugPref) {
-						XposedBridge.log("File: Found a File constructor with app superuser.apk");
+						XposedBridge.log("File: Found a File constructor ending with busybox");
 					}
-					param.args[0] = "/system/app/" + FAKE_FILE + ".apk";
-				} else if (((String)param.args[0]).contains("super")) {
+					param.args[0] = "/system/xbin/" + FAKE_FILE;
+				} else if (((String)param.args[0]).contains("super") 
+						|| ((String)param.args[0]).contains("Super") 
+						|| ((String)param.args[0]).contains("noshufou") 
+						|| ((String)param.args[0]).contains("chainfire")) {
 					if (debugPref) {
-						XposedBridge.log("File: Found a File constructor with word super");
+						XposedBridge.log("File: Found a File constructor with word super, noshufou, or chainfire");
 					}
 					param.args[0] = "/system/app/" + FAKE_FILE + ".apk";
 				}
@@ -217,14 +258,43 @@ public class RootCloak implements IXposedHookLoadPackage {
 						XposedBridge.log("File: Found a File constructor with filename su");
 					}
 					param.args[1] = FAKE_FILE;
-				} else if (((String)param.args[1]).contains("super")) {
+				} else if (((String)param.args[1]).contains("busybox")) {
 					if (debugPref) {
-						XposedBridge.log("File: Found a File constructor with word super in filename");
+						XposedBridge.log("File: Found a File constructor ending with busybox");
+					}
+					param.args[1] = FAKE_FILE;
+				} else if (((String)param.args[1]).contains("super") 
+						|| ((String)param.args[1]).contains("Super") 
+						|| ((String)param.args[1]).contains("noshufou") 
+						|| ((String)param.args[1]).contains("chainfire")) {
+					if (debugPref) {
+						XposedBridge.log("File: Found a File constructor with word super, noshufou, or chainfire");
 					}
 					param.args[1] = FAKE_FILE + ".apk";
 				}
 			}
 		});
+		
+		
+		// Always return false when checking if debug is on
+        XposedHelpers.findAndHookMethod("android.os.Debug", lpparam.classLoader, 
+        		"isDebuggerConnected", XC_MethodReplacement.returnConstant(false));
+
+        // If test-keys, change to release-keys
+        if (!Build.TAGS.equals("release-keys")) {
+        	if (debugPref) {
+				XposedBridge.log("Original build tags: " + Build.TAGS);
+			}
+        	XposedHelpers.setStaticObjectField(android.os.Build.class, "TAGS", "release-keys");
+        	if (debugPref) {
+        		XposedBridge.log("New build tags: " + Build.TAGS);
+			}
+        } else {
+        	if (debugPref) {
+				XposedBridge.log("No need to change build tags: " + Build.TAGS);
+			}
+        }
+		
 	}
 
 	public void loadPrefs() {
