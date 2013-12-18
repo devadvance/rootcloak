@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">RootCloak</string>
+    <string name="action_new">Add App</string>
+    <string name="action_new_custom">Add Custom App</string>
+    <string name="action_load_defaults">Reset to Default Apps</string>
+    <string name="title_activity_settings">RootCloak</string>
+    <string name="title_activity_customize_apps">Customize Apps</string>
+    <string name="no_apps">No apps. To add an app, either click the + to choose from the installed apps, or go to the menu, and then press Reset to Default Apps to use the default list.</string>
+    <string name="instructions1">Some apps in the play store do not run if they detect root. RootCloak uses a variety of methods to prevent root detection.</string>
+    <string name="instructions2">To use RootCloak, add the app you want to prevent from detecting root to the list using the Add/Remove Apps section.</string>
+    <string name="instructions3">If the app is already running, you need to FORCE CLOSE it for the settings to take effect.</string>
+    <string-array name="menu_array">
+        <item> Add/Remove Apps</item>
+        <item>Instructions</item>
+        <item>Turn On/Off Debug</item>
+    </string-array>
+</resources>
