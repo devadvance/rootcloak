@@ -9,14 +9,14 @@ Requires:
 -Root (otherwise why use this?)
 
 Instructions:
-1) Have Xposed Framework installed.
-2) Install RootCloak.
-3) Enable RootCloak in the Xposed app, in the Modules section.
-4) Reboot your phone.
-5) Open RootClock settings, go to Add/Remove Apps, and under the menu, press Reset to Default Apps.
-6) If the app you want to hide root from is not in the list, you must then press the + to add it.
-7) Exit RootCloak settings. If the app you just added to the list was already running, you need to FORCE CLOSE it for the settings to take effect.
-8) Run the app to see if root was successfully hidden.
+1. Have Xposed Framework installed.
+2. Install RootCloak.
+3. Enable RootCloak in the Xposed app, in the Modules section.
+4. Reboot your phone.
+5. Open RootClock settings, go to Add/Remove Apps, and under the menu, press Reset to Default Apps.
+6. If the app you want to hide root from is not in the list, you must then press the + to add it.
+7. Exit RootCloak settings. If the app you just added to the list was already running, you need to FORCE CLOSE it for the settings to take effect.
+8. Run the app to see if root was successfully hidden.
 
 For support, visit the official XDA thread:
 http://forum.xda-developers.com/showthread.php?t=2574647
