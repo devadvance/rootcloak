@@ -226,6 +226,12 @@ public class RootCloak implements IXposedHookLoadPackage {
 		XposedBridge.hookMethod(constructLayoutParams, new XC_MethodHook(XCallback.PRIORITY_HIGHEST) {
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+//				if (param.args[0] != null){
+//					if (debugPref) {
+//						XposedBridge.log("File: Found a File constructor: " + ((String)param.args[0]));
+//					}
+//				}
+				
 				if (((String)param.args[0]).endsWith("su")) {
 					if (debugPref) {
 						XposedBridge.log("File: Found a File constructor ending with su");
@@ -253,6 +259,12 @@ public class RootCloak implements IXposedHookLoadPackage {
 		XposedBridge.hookMethod(extendedFileConstructor, new XC_MethodHook(XCallback.PRIORITY_HIGHEST) {
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+//				if (param.args[0] != null && param.args[1] != null){
+//					if (debugPref) {
+//						XposedBridge.log("File: Found a File constructor: " + ((String)param.args[0]) + ", with: "+ ((String)param.args[1]));
+//					}
+//				}
+				
 				if (((String)param.args[1]).equalsIgnoreCase("su")) {
 					if (debugPref) {
 						XposedBridge.log("File: Found a File constructor with filename su");
