@@ -9,6 +9,7 @@ Requires:
 -Root (otherwise why use this?)
 
 Instructions:
+
 1. Have Xposed Framework installed.
 2. Install RootCloak.
 3. Enable RootCloak in the Xposed app, in the Modules section.
