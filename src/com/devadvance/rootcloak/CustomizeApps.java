@@ -1,9 +1,11 @@
 package com.devadvance.rootcloak;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -12,6 +14,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -97,9 +100,12 @@ public class CustomizeApps extends PreferenceActivity {
 			//get a list of installed apps.
 			final List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 			final String[] names = new String[packages.size()];
+			final HashMap<String, String> nameMap = new HashMap<String,String>();
 			int i = 0;
 			for (ApplicationInfo info : packages) {
-				names[i] = info.packageName;
+				//names[i] = info.packageName;
+				names[i] = (String)info.loadLabel(pm) + "\n(" + info.packageName + ")";
+				nameMap.put(names[i], info.packageName);
 				i++;
 			}
 			Arrays.sort(names);
@@ -107,7 +113,7 @@ public class CustomizeApps extends PreferenceActivity {
 			new AlertDialog.Builder(this).setTitle("Add an App")
 			.setItems((CharSequence[]) names, new DialogInterface.OnClickListener() {
 	               public void onClick(DialogInterface dialog, int which) {
-	            	   savePref(names[which]);
+	            	   savePref(nameMap.get(names[which]));
             	   		loadList();
 	           }
 	    }).show();
@@ -150,7 +156,6 @@ public class CustomizeApps extends PreferenceActivity {
 	
 	private void loadList() {
 		appSet =  sharedPref.getStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, new HashSet<String>());
-		
 		appList = appSet.toArray(new String[0]);
 		Arrays.sort(appList);
 		
