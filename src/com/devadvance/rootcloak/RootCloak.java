@@ -5,6 +5,7 @@ import static de.robv.android.xposed.XposedHelpers.*;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +30,7 @@ public class RootCloak implements IXposedHookLoadPackage {
 	private static XSharedPreferences pref;
 	private Set<String> appSet;
 	private boolean debugPref;
+	private boolean isFirstRun;
 	private static final String FAKE_COMMAND = "FAKEJUNKCOMMAND";
 	private static final String FAKE_FILE = "FAKEJUNKFILE";
 	private static final String FAKE_PACKAGE = "FAKE.JUNK.PACKAGE";
@@ -347,6 +349,10 @@ public class RootCloak implements IXposedHookLoadPackage {
 		pref.makeWorldReadable();
 		appSet = pref.getStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, new HashSet<String>());
 		debugPref = pref.getBoolean(Common.PACKAGE_NAME + Common.DEBUG_KEY, false);
+		isFirstRun = pref.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true);
+		if (isFirstRun && appSet.isEmpty()) {
+			appSet = new HashSet<String>(Arrays.asList(Common.DEFAULT_APPS));
+		}
 	}
 	
 	public boolean stringContainsFromSet(String base, Set<String> values) {

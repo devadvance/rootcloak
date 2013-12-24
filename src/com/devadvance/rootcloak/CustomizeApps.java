@@ -138,7 +138,7 @@ public class CustomizeApps extends PreferenceActivity {
 		    }).show();
 			return true;
 		case R.id.action_load_defaults:
-			loadDefaults();
+			loadDefaultsWithConfirm();
 			return true;
 		case R.id.action_clear_list:
 			clearList();
@@ -150,18 +150,22 @@ public class CustomizeApps extends PreferenceActivity {
 	private void loadDefaults() {
 		appSet =  new HashSet<String>();
 		appSet.addAll(Arrays.asList(Common.DEFAULT_APPS));
-		final Editor editor = sharedPref.edit();
+		Editor editor = sharedPref.edit();
+		editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
+		editor.commit();
+		editor.putStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, appSet);
+		editor.commit();
+		editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
+		editor.commit();
+		loadList();
+	}
+
+	private void loadDefaultsWithConfirm() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeApps.this)
 		.setTitle("Reset apps to default?")
 		.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
-				editor.commit();
-				editor.putStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, appSet);
-				editor.commit();
-				editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-				editor.commit();
-				loadList();
+				loadDefaults();
 			}
 		});
 		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -175,7 +179,14 @@ public class CustomizeApps extends PreferenceActivity {
 		appSet =  sharedPref.getStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, new HashSet<String>());
 		isFirstRun = sharedPref.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true);
 		if (isFirstRun) {
-			loadDefaults();
+			if (appSet.isEmpty()) {
+				loadDefaults();
+			}
+			else {
+				Editor editor = sharedPref.edit();
+				editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
+				editor.commit();
+			}
 		}
 		appList = appSet.toArray(new String[0]);
 		Arrays.sort(appList);
