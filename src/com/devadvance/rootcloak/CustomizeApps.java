@@ -29,6 +29,7 @@ public class CustomizeApps extends PreferenceActivity {
 	SharedPreferences sharedPref;
 	Set<String> appSet;
 	String[] appList;
+	boolean isFirstRun;
 
 	@SuppressLint("WorldReadableFiles")
 	@SuppressWarnings("deprecation")
@@ -139,6 +140,9 @@ public class CustomizeApps extends PreferenceActivity {
 		case R.id.action_load_defaults:
 			loadDefaults();
 			return true;
+		case R.id.action_clear_list:
+			clearList();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -146,16 +150,33 @@ public class CustomizeApps extends PreferenceActivity {
 	private void loadDefaults() {
 		appSet =  new HashSet<String>();
 		appSet.addAll(Arrays.asList(Common.DEFAULT_APPS));
-		Editor editor = sharedPref.edit();
-		editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
-		editor.commit();
-		editor.putStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, appSet);
-		editor.commit();
-		loadList();
+		final Editor editor = sharedPref.edit();
+		AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeApps.this)
+		.setTitle("Reset apps to default?")
+		.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
+				editor.commit();
+				editor.putStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, appSet);
+				editor.commit();
+				editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
+				editor.commit();
+				loadList();
+			}
+		});
+		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				// Do nothing on cancel
+			}
+		}).show();
 	}
 	
 	private void loadList() {
 		appSet =  sharedPref.getStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, new HashSet<String>());
+		isFirstRun = sharedPref.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true);
+		if (isFirstRun) {
+			loadDefaults();
+		}
 		appList = appSet.toArray(new String[0]);
 		Arrays.sort(appList);
 		
@@ -165,6 +186,24 @@ public class CustomizeApps extends PreferenceActivity {
 		setListAdapter(adapter);
 	}
 	
+	private void clearList() {
+		final Editor editor = sharedPref.edit();
+		AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeApps.this)
+		.setTitle("Proceed to clear all apps?")
+		.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
+				editor.commit();
+				loadList();
+			}
+		});
+		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				// Do nothing on cancel
+			}
+		}).show();
+	}
+	
 	private void savePref(String appName) {
 		if (!(appSet.contains(appName))) {
 			appSet.add(appName);
@@ -172,6 +211,8 @@ public class CustomizeApps extends PreferenceActivity {
 			editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
 			editor.commit();
 			editor.putStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, appSet);
+			editor.commit();
+			editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
 			editor.commit();
 		}
 	}

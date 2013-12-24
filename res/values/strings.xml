@@ -3,6 +3,7 @@
     <string name="action_new">Add App</string>
     <string name="action_new_custom">Add Custom App</string>
     <string name="action_load_defaults">Reset to Default Apps</string>
+    <string name="action_clear_list">Clear All Apps</string>
     <string name="title_activity_settings">RootCloak</string>
     <string name="title_activity_customize_apps">Customize Apps</string>
     <string name="no_apps">No apps. To add an app, either click the + to choose from the installed apps, or go to the menu, and then press Reset to Default Apps to use the default list.</string>
@@ -14,4 +15,6 @@
         <item>Instructions</item>
         <item>Turn On/Off Debug</item>
     </string-array>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

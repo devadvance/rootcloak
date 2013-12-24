@@ -7,6 +7,7 @@ import java.util.Set;
 public class Common {
 	public static final String PREFS = "CustomizeApps";
 	public static final String PACKAGE_NAME = "com.devadvance.rootcloak";
+	public static final String FIRST_RUN_KEY = "IS_FIRST_RUN";
 	public static final String TAG = "RootCloak";
 	public static final String[] DEFAULT_APPS = {"com.fde.DomesticDigitalCopy",
 		"com.directv.application.android.go.production",
@@ -24,7 +25,9 @@ public class Common {
 		"com.starfinanz.smob.android.sfinanzstatus", 
 		"com.ovidos.yuppi", 
 		"klb.android.lovelive", 
-		"com.incube.epub"};
+		"com.incube.epub", 
+		"com.airwatch.androidagent", 
+		"com.isis.mclient.atnt.activity"};
 	public static final String DEBUG_KEY = "DEBUGGERPREF";
 	public static final String APP_LIST_KEY = "APPS_LIST";
 	public static final String[] KEYWORD_LIST = new String[] { "supersu", "superuser", "Superuser", "noshufou", "xposed", "rootcloak", "chainfire", "titanium"};
