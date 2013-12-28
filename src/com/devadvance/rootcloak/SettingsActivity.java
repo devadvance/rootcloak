@@ -18,6 +18,7 @@ public class SettingsActivity extends ListActivity {
 	SharedPreferences sharedPref;
 	String[] menuItems;
 	String instructionsString;
+	String instructionsTitle;
 
 	@SuppressLint("WorldReadableFiles")
 	@SuppressWarnings("deprecation")
@@ -30,28 +31,40 @@ public class SettingsActivity extends ListActivity {
 		menuItems = res.getStringArray(R.array.menu_array);
 		instructionsString = res.getString(R.string.instructions1) + "\n\n"
 				+ res.getString(R.string.instructions2) + "\n\n"
-				+ res.getString(R.string.instructions3);
+				+ res.getString(R.string.instructions3) + "\n\n"
+				+ res.getString(R.string.instructions4);
 
+		instructionsTitle = res.getString(R.string.instructions_title);
+		
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, menuItems);
 		setListAdapter(adapter);
 
-		sharedPref = getSharedPreferences(Common.PREFS, MODE_WORLD_READABLE);
+		sharedPref = getSharedPreferences(Common.PREFS_APPS, MODE_WORLD_READABLE);
 	}
 
 	public void onListItemClick(ListView parent, View v, int position, long id) {
+		Intent intent;
 		switch (position) {
 		case 0:
-			Intent intent = new Intent(this, CustomizeApps.class);
+			intent = new Intent(this, CustomizeApps.class);
 			startActivity(intent);
 			break;
 		case 1:
+			intent = new Intent(this, CustomizeKeywords.class);
+			startActivity(intent);
+			break;
+		case 2:
+			intent = new Intent(this, CustomizeCommands.class);
+			startActivity(intent);
+			break;
+		case 3:
 			Log.d(Common.PACKAGE_NAME, "Debug is now on");
 			new AlertDialog.Builder(this)
 					.setMessage(instructionsString)
-					.setTitle(menuItems[1]).show();
+					.setTitle(instructionsTitle).show();
 			break;
-		case 2:
+		case 4:
 			boolean debugPref = sharedPref.getBoolean(Common.PACKAGE_NAME
 					+ Common.DEBUG_KEY, false);
 			debugPref = !debugPref;
