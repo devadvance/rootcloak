@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RootCloak</string>
+    <string name="action_new_app">Pridať aplikáciu</string>
+    <string name="action_new_keyword">Pridať kľúčové slovo</string>
+    <string name="action_new_command">Pridať príkaz</string>
+    <string name="action_new_custom">Pridať vlastnú aplikáciu</string>
+    
+    <string name="instructions_title">Pokyny</string>
+    <string name="important_title">DÔLEŽITÉ</string>
+    
+    <string name="keyword_instructions">Toto je len pre pokročilých používateľov! Táto obrazovka umožňuje zmeniť kľúčové slová, ktoré sú skryté. Tieto kľúčové slová sa používajú, keď aplikácia hľadá nainštalované balíky, súbory v systéme, atď.</string>
+    <string name="command_instructions">Toto je len pre pokročilých používateľov! Táto obrazovka umožňuje zmeniť príkazy, ktoré sú skryté. Tieto príkazy sú používané, keď sa aplikácia pokúša spustiť iné aplikácie, ako sú "su" alebo "busybox".</string>
+    <string name="both_instructions2">NEMEŇTE, AK NEVIETE NA ČO SA TO POUŽÍVA.</string>
+    <string name="action_load_default_apps">Obnoviť predvolené aplikácie</string>
+    <string name="action_clear_app_list">Vymazať všetky aplikácie</string>
+    
+    <string name="action_load_default_keywords">Obnoviť predvolené kľúčové slová</string>
+    <string name="action_clear_keywords_list">Vymazať všetky kľúčové slová</string>
+    
+    <string name="action_load_default_commands">Obnoviť predvolené príkazy</string>
+    <string name="action_clear_commands_list">Vymazať všetky príkazy</string>
+    
+    
+    <string name="title_activity_settings">RootCloak</string>
+    <string name="title_activity_customize_apps">Prispôsobiť aplikácie</string>
+    <string name="no_apps">Žiadne aplikácie. Ak chcete pridať aplikáciu, buď kliknuite na + pre vybranie z nainštalovaných aplikácií alebo choďte do ponuky a kliknite na Obnoviť predvolené aplikácie pre použitie predvoleného zoznamu.</string>
+    <string name="no_keywords">Žiadne kľúčové slová. Ak chcete pridať kľúčové slovo, buď kliknite na + pre pridanie alebo choďte do ponuky a kliknite na Obnoviť predvolené kľúčové slová pre použitie predvoleného zoznamu.</string>
+    <string name="no_commands">Žiadne príkazy. Ak chcete pridať príkaz, buď kliknite na  + pre pridanie alebo choďte do ponuky a kliknite na Obnoviť predvolené príkazy pre použitie predvoleného zoznamu.</string>
+    <string name="instructions1">Niektoré aplikácie V Obchode Play sa nespustia, ak detegujú root. RootCloak používa rad metód na zabránenie detekcie rootu.</string>
+    <string name="instructions2">Ak chcete použiť RootCloak, pridajte aplikáciu, u ktorej chcete zabrániť v detekcii rootu do zoznamu pomocou sekcie Pridať/Odstrániť aplikácie.</string>
+    <string name="instructions3">Ak je už aplikácia spustená, je nutné, aby ste ju vynútene ukončili pre aplikovanie nastavenia.</string>
+    <string name="instructions4">Môže si prispôsobiť kľúčové slová a príkazy, ktoré má RootCloak skryť, v sekcii Pridať/Odstrániť kľúčové slová a Pridať/Odstrániť príkazy. TOTO NIE JE NUTNÉ.</string>
+
+    <string-array name="menu_array">
+        <item>Pridať/Odstrániť aplikácie</item>
+        <item>Pridať/Odstrániť kľúčové slová</item>
+        <item>Pridať/Odstrániť príkazy</item>
+        <item>Pokyny</item>
+        <item>Zapnúť/Vypnúť ladenie</item>
+    </string-array>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Zrušiť</string>
+    <string name="title_activity_customize_keywords">Prispôsobiť kľúčové slová</string>
+    <string name="title_activity_customize_commands">Prispôsobiť príkazy</string>
+
+</resources>
