@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RootCloak</string>
+    <string name="action_new_app">Add App</string>
+    <string name="action_new_keyword">Add Keyword</string>
+    <string name="action_new_command">Add Command</string>
+    <string name="action_new_custom">Add Custom App</string>
+    
+    <string name="instructions_title">Instructions</string>
+    <string name="important_title">IMPORTANT</string>
+    
+    <string name="keyword_instructions">This is for advanced users only! This screen allows you to change which keywords are hidden. These are used when an app is looking for installed packages, files on the system, and more.</string>
+    <string name="command_instructions">This is for advanced users only! This screen allows you to change which commands are hidden. These are uses when an app tries to run other applications, such as "su" or "busybox".</string>
+    <string name="both_instructions2">DO NOT CHANGE IF YOU DO NOT UNDERSTAND WHAT THESE ARE USED FOR.</string>
+    <string name="action_load_default_apps">Reset to Default Apps</string>
+    <string name="action_clear_app_list">Clear All Apps</string>
+    
+    <string name="action_load_default_keywords">Reset to Default Keywords</string>
+    <string name="action_clear_keywords_list">Clear All Keywords</string>
+    
+    <string name="action_load_default_commands">Reset to Default Commands</string>
+    <string name="action_clear_commands_list">Clear All Commands</string>
+    
+    
+    <string name="title_activity_settings">RootCloak</string>
+    <string name="title_activity_customize_apps">Customize Apps</string>
+    <string name="no_apps">No apps. To add an app, either click the + to choose from the installed apps, or go to the menu, and then press Reset to Default Apps to use the default list.</string>
+    <string name="no_keywords">No keywords. To add a keyword, either click the + to add one, or go to the menu, and then press Reset to Default Keywords to use the default list.</string>
+    <string name="no_commands">No commands. To add a command, either click the + to add one, or go to the menu, and then press Reset to Default Commands to use the default list.</string>
+    <string name="instructions1">Some apps in the play store do not run if they detect root. RootCloak uses a variety of methods to prevent root detection.</string>
+    <string name="instructions2">To use RootCloak, add the app you want to prevent from detecting root to the list using the Add/Remove Apps section.</string>
+    <string name="instructions3">If the app is already running, you need to FORCE CLOSE it for the settings to take effect.</string>
+    <string name="instructions4">You can customize which keywords and commands RootCloak hides by using the Add/Remove Keywords and Add/Remove Commands options. THIS IS NOT NECESSARY.</string>
+
+    <string-array name="menu_array">
+        <item>Add/Remove Apps</item>
+        <item>Add/Remove Keywords Hidden by RootCloak</item>
+        <item>Add/Remove Commands Hidden by RootCloak</item>
+        <item>Instructions</item>
+        <item>Turn On/Off Debug</item>
+    </string-array>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="title_activity_customize_keywords">Customize Keywords</string>
+    <string name="title_activity_customize_commands">Customize Commands</string>
+
+</resources>
