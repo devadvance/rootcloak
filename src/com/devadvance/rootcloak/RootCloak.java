@@ -44,6 +44,7 @@ public class RootCloak implements IXposedHookLoadPackage {
 	private static final String FAKE_COMMAND = "FAKEJUNKCOMMAND";
 	private static final String FAKE_FILE = "FAKEJUNKFILE";
 	private static final String FAKE_PACKAGE = "FAKE.JUNK.PACKAGE";
+	private static final String FAKE_APPLICATION = "FAKE.JUNK.APPLICATION";
 
 	public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
 		loadPrefs(); // Load prefs for any app. This way we can determine if it matches the list of apps to hide root from.
