@@ -44,6 +44,7 @@ public class RootCloak implements IXposedHookLoadPackage {
 	private static final String FAKE_COMMAND = "FAKEJUNKCOMMAND";
 	private static final String FAKE_FILE = "FAKEJUNKFILE";
 	private static final String FAKE_PACKAGE = "FAKE.JUNK.PACKAGE";
+	private static final String FAKE_APPLICATION = "FAKE.JUNK.APPLICATION";
 
 	public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
 		loadPrefs(); // Load prefs for any app. This way we can determine if it matches the list of apps to hide root from.
@@ -147,7 +148,7 @@ public class RootCloak implements IXposedHookLoadPackage {
 					param.args[1] = FAKE_FILE + ".apk";
 				}
 			}
-		});
+		    });
 		
 		// Currently just for debugging purposes, not normally used
 		Constructor<?> uriFileConstructor = findConstructorExact(java.io.File.class, URI.class);
@@ -218,6 +219,8 @@ public class RootCloak implements IXposedHookLoadPackage {
 			}
 		});
 	}
+
+
 	
 	private void initActivityManager(final LoadPackageParam lpparam) {
 		// Hooks getPackageInfo. For this method we will prevent the package info from being obtained for any app in the list
@@ -238,7 +241,24 @@ public class RootCloak implements IXposedHookLoadPackage {
 			}
 		});
 
+        // Hooks getApplicationInfo. For this method we will prevent the package info from being obtained for any app in the list
+        findAndHookMethod("android.app.ApplicationPackageManager", lpparam.classLoader, "getApplicationInfo", String.class, int.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 
+                String name = (String) param.args[0];
+                if (debugPref) {
+                    XposedBridge.log("Hooked getApplicationInfo : " + name);
+                }
+
+                if (name != null && stringContainsFromSet(name, keywordSet)) {
+                    param.args[0] = FAKE_APPLICATION;
+                    if (debugPref) {
+                        XposedBridge.log("Found and hid application: " + name);
+                    }
+                }
+            }
+        });
 		// Hooks getRunningServices. For this method we will remove any keywords, such as supersu and superuser, out of the result list.
 		findAndHookMethod("android.app.ActivityManager", lpparam.classLoader, "getRunningServices", int.class, new XC_MethodHook() {
 			@SuppressWarnings("unchecked")
