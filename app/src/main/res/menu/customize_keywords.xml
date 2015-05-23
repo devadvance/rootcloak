@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_load_defaults"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_load_default_keywords"/>
+    
+    <item
+        android:id="@+id/action_clear_list"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_clear_keywords_list"/>
+
+    <item android:id="@+id/action_new"
+          android:icon="@drawable/ic_action_new"
+          android:title="@string/action_new_keyword"
+          android:showAsAction="ifRoom" />
+</menu>
