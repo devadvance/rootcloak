@@ -150,7 +150,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                     param.args[1] = FAKE_FILE + ".apk";
                 }
             }
-            });
+        });
 
         // Currently just for debugging purposes, not normally used
         Constructor<?> uriFileConstructor = findConstructorExact(java.io.File.class, URI.class);
@@ -385,12 +385,8 @@ public class RootCloak implements IXposedHookLoadPackage {
                             param.args[0] = buildGrepArraySingle(execArray, true);
                         } else if (commandSet.contains("which") && (firstParam.equals("which") || firstParam.endsWith("/which"))) { // This is a busybox which command
                             param.setThrowable(new IOException());
-                        } else if (commandSet.contains("busybox")){
-                            for (String tempString : execArray) {
-                                if (tempString.endsWith("busybox")) {
-                                    param.setThrowable(new IOException());
-                                }
-                            }
+                        } else if (commandSet.contains("busybox") && anyWordEndingWithKeyword("busybox", execArray)){
+                            param.setThrowable(new IOException());
                         } else if (commandSet.contains("sh") && (firstParam.equals("sh") || firstParam.endsWith("/sh"))) {
                             param.setThrowable(new IOException());
                         } else {
@@ -414,6 +410,15 @@ public class RootCloak implements IXposedHookLoadPackage {
                 }
             }
         });
+    }
+
+    private Boolean anyWordEndingWithKeyword(String keyword, String[] wordArray) {
+        for (String tempString : wordArray) {
+            if (tempString.endsWith(keyword)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void initProcessBuilder(final LoadPackageParam lpparam) {
