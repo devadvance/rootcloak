@@ -41,6 +41,7 @@ public class RootCloak implements IXposedHookLoadPackage {
     private boolean isFirstRunApps;
     private boolean isFirstRunKeywords;
     private boolean isFirstRunCommands;
+    private boolean isRootCloakLoadingPref = false;
 
 
     private static final String FAKE_COMMAND = "FAKEJUNKCOMMAND";
@@ -103,6 +104,11 @@ public class RootCloak implements IXposedHookLoadPackage {
                     }
                 }
 
+                if (isRootCloakLoadingPref) {
+                    // RootCloak is trying to load it's preferences, we shouldn't block this.
+                    return;
+                }
+
                 if (((String)param.args[0]).endsWith("su")) {
                     if (debugPref) {
                         XposedBridge.log("File: Found a File constructor ending with su");
@@ -127,23 +133,28 @@ public class RootCloak implements IXposedHookLoadPackage {
         XposedBridge.hookMethod(extendedFileConstructor, new XC_MethodHook(XCallback.PRIORITY_HIGHEST) {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (param.args[0] != null && param.args[1] != null){
+                if (param.args[0] != null && param.args[1] != null) {
                     if (debugPref) {
-                        XposedBridge.log("File: Found a File constructor: " + ((String)param.args[0]) + ", with: "+ ((String)param.args[1]));
+                        XposedBridge.log("File: Found a File constructor: " + ((String) param.args[0]) + ", with: " + ((String) param.args[1]));
                     }
                 }
 
-                if (((String)param.args[1]).equalsIgnoreCase("su")) {
+                if (isRootCloakLoadingPref) {
+                    // RootCloak is trying to load it's preferences, we shouldn't block this.
+                    return;
+                }
+
+                if (((String) param.args[1]).equalsIgnoreCase("su")) {
                     if (debugPref) {
                         XposedBridge.log("File: Found a File constructor with filename su");
                     }
                     param.args[1] = FAKE_FILE;
-                } else if (((String)param.args[1]).contains("busybox")) {
+                } else if (((String) param.args[1]).contains("busybox")) {
                     if (debugPref) {
                         XposedBridge.log("File: Found a File constructor ending with busybox");
                     }
                     param.args[1] = FAKE_FILE;
-                } else if (stringContainsFromSet(((String)param.args[1]), keywordSet)) {
+                } else if (stringContainsFromSet(((String) param.args[1]), keywordSet)) {
                     if (debugPref) {
                         XposedBridge.log("File: Found a File constructor with word super, noshufou, or chainfire");
                     }
@@ -157,9 +168,9 @@ public class RootCloak implements IXposedHookLoadPackage {
         XposedBridge.hookMethod(uriFileConstructor, new XC_MethodHook(XCallback.PRIORITY_HIGHEST) {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (param.args[0] != null){
+                if (param.args[0] != null) {
                     if (debugPref) {
-                        XposedBridge.log("File: Found a URI File constructor: " + ((URI)param.args[0]).toString());
+                        XposedBridge.log("File: Found a URI File constructor: " + ((URI) param.args[0]).toString());
                     }
                 }
             }
@@ -462,6 +473,8 @@ public class RootCloak implements IXposedHookLoadPackage {
                 .permitDiskWrites()
                 .build());
 
+        isRootCloakLoadingPref = true;
+
         try {
             prefApps = new XSharedPreferences(Common.PACKAGE_NAME, Common.PREFS_APPS);
             prefApps.makeWorldReadable();
@@ -495,6 +508,8 @@ public class RootCloak implements IXposedHookLoadPackage {
         }
         finally {
             StrictMode.setThreadPolicy(old);
+
+            isRootCloakLoadingPref = false;
         }
 
     }
