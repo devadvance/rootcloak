@@ -517,7 +517,7 @@ public class RootCloak implements IXposedHookLoadPackage {
     public boolean stringContainsFromSet(String base, Set<String> values) {
         if (base != null && values != null) {
             for (String tempString : values) {
-                if (base.contains(tempString)){
+                if (base.matches(".*(\\W|^)" + tempString + "(\\W|$).*")){
                     return true;
                 }
             }
