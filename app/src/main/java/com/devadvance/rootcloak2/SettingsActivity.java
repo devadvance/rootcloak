@@ -1,4 +1,4 @@
-package com.devadvance.rootcloak;
+package com.devadvance.rootcloak2;
 
 import android.os.Bundle;
 import android.annotation.SuppressLint;

@@ -6,7 +6,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.devadvance.rootcloak"
+        applicationId "com.devadvance.rootcloak2"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 6

@@ -1,4 +1,4 @@
-package com.devadvance.rootcloak;
+package com.devadvance.rootcloak2;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -68,7 +68,7 @@ public class Common {
         "chainfire", "titanium", "Titanium",
         "substrate", "greenify", "daemonsu",
         "root", "busybox", "titanium",
-        ".tmpsu", "su"};
+        ".tmpsu", "su", "rootcloak2"};
     public static final Set<String> DEFAULT_KEYWORD_SET = new HashSet<String>(Arrays.asList(DEFAULT_KEYWORD_LIST));
     public static final String[] DEFAULT_COMMAND_LIST = new String[] { "su", "which", "busybox", "pm", "am", "sh", "ps"};
     public static final Set<String> DEFAULT_COMMAND_SET = new HashSet<String>(Arrays.asList(DEFAULT_COMMAND_LIST));
