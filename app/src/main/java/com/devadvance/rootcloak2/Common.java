@@ -8,7 +8,7 @@ public class Common {
     public static final String PREFS_APPS = "CustomizeApps";
     public static final String PREFS_KEYWORDS = "CustomizeKeywords";
     public static final String PREFS_COMMANDS = "CustomizeCommands";
-    public static final String PACKAGE_NAME = "com.devadvance.rootcloak";
+    public static final String PACKAGE_NAME = "com.devadvance.rootcloak2";
     public static final String FIRST_RUN_KEY = "IS_FIRST_RUN";
     public static final String TAG = "RootCloak";
     public static final String[] DEFAULT_APPS_LIST = {"com.fde.DomesticDigitalCopy",
