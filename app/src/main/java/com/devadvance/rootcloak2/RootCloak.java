@@ -473,14 +473,10 @@ public class RootCloak implements IXposedHookLoadPackage {
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 
                 String setting = (String) param.args[0];
-                if (debugPref) {
-                    XposedBridge.log("Hooked ADB debugging info");
-                }
-
                 if (setting != null && Settings.Global.ADB_ENABLED.equals(setting)) {
                     param.setResult(0);
                     if (debugPref) {
-                        XposedBridge.log("ADB debugging is off");
+                        XposedBridge.log("Hooked ADB debugging info, adb status is off");
                     }
                 }
             }
