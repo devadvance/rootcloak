@@ -1,24 +1,24 @@
 package com.devadvance.rootcloak2;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.support.v4.app.NavUtils;
-import android.preference.PreferenceActivity;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CustomizeKeywords extends PreferenceActivity {
 
@@ -42,24 +42,32 @@ public class CustomizeKeywords extends PreferenceActivity {
 
         loadList();
 
-        Resources res = getResources();
-        new AlertDialog.Builder(this)
-        .setMessage(res.getString(R.string.keyword_instructions) + "\n\n" + res.getString(R.string.both_instructions2))
-        .setTitle(res.getString(R.string.important_title)).show();
+        if (sharedPref.getBoolean(Common.SHOW_WARNING, true)) {
+            Resources res = getResources();
+            new AlertDialog.Builder(this)
+                    .setMessage(res.getString(R.string.command_instructions) + "\n\n" + res.getString(R.string.both_instructions2))
+                    .setTitle(res.getString(R.string.important_title))
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            sharedPref.edit().putBoolean(Common.SHOW_WARNING, false);
+                        }
+                    })
+                    .show();
+        }
 
     }
 
-    public void onListItemClick( ListView parent, View v, int position, long id) {
+    public void onListItemClick(ListView parent, View v, int position, long id) {
         final int positionFinal = position;
         new AlertDialog.Builder(CustomizeKeywords.this)
-        .setTitle("Remove Keyword")
-        .setMessage("Are you sure you want to remove this keyword?")
-        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                removeKeyword(positionFinal);
-                loadList();
-            }
-        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.remove_keyword_title)
+                .setMessage(R.string.remove_keyword_message)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        removeKeyword(positionFinal);
+                        loadList();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Do nothing.
             }
@@ -86,33 +94,33 @@ public class CustomizeKeywords extends PreferenceActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case android.R.id.home:
-            NavUtils.navigateUpFromSameTask(this);
-            return true;
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
 
-        case R.id.action_new:
-            final EditText input = new EditText(this);
-            new AlertDialog.Builder(CustomizeKeywords.this)
-            .setTitle("Add Keyword")
-            .setMessage("Input the keyword:")
-            .setView(input)
-            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    savePref(input.getText().toString());
-                    loadList();
-                }
-            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    // Do nothing.
-                }
-            }).show();
-            return true;
-        case R.id.action_load_defaults:
-            loadDefaultsWithConfirm();
-            return true;
-        case R.id.action_clear_list:
-            clearList();
-            return true;
+            case R.id.action_new:
+                final EditText input = new EditText(this);
+                new AlertDialog.Builder(CustomizeKeywords.this)
+                        .setTitle(R.string.add_keyword)
+                        .setMessage(R.string.input_keyword)
+                        .setView(input)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                savePref(input.getText().toString());
+                                loadList();
+                            }
+                        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Do nothing.
+                    }
+                }).show();
+                return true;
+            case R.id.action_load_defaults:
+                loadDefaultsWithConfirm();
+                return true;
+            case R.id.action_clear_list:
+                clearList();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -131,12 +139,12 @@ public class CustomizeKeywords extends PreferenceActivity {
 
     private void loadDefaultsWithConfirm() {
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeKeywords.this)
-        .setTitle("Reset keywords to default?")
-        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                loadDefaults();
-            }
-        });
+                .setTitle(R.string.reset_keywords)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        loadDefaults();
+                    }
+                });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // Do nothing on cancel
@@ -145,13 +153,12 @@ public class CustomizeKeywords extends PreferenceActivity {
     }
 
     private void loadList() {
-        keywordSet =  sharedPref.getStringSet(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY, new HashSet<String>());
+        keywordSet = sharedPref.getStringSet(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY, new HashSet<String>());
         isFirstRunKeywords = sharedPref.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true);
         if (isFirstRunKeywords) {
             if (keywordSet.isEmpty()) {
                 loadDefaults();
-            }
-            else {
+            } else {
                 Editor editor = sharedPref.edit();
                 editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
                 editor.commit();
@@ -169,14 +176,14 @@ public class CustomizeKeywords extends PreferenceActivity {
     private void clearList() {
         final Editor editor = sharedPref.edit();
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeKeywords.this)
-        .setTitle("Proceed to clear all keywords?")
-        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                editor.remove(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY);
-                editor.commit();
-                loadList();
-            }
-        });
+                .setTitle(R.string.clear_app_keywords)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        editor.remove(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY);
+                        editor.commit();
+                        loadList();
+                    }
+                });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // Do nothing on cancel

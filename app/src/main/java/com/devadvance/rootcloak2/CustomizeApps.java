@@ -1,27 +1,28 @@
 package com.devadvance.rootcloak2;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.support.v4.app.NavUtils;
-import android.preference.PreferenceActivity;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class CustomizeApps extends PreferenceActivity {
 
@@ -47,17 +48,17 @@ public class CustomizeApps extends PreferenceActivity {
 
     }
 
-    public void onListItemClick( ListView parent, View v, int position, long id) {
+    public void onListItemClick(ListView parent, View v, int position, long id) {
         final int positionFinal = position;
         new AlertDialog.Builder(CustomizeApps.this)
-        .setTitle("Remove App")
-        .setMessage("Are you sure you want to remove this app?")
-        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                removeApp(positionFinal);
-                loadList();
-            }
-        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.remove_app_title)
+                .setMessage(R.string.remove_app_message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        removeApp(positionFinal);
+                        loadList();
+                    }
+                }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Do nothing.
             }
@@ -84,64 +85,64 @@ public class CustomizeApps extends PreferenceActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case android.R.id.home:
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. Use NavUtils to allow users
-            // to navigate up one level in the application structure. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
-            NavUtils.navigateUpFromSameTask(this);
-            return true;
+            case android.R.id.home:
+                // This ID represents the Home or Up button. In the case of this
+                // activity, the Up button is shown. Use NavUtils to allow users
+                // to navigate up one level in the application structure. For
+                // more details, see the Navigation pattern on Android Design:
+                //
+                // http://developer.android.com/design/patterns/navigation.html#up-vs-back
+                //
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
 
-        case R.id.action_new:
-            final PackageManager pm = getPackageManager();
-            //get a list of installed apps.
-            final List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-            final String[] names = new String[packages.size()];
-            final HashMap<String, String> nameMap = new HashMap<String,String>();
-            int i = 0;
-            for (ApplicationInfo info : packages) {
-                //names[i] = info.packageName;
-                names[i] = (String)info.loadLabel(pm) + "\n(" + info.packageName + ")";
-                nameMap.put(names[i], info.packageName);
-                i++;
-            }
-            Arrays.sort(names);
-
-            new AlertDialog.Builder(this).setTitle("Add an App")
-            .setItems((CharSequence[]) names, new DialogInterface.OnClickListener() {
-                   public void onClick(DialogInterface dialog, int which) {
-                       savePref(nameMap.get(names[which]));
-                        loadList();
-               }
-        }).show();
-
-            return true;
-        case R.id.action_new_custom:
-            final EditText input = new EditText(this);
-            new AlertDialog.Builder(CustomizeApps.this)
-            .setTitle("Add App")
-            .setMessage("Input the app package name:")
-            .setView(input)
-            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    savePref(input.getText().toString());
-                    loadList();
+            case R.id.action_new:
+                final PackageManager pm = getPackageManager();
+                //get a list of installed apps.
+                final List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+                final String[] names = new String[packages.size()];
+                final HashMap<String, String> nameMap = new HashMap<String, String>();
+                int i = 0;
+                for (ApplicationInfo info : packages) {
+                    //names[i] = info.packageName;
+                    names[i] = (String) info.loadLabel(pm) + "\n(" + info.packageName + ")";
+                    nameMap.put(names[i], info.packageName);
+                    i++;
                 }
-            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    // Do nothing.
-                }
-            }).show();
-            return true;
-        case R.id.action_load_defaults:
-            loadDefaultsWithConfirm();
-            return true;
-        case R.id.action_clear_list:
-            clearList();
-            return true;
+                Arrays.sort(names);
+
+                new AlertDialog.Builder(this).setTitle(R.string.add_app)
+                        .setItems((CharSequence[]) names, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                savePref(nameMap.get(names[which]));
+                                loadList();
+                            }
+                        }).show();
+
+                return true;
+            case R.id.action_new_custom:
+                final EditText input = new EditText(this);
+                new AlertDialog.Builder(CustomizeApps.this)
+                        .setTitle(R.string.add_app)
+                        .setMessage(R.string.input_package_name)
+                        .setView(input)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                savePref(input.getText().toString());
+                                loadList();
+                            }
+                        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Do nothing.
+                    }
+                }).show();
+                return true;
+            case R.id.action_load_defaults:
+                loadDefaultsWithConfirm();
+                return true;
+            case R.id.action_clear_list:
+                clearList();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -160,12 +161,12 @@ public class CustomizeApps extends PreferenceActivity {
 
     private void loadDefaultsWithConfirm() {
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeApps.this)
-        .setTitle("Reset apps to default?")
-        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                loadDefaults();
-            }
-        });
+                .setTitle(R.string.reset_apps)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        loadDefaults();
+                    }
+                });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // Do nothing on cancel
@@ -174,13 +175,12 @@ public class CustomizeApps extends PreferenceActivity {
     }
 
     private void loadList() {
-        appSet =  sharedPref.getStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, new HashSet<String>());
+        appSet = sharedPref.getStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, new HashSet<String>());
         isFirstRun = sharedPref.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true);
         if (isFirstRun) {
             if (appSet.isEmpty()) {
                 loadDefaults();
-            }
-            else {
+            } else {
                 Editor editor = sharedPref.edit();
                 editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
                 editor.commit();
@@ -198,14 +198,14 @@ public class CustomizeApps extends PreferenceActivity {
     private void clearList() {
         final Editor editor = sharedPref.edit();
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeApps.this)
-        .setTitle("Proceed to clear all apps?")
-        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
-                editor.commit();
-                loadList();
-            }
-        });
+                .setTitle(R.string.clear_all_apps)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
+                        editor.commit();
+                        loadList();
+                    }
+                });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // Do nothing on cancel

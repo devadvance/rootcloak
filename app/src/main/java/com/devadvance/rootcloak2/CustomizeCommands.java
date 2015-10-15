@@ -1,24 +1,24 @@
 package com.devadvance.rootcloak2;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.support.v4.app.NavUtils;
-import android.preference.PreferenceActivity;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CustomizeCommands extends PreferenceActivity {
 
@@ -42,24 +42,32 @@ public class CustomizeCommands extends PreferenceActivity {
 
         loadList();
 
-        Resources res = getResources();
-        new AlertDialog.Builder(this)
-        .setMessage(res.getString(R.string.command_instructions) + "\n\n" + res.getString(R.string.both_instructions2))
-        .setTitle(res.getString(R.string.important_title)).show();
+        if (sharedPref.getBoolean(Common.SHOW_WARNING, true)) {
+            Resources res = getResources();
+            new AlertDialog.Builder(this)
+                    .setMessage(res.getString(R.string.command_instructions) + "\n\n" + res.getString(R.string.both_instructions2))
+                    .setTitle(res.getString(R.string.important_title))
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            sharedPref.edit().putBoolean(Common.SHOW_WARNING, false);
+                        }
+                    })
+                    .show();
+        }
 
     }
 
-    public void onListItemClick( ListView parent, View v, int position, long id) {
+    public void onListItemClick(ListView parent, View v, int position, long id) {
         final int positionFinal = position;
         new AlertDialog.Builder(CustomizeCommands.this)
-        .setTitle("Remove Command")
-        .setMessage("Are you sure you want to remove this command?")
-        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                removeCommand(positionFinal);
-                loadList();
-            }
-        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.remove_command_title)
+                .setMessage(R.string.remove_command_message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        removeCommand(positionFinal);
+                        loadList();
+                    }
+                }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Do nothing.
             }
@@ -86,33 +94,33 @@ public class CustomizeCommands extends PreferenceActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case android.R.id.home:
-            NavUtils.navigateUpFromSameTask(this);
-            return true;
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
 
-        case R.id.action_new:
-            final EditText input = new EditText(this);
-            new AlertDialog.Builder(CustomizeCommands.this)
-            .setTitle("Add Command")
-            .setMessage("Input the command:")
-            .setView(input)
-            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    savePref(input.getText().toString());
-                    loadList();
-                }
-            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    // Do nothing.
-                }
-            }).show();
-            return true;
-        case R.id.action_load_defaults:
-            loadDefaultsWithConfirm();
-            return true;
-        case R.id.action_clear_list:
-            clearList();
-            return true;
+            case R.id.action_new:
+                final EditText input = new EditText(this);
+                new AlertDialog.Builder(CustomizeCommands.this)
+                        .setTitle(R.string.add_command)
+                        .setMessage(R.string.input_command)
+                        .setView(input)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                savePref(input.getText().toString());
+                                loadList();
+                            }
+                        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Do nothing.
+                    }
+                }).show();
+                return true;
+            case R.id.action_load_defaults:
+                loadDefaultsWithConfirm();
+                return true;
+            case R.id.action_clear_list:
+                clearList();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -131,12 +139,12 @@ public class CustomizeCommands extends PreferenceActivity {
 
     private void loadDefaultsWithConfirm() {
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeCommands.this)
-        .setTitle("Reset commands to default?")
-        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                loadDefaults();
-            }
-        });
+                .setTitle(R.string.reset_commands)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        loadDefaults();
+                    }
+                });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // Do nothing on cancel
@@ -145,13 +153,12 @@ public class CustomizeCommands extends PreferenceActivity {
     }
 
     private void loadList() {
-        commandSet =  sharedPref.getStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, new HashSet<String>());
+        commandSet = sharedPref.getStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, new HashSet<String>());
         isFirstRunCommands = sharedPref.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true);
         if (isFirstRunCommands) {
             if (commandSet.isEmpty()) {
                 loadDefaults();
-            }
-            else {
+            } else {
                 Editor editor = sharedPref.edit();
                 editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
                 editor.commit();
@@ -169,14 +176,14 @@ public class CustomizeCommands extends PreferenceActivity {
     private void clearList() {
         final Editor editor = sharedPref.edit();
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeCommands.this)
-        .setTitle("Proceed to clear all commands?")
-        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                editor.remove(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY);
-                editor.commit();
-                loadList();
-            }
-        });
+                .setTitle(R.string.clear_all_commands)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        editor.remove(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY);
+                        editor.commit();
+                        loadList();
+                    }
+                });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // Do nothing on cancel
