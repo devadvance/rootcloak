@@ -45,5 +45,27 @@
     <string name="cancel">Cancel</string>
     <string name="title_activity_customize_keywords">Customize Keywords</string>
     <string name="title_activity_customize_commands">Customize Commands</string>
+    <string name="remove_app_title">Remove App</string>
+    <string name="remove_app_message">Are you sure you want to remove this app?</string>
+    <string name="hide_warning">Hide this warning</string>
+    <string name="add_app">Add an App</string>
+    <string name="loading_apps">Loading apps...</string>
+    <string name="input_package_name">Input the app package name:</string>
+    <string name="reset_apps">Reset apps to default?</string>
+    <string name="clear_all_apps">Proceed to clear all apps?</string>
+    <string name="debug_on">Debug is now on.</string>
+    <string name="debug_off">Debug is now off.</string>
+    <string name="remove_command_title">Remove Command</string>
+    <string name="remove_command_message">Are you sure you want to remove this command?</string>
+    <string name="add_command">Add Command</string>
+    <string name="input_command">Input the command:</string>
+    <string name="reset_commands">Reset commands to default?</string>
+    <string name="clear_all_commands">Proceed to clear all commands?</string>
+    <string name="remove_keyword_title">Remove Keyword</string>
+    <string name="remove_keyword_message">Are you sure you want to remove this keyword?</string>
+    <string name="add_keyword">Add Keyword</string>
+    <string name="input_keyword">Input the keyword:</string>
+    <string name="reset_keywords">Reset keywords to default?</string>
+    <string name="clear_app_keywords">Proceed to clear all keywords?</string>
 
 </resources>
