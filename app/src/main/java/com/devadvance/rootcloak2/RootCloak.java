@@ -478,7 +478,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 }
 
                 if (setting != null && Settings.Global.ADB_ENABLED.equals(setting)) {
-                    param.setResult(1);
+                    param.setResult(0);
                     if (debugPref) {
                         XposedBridge.log("ADB debugging is off");
                     }
