@@ -15,8 +15,8 @@ This allows you to run apps that detect root without disabling root. You select 
 2. Install RootCloak Prime.
 3. Enable RootCloak Prime in the Xposed app, in the Modules section.
 4. Reboot your phone.
-5. Open RootClock Prime settings, go to Add/Remove Apps, and under the menu, press Reset to Default Apps.
-6. If the app you want to hide root from is not in the list, you must then press the + to add it.
+5. Open RootCloak Prime settings, go to Add/Remove Apps.
+6. If the app you want to hide root from is not in the list, you must then press + to add it.
 7. Exit RootCloak Prime settings. If the app you just added to the list was already running, you need to FORCE CLOSE it for the settings to take effect.
 8. Run the app to see if root was successfully hidden.
 
