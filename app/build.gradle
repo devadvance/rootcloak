@@ -1,17 +1,17 @@
 apply plugin: 'com.android.application'
 
-
 android {
-    compileSdkVersion 22
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.devadvance.rootcloak2"
         minSdkVersion 15
-        targetSdkVersion 22
-        versionCode 7
-        versionName "1.51"
+        targetSdkVersion 23
+        versionCode 8
+        versionName "1.6"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -19,16 +19,10 @@ android {
         }
     }
 
-    sourceSets { main { java.srcDirs = ['src/main/java'] } }
 }
 
 dependencies {
-
-    repositories {
-        mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    }
-
-    compile fileTree(dir: 'libs', include: '*.jar')
-    compile 'com.android.support:support-v4:22.0.0'
+    provided 'de.robv.android.xposed:api:82'
+    provided 'de.robv.android.xposed:api:82:sources'
+    compile 'com.android.support:support-v4:23.4.0'
 }
