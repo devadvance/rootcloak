@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">RootCloak</string>
     <string name="action_new_app">Добавить приложение</string>
     <string name="action_new_keyword">Добавить ключевое слово</string>
     <string name="action_new_command">Добавить команду</string>
     <string name="action_new_custom">Добавить приложение</string>
-    
+
     <string name="instructions_title">Инструкции</string>
     <string name="important_title">ВНИМАНИЕ</string>
-    
+
     <string name="keyword_instructions">Только для продвинутых пользователей! Данное меню позволяет изменять ключевые слова, скрытые для приложений. Это могут быть установленные приложения, файлы в системе и другое.</string>
     <string name="command_instructions">Только для продвинутых пользователей! Данное меню позволяет изменять команды, скрытые для приложений. Это используется, когда приложения пытаются запустить другие приложения, такие как "su" или "busybox".</string>
     <string name="both_instructions2">НЕ ИЗМЕНЯЙТЕ, ЕСЛИ НЕ ЗНАЕТЕ, ЧТО ДЕЛАЕТЕ.</string>
     <string name="action_load_default_apps">Восстановить по умолчанию</string>
     <string name="action_clear_app_list">Очистить все</string>
-    
+
     <string name="action_load_default_keywords">Восстановить по умолчанию</string>
     <string name="action_clear_keywords_list">Очистить все</string>
-    
+
     <string name="action_load_default_commands">Восстановить по умолчанию</string>
     <string name="action_clear_commands_list">Очистить все</string>
-    
-    
-    <string name="title_activity_settings">RootCloak</string>
+
+
     <string name="title_activity_customize_apps">Управление приложенями</string>
     <string name="no_apps">Нет приложений. Добавьте приложения через кнопку + или меню. Либо сбросьте список приложений на стандартный через меню.</string>
     <string name="no_keywords">Нет ключевых слов. Добавьте ключевые слова через кнопку + или меню. Либо сбросьте список ключевых слов на стандартный через меню.</string>

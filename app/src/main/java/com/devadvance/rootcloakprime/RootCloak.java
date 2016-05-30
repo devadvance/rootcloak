@@ -1,4 +1,4 @@
-package com.devadvance.rootcloak2;
+package com.devadvance.rootcloakprime;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;

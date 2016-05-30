@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">RootCloak</string>
     <string name="action_new_app">新增程式</string>
     <string name="action_new_keyword">新增關鍵字</string>
     <string name="action_new_command">新增指令</string>
     <string name="action_new_custom">新增自訂程式</string>
-    
+
     <string name="instructions_title">說明</string>
     <string name="important_title">重要</string>
-    
+
     <string name="keyword_instructions">此程式僅適用於進階用戶使用，當某個應用程式正在尋找系統中已安裝的安裝包或其他文件，此畫面可以允許您改變要隱藏哪些關鍵字.</string>
     <string name="command_instructions">此程式僅適用於進階用戶使用，當某個應用程式嘗試要運行裝置中已安裝的應用程式，此畫面可以隱藏及改變其指令，像是"su"或是"busybox".</string>
     <string name="both_instructions2">如果您不明白此操作的意義，請不要更改.</string>
     <string name="action_load_default_apps">重設為預設程式</string>
     <string name="action_clear_app_list">清除所有程式</string>
-    
+
     <string name="action_load_default_keywords">重設為預設關鍵字</string>
     <string name="action_clear_keywords_list">清除所有關鍵字</string>
-    
+
     <string name="action_load_default_commands">重設為預設指令</string>
     <string name="action_clear_commands_list">清除所有指令</string>
-    
-    
-    <string name="title_activity_settings">RootCloak</string>
+
+
     <string name="title_activity_customize_apps">應用程式</string>
     <string name="no_apps">沒有應用程式. 要新增程式, 輕輕觸 + 按鍵來選擇已安裝的程式, 或是前往選單, 並請點選重設為預設程式來檢視預設清單.</string>
     <string name="no_keywords">沒有關鍵字. 要新增關鍵字, 輕輕觸 + 按鍵來新增一個, 或是前往選單, 並請點選重設為預設關鍵字來檢視預設清單.</string>

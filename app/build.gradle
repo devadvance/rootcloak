@@ -5,11 +5,11 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "com.devadvance.rootcloak2"
+        applicationId "com.devadvance.rootcloakprime"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 8
-        versionName "1.6"
+        versionName "2.0"
     }
 
     lintOptions {

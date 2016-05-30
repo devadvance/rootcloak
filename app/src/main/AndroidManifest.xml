@@ -1,4 +1,4 @@
-<manifest package="com.devadvance.rootcloak2"
+<manifest package="com.devadvance.rootcloakprime"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
@@ -18,7 +18,7 @@
             android:value="Hides root from chosen apps." />
 
         <activity
-            android:name="com.devadvance.rootcloak2.SettingsActivity"
+            android:name="com.devadvance.rootcloakprime.SettingsActivity"
             android:label="@string/title_activity_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,30 +28,30 @@
         </activity>
 
         <activity
-            android:name="com.devadvance.rootcloak2.CustomizeApps"
+            android:name="com.devadvance.rootcloakprime.CustomizeApps"
             android:label="@string/title_activity_customize_apps"
-            android:parentActivityName="com.devadvance.rootcloak2.SettingsActivity">
+            android:parentActivityName="com.devadvance.rootcloakprime.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.devadvance.rootcloak2.SettingsActivity" />
+                android:value="com.devadvance.rootcloakprime.SettingsActivity" />
         </activity>
 
         <activity
-            android:name="com.devadvance.rootcloak2.CustomizeKeywords"
+            android:name="com.devadvance.rootcloakprime.CustomizeKeywords"
             android:label="@string/title_activity_customize_keywords"
-            android:parentActivityName="com.devadvance.rootcloak2.SettingsActivity">
+            android:parentActivityName="com.devadvance.rootcloakprime.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.devadvance.rootcloak2.SettingsActivity" />
+                android:value="com.devadvance.rootcloakprime.SettingsActivity" />
         </activity>
 
         <activity
-            android:name="com.devadvance.rootcloak2.CustomizeCommands"
+            android:name="com.devadvance.rootcloakprime.CustomizeCommands"
             android:label="@string/title_activity_customize_commands"
-            android:parentActivityName="com.devadvance.rootcloak2.SettingsActivity">
+            android:parentActivityName="com.devadvance.rootcloakprime.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.devadvance.rootcloak2.SettingsActivity" />
+                android:value="com.devadvance.rootcloakprime.SettingsActivity" />
         </activity>
 
     </application>

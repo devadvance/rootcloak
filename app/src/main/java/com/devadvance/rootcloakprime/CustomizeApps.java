@@ -1,8 +1,7 @@
-package com.devadvance.rootcloak2;
+package com.devadvance.rootcloakprime;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
