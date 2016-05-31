@@ -7,10 +7,13 @@ android:
   - android-23
   - extra-android-m2repository
   - extra-android-support
+script:  
+  - ./gradlew AssembleRelease
 deploy:
   provider: releases
   api_key:
     secure: t9gpuUlK7rEBNtjzLgBmj02jxemzEC1Gt3zQG8b9LUfPS2uJzf283dAVw5nZIFgSe7Wpy8mZ5LSsB+N4xmVtqqdqZef75it4r/2TqUg753idJ7alvkSSFDbM1krKQLuVCyWW416+dSpubkkQchcSl6ngi+As8RmnygdD21VL1jN5JTNaWTWdmyIiKBbkgsn5be8hGwQjbLJqoUVwVkZM0K2jRqM2EvChx60sNt1lsGbQ1jgL6jVBPYRaVinZd7m1gzgdZ0FK4Taq8k9YTr6Wl/E4QMKFA/aZxBSPMbninnQYKY72ycl/dUVf9HVkcnhtHRwbUxsNfK4a4Rc/YZWS8894dM4h9qN/x2aosiwMx9amAccUZJSQ0KWnxC9qYUJ7FHUzLInmNK6C5+7hYVe1QDPUmtUk9rzqjlYONrjE45daC+hD5oBaZ37vsbJ9xil5Cie0KQaWE+dExLRIa8XWpBtFLLFFvqqz82PPJKmZRA680XVcNWGBPPR1ua96uo9mS+kmBnJxPLOc/KpfTtJlaWC4SE2bwl3F2llxrvNFDF/BQ+rVdDkgiTlxSfycyY5VktWS+cyDw7x5li69O2FkKKIcZL2/ixxVj5yryG8hhTIenoMmIq8vcpJjzxb6TfB+Z21GavvjwtfmyDMxnWrGANDSJ9nSyscEDEzauFyKNyc=
   file: app/build/outputs/apk/app-release.apk
+  skip_cleanup: true
   on:
     repo: devadvance/rootcloak
