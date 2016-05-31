@@ -29,6 +29,8 @@ Copyright (C) 2013-2016+ Matt Joseph (devadvance), Jingran Wang (hikaritenchi), 
 
 Licensed under the Apache License, Version 2.0. See LICENSE file for license information.
 
+[![Build Status](https://travis-ci.org/devadvance/rootcloak.svg?branch=master)](https://travis-ci.org/devadvance/rootcloak)
+
 Attribution:
 
 The icon used for this module is a creative interpretation of a photo of the sculpture "Cloak of Conscience".
