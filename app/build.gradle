@@ -12,6 +12,15 @@ android {
         versionName "2.0"
     }
 
+    signingConfigs {
+        release {
+            storeFile file("release.keystore")
+            storePassword System.getenv("KEYSTORE_PASS")
+            keyAlias System.getenv("ALIAS_NAME")
+            keyPassword System.getenv("ALIAS_PASS")
+        }
+    }
+
     lintOptions {
         abortOnError false
     }
