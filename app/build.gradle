@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+def keystorePass = hasProperty('KEYSTORE_PASS') ? KEYSTORE_PASS : System.getenv('KEYSTORE_PASS')
+def aliasName = hasProperty('ALIAS_NAME') ? ALIAS_NAME : System.getenv('ALIAS_NAME')
+def aliasPass = hasProperty('ALIAS_PASS') ? ALIAS_PASS : System.getenv('ALIAS_PASS')
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
@@ -15,9 +19,9 @@ android {
     signingConfigs {
         release {
             storeFile file("release.keystore")
-            storePassword System.getenv("KEYSTORE_PASS")
-            keyAlias System.getenv("ALIAS_NAME")
-            keyPassword System.getenv("ALIAS_PASS")
+            storePassword keystorePass
+            keyAlias aliasName
+            keyPassword aliasPass
         }
     }
 
