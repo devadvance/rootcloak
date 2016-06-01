@@ -1,4 +1,6 @@
 # Changelog
+v2.0.1 - Prep for release to Xposed. No changes other than to increment version information.
+
 v2.0 - Many fixes from hikaritenchi (mostly build-related), hide ADB (pylerSM).
 
 v1.5 - Updated to Android Studio using Grade build system. Merged in changed from abdulmoeedammar. Updated package name due to various changes.
