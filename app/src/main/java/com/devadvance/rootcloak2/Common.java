@@ -1,4 +1,4 @@
-package com.devadvance.rootcloakprime;
+package com.devadvance.rootcloak2;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -8,7 +8,7 @@ public class Common {
     public static final String PREFS_APPS = "CustomizeApps";
     public static final String PREFS_KEYWORDS = "CustomizeKeywords";
     public static final String PREFS_COMMANDS = "CustomizeCommands";
-    public static final String PACKAGE_NAME = "com.devadvance.rootcloakprime";
+    public static final String PACKAGE_NAME = "com.devadvance.rootcloak2";
     public static final String FIRST_RUN_KEY = "IS_FIRST_RUN";
     public static final String[] DEFAULT_APPS_LIST = { "com.fde.DomesticDigitalCopy",
                                                        "com.directv.application.android.go.production",
@@ -68,7 +68,7 @@ public class Common {
             "chainfire", "titanium", "Titanium",
             "substrate", "greenify", "daemonsu",
             "root", "busybox", "titanium",
-            ".tmpsu", "su", "rootcloakprime"};
+            ".tmpsu", "su", "rootcloak2"};
     public static final Set<String> DEFAULT_KEYWORD_SET = new HashSet<String>(Arrays.asList(DEFAULT_KEYWORD_LIST));
     public static final String[] DEFAULT_COMMAND_LIST = new String[]{"su", "which", "busybox", "pm", "am", "sh", "ps"};
     public static final Set<String> DEFAULT_COMMAND_SET = new HashSet<String>(Arrays.asList(DEFAULT_COMMAND_LIST));

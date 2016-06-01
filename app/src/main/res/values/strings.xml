@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name" translatable="false">RootCloak Prime</string>
+    <string name="app_name" translatable="false">RootCloak</string>
     <string name="action_new_app">Add App</string>
     <string name="action_new_keyword">Add Keyword</string>
     <string name="action_new_command">Add Command</string>
@@ -23,7 +23,7 @@
     <string name="action_clear_commands_list">Clear All Commands</string>
 
 
-    <string name="title_activity_settings" translatable="false">RootCloak Prime</string>
+    <string name="title_activity_settings" translatable="false">RootCloak</string>
     <string name="title_activity_customize_apps">Customize Apps</string>
     <string name="no_apps">No apps. To add an app, either click the + to choose from the installed apps, or go to the menu, and then press Reset to Default Apps to use the default list.</string>
     <string name="no_keywords">No keywords. To add a keyword, either click the + to add one, or go to the menu, and then press Reset to Default Keywords to use the default list.</string>
