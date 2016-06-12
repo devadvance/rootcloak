@@ -97,16 +97,29 @@ public class RootCloak implements IXposedHookLoadPackage {
         }
         
         findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class , new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
+                if (((String) param.args[0]).equals("ro.build.selinux")) {
+                    param.setResult("1");
+                    if (debugPref) {
+                        XposedBridge.log("SELinux is enforced.");
+                    }
+                }
+            }
+        });
 
-                            @Override
-                            protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
-                                if (((String) param.args[0]).equals("ro.build.selinux")) {
-                                    param.setResult("1");
-                                    if (debugPref) {
-                                        XposedBridge.log("SELinux is enforced.");
-                                    }
-                                }
-                            }
+        findAndHookMethod("java.lang.Class", lpparam.classLoader, "forName", String.class, boolean.class, ClassLoader.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                String classname = (String) param.args[0];
+
+                if (classname != null && (classname.equals("de.robv.android.xposed.XposedBridge") || classname.equals("de.robv.android.xposed.XC_MethodReplacement"))) {
+                    param.setThrowable(new ClassNotFoundException());
+                    if (debugPref) {
+                        XposedBridge.log("Found and hid Xposed class name: " + classname);
+                    }
+                }
+            }
         });
     }
 
