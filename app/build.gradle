@@ -24,9 +24,6 @@ android {
             keyPassword aliasPass
         }
 
-        debug {
-            storeFile file("debug.keystore")
-        }
     }
 
     lintOptions {
@@ -42,6 +39,11 @@ android {
 
         debug {
             applicationIdSuffix ".debug"
+        }
+
+        unsigneddebug {
+            applicationIdSuffix ".debug"
+            signingConfig null
         }
     }
 
