@@ -463,7 +463,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 if (libname != null && stringContainsFromSet(libname, libnameSet)) {
                     param.setResult(null);
                     if (debugPref) {
-                        XposedBridge.log("Loading of library " + name + " disabled.";
+                        XposedBridge.log("Loading of library " + name + " disabled.");
                     }
                 }
             }
