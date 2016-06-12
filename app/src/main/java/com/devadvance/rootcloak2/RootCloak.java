@@ -41,13 +41,16 @@ public class RootCloak implements IXposedHookLoadPackage {
     private static XSharedPreferences prefApps;
     private static XSharedPreferences prefKeywords;
     private static XSharedPreferences prefCommands;
+    private static XSharedPreferences prefLibnames;
     private Set<String> appSet;
     private Set<String> keywordSet;
     private Set<String> commandSet;
+    private Set<String> libnameSet;
     private boolean debugPref;
     private boolean isFirstRunApps;
     private boolean isFirstRunKeywords;
     private boolean isFirstRunCommands;
+    private boolean isFirstRunLibnames;
     private boolean isRootCloakLoadingPref = false;
 
     public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
@@ -92,6 +95,19 @@ public class RootCloak implements IXposedHookLoadPackage {
                 XposedBridge.log("No need to change build tags: " + Build.TAGS);
             }
         }
+        
+        findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class , new XC_MethodHook() {
+
+                            @Override
+                            protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
+                                if (((String) param.args[0]).equals("ro.build.selinux")) {
+                                    param.setResult("1");
+                                    if (debugPref) {
+                                        XposedBridge.log("SELinux is enforced.");
+                                    }
+                                }
+                            }
+        });
     }
 
     private void initFile(final LoadPackageParam lpparam) {
@@ -422,6 +438,23 @@ public class RootCloak implements IXposedHookLoadPackage {
                 }
             }
         });
+        
+        findAndHookMethod("java.lang.Runtime", lpparam.classLoader, "loadLibrary", String.class, ClassLoader.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                if (debugPref) {
+                    XposedBridge.log("Hooked loadLibrary");
+                }
+                String libname = (String) param.args[0];
+
+                if (libname != null && stringContainsFromSet(libname, libnameSet)) {
+                    param.setResult(null);
+                    if (debugPref) {
+                        XposedBridge.log("Loading of library " + name + " disabled.";
+                    }
+                }
+            }
+        });
     }
 
     private Boolean anyWordEndingWithKeyword(String keyword, String[] wordArray) {
@@ -502,16 +535,21 @@ public class RootCloak implements IXposedHookLoadPackage {
 
             prefCommands = new XSharedPreferences(Common.PACKAGE_NAME, Common.PREFS_COMMANDS);
             prefCommands.makeWorldReadable();
+            
+            prefLibnames = new XSharedPreferences(Common.PACKAGE_NAME, Common.PREFS_LIBNAMES);
+            prefLibnames.makeWorldReadable();
 
             debugPref = prefApps.getBoolean(Common.PACKAGE_NAME + Common.DEBUG_KEY, false); // This enables/disables printing of debug messages
 
             isFirstRunApps = prefApps.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.
             isFirstRunKeywords = prefKeywords.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.
             isFirstRunCommands = prefCommands.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.
+            isFirstRunLibnames = prefLibnames.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.
 
             appSet = prefApps.getStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, new HashSet<String>()); // Load appSet. This is the set of apps to hide root from.
             keywordSet = prefKeywords.getStringSet(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY, new HashSet<String>()); // Load keywordSet.
             commandSet = prefCommands.getStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, new HashSet<String>()); // Load commandSet.
+            libnameSet = prefLibnames.getStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, new HashSet<String>()); // Load libnameSet.
 
             // If the settings for any of the sets have never been modified, possibly need to use default sets.
             if (isFirstRunApps && appSet.isEmpty()) {
@@ -522,6 +560,9 @@ public class RootCloak implements IXposedHookLoadPackage {
             }
             if (isFirstRunCommands && commandSet.isEmpty()) {
                 commandSet = Common.DEFAULT_COMMAND_SET;
+            }
+            if (isFirstRunLibnames && libnameSet.isEmpty()) {
+                libnameSet = Common.DEFAULT_LIBNAME_SET;
             }
         } finally {
             StrictMode.setThreadPolicy(old);
