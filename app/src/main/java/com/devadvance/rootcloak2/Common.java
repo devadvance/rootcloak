@@ -8,6 +8,7 @@ public class Common {
     public static final String PREFS_APPS = "CustomizeApps";
     public static final String PREFS_KEYWORDS = "CustomizeKeywords";
     public static final String PREFS_COMMANDS = "CustomizeCommands";
+    public static final String PREFS_LIBNAMES = "CustomizeLibnames";
     public static final String PACKAGE_NAME = "com.devadvance.rootcloak2";
     public static final String FIRST_RUN_KEY = "IS_FIRST_RUN";
     public static final String[] DEFAULT_APPS_LIST = { "com.fde.DomesticDigitalCopy",
@@ -62,6 +63,7 @@ public class Common {
 
     public static final String KEYWORD_SET_KEY = "KEYWORD_SET";
     public static final String COMMAND_SET_KEY = "APPS_SET";
+    public static final String COMMAND_SET_KEY = "LIBNAMES_SET";
 
     public static final String[] DEFAULT_KEYWORD_LIST = new String[]{"supersu", "superuser", "Superuser",
             "noshufou", "xposed", "rootcloak",
@@ -72,6 +74,8 @@ public class Common {
     public static final Set<String> DEFAULT_KEYWORD_SET = new HashSet<String>(Arrays.asList(DEFAULT_KEYWORD_LIST));
     public static final String[] DEFAULT_COMMAND_LIST = new String[]{"su", "which", "busybox", "pm", "am", "sh", "ps"};
     public static final Set<String> DEFAULT_COMMAND_SET = new HashSet<String>(Arrays.asList(DEFAULT_COMMAND_LIST));
+    public static final String[] DEFAULT_LIBNAME_LIST = new String[]{"tool-checker"}; // RootBearNative
+    public static final Set<String> DEFAULT_LIBNAME_SET = new HashSet<String>(Arrays.asList(DEFAULT_LIBNAME_LIST));
 
     public static final String SHOW_WARNING = "SHOW_WARNING";
 }
