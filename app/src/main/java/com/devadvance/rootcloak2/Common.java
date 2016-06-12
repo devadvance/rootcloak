@@ -63,7 +63,7 @@ public class Common {
 
     public static final String KEYWORD_SET_KEY = "KEYWORD_SET";
     public static final String COMMAND_SET_KEY = "APPS_SET";
-    public static final String COMMAND_SET_KEY = "LIBNAMES_SET";
+    public static final String LIBRARY_SET_KEY = "LIBNAMES_SET";
 
     public static final String[] DEFAULT_KEYWORD_LIST = new String[]{"supersu", "superuser", "Superuser",
             "noshufou", "xposed", "rootcloak",

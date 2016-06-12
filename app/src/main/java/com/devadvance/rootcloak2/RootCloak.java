@@ -95,7 +95,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 XposedBridge.log("No need to change build tags: " + Build.TAGS);
             }
         }
-        
+
         findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class , new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
@@ -451,7 +451,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 }
             }
         });
-        
+
         findAndHookMethod("java.lang.Runtime", lpparam.classLoader, "loadLibrary", String.class, ClassLoader.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -463,7 +463,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 if (libname != null && stringContainsFromSet(libname, libnameSet)) {
                     param.setResult(null);
                     if (debugPref) {
-                        XposedBridge.log("Loading of library " + name + " disabled.";
+                        XposedBridge.log("Loading of library " + libname + " disabled.");
                     }
                 }
             }
@@ -548,7 +548,7 @@ public class RootCloak implements IXposedHookLoadPackage {
 
             prefCommands = new XSharedPreferences(Common.PACKAGE_NAME, Common.PREFS_COMMANDS);
             prefCommands.makeWorldReadable();
-            
+
             prefLibnames = new XSharedPreferences(Common.PACKAGE_NAME, Common.PREFS_LIBNAMES);
             prefLibnames.makeWorldReadable();
 
@@ -562,7 +562,7 @@ public class RootCloak implements IXposedHookLoadPackage {
             appSet = prefApps.getStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, new HashSet<String>()); // Load appSet. This is the set of apps to hide root from.
             keywordSet = prefKeywords.getStringSet(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY, new HashSet<String>()); // Load keywordSet.
             commandSet = prefCommands.getStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, new HashSet<String>()); // Load commandSet.
-            libnameSet = prefLibnames.getStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, new HashSet<String>()); // Load libnameSet.
+            libnameSet = prefLibnames.getStringSet(Common.PACKAGE_NAME + Common.LIBRARY_SET_KEY, new HashSet<String>()); // Load libnameSet.
 
             // If the settings for any of the sets have never been modified, possibly need to use default sets.
             if (isFirstRunApps && appSet.isEmpty()) {
