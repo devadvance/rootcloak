@@ -92,6 +92,20 @@ public class RootCloak implements IXposedHookLoadPackage {
                 XposedBridge.log("No need to change build tags: " + Build.TAGS);
             }
         }
+        
+        findAndHookMethod("java.lang.Class", lpparam.classLoader, "forName", String.class, boolean.class, ClassLoader.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                String classname = (String) param.args[0];
+
+                if (classname != null && (classname.equals("de.robv.android.xposed.XposedBridge") || classname.equals("de.robv.android.xposed.XC_MethodReplacement"))) {
+                    param.setThrowable(new ClassNotFoundException());
+                    if (debugPref) {
+                        XposedBridge.log("Found and hid Xposed class name: " + classname);
+                    }
+                }
+            }
+        });
     }
 
     private void initFile(final LoadPackageParam lpparam) {
