@@ -8,7 +8,8 @@ android:
   - extra-android-m2repository
   - extra-android-support
 script:
-- "./gradlew AssembleRelease"
+- 
+- '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && "./gradlew AssembleRelease" || "./gradlew AssembleDebug"'
 before_deploy:
 - cp app/build/outputs/apk/app-release.apk app-release.apk
 deploy:
