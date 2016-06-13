@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name" translatable="false">RootCloak</string>
+    <string name="module_desc">Hides root from chosen apps.</string>
     <string name="action_new_app">Add App</string>
     <string name="action_new_keyword">Add Keyword</string>
     <string name="action_new_command">Add Command</string>
