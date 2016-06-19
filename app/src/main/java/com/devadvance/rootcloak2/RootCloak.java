@@ -77,6 +77,10 @@ public class RootCloak implements IXposedHookLoadPackage {
         initSettingsGlobal(lpparam);
     }
 
+    /**
+     * Handles a bunch of miscellaneous hooks.
+     * @param lpparam Wraps information about the app being loaded.
+     */
     private void initOther(final LoadPackageParam lpparam) {
         // Always return false when checking if debug is on
         XposedHelpers.findAndHookMethod("android.os.Debug", lpparam.classLoader, "isDebuggerConnected", XC_MethodReplacement.returnConstant(false));
@@ -96,7 +100,7 @@ public class RootCloak implements IXposedHookLoadPackage {
             }
         }
 
-
+        // Tell the app that SELinux is enforcing, even if it is not.
         findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class , new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
@@ -109,6 +113,7 @@ public class RootCloak implements IXposedHookLoadPackage {
             }
         });
 
+        // Hide the Xposed classes from the app
         findAndHookMethod("java.lang.Class", lpparam.classLoader, "forName", String.class, boolean.class, ClassLoader.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -124,8 +129,15 @@ public class RootCloak implements IXposedHookLoadPackage {
         });
     }
 
+    /**
+     * Handles all of the hooking related to java.io.File.
+     * @param lpparam Wraps information about the app being loaded.
+     */
     private void initFile(final LoadPackageParam lpparam) {
-        // Handles a version of the File constructor.
+        /**
+         * Hooks a version of the File constructor.
+         * An app may use File to check for the existence of files like su, busybox, or others.
+         */
         Constructor<?> constructLayoutParams = findConstructorExact(java.io.File.class, String.class);
         XposedBridge.hookMethod(constructLayoutParams, new XC_MethodHook(XCallback.PRIORITY_HIGHEST) {
             @Override
@@ -160,7 +172,10 @@ public class RootCloak implements IXposedHookLoadPackage {
             }
         });
 
-        // Another version of the File constructor.
+        /**
+         * Hooks a version of the File constructor.
+         * An app may use File to check for the existence of files like su, busybox, or others.
+         */
         Constructor<?> extendedFileConstructor = findConstructorExact(java.io.File.class, String.class, String.class);
         XposedBridge.hookMethod(extendedFileConstructor, new XC_MethodHook(XCallback.PRIORITY_HIGHEST) {
             @Override
@@ -195,7 +210,11 @@ public class RootCloak implements IXposedHookLoadPackage {
             }
         });
 
-        // Currently just for debugging purposes, not normally used
+        /**
+         * Hooks a version of the File constructor that uses a URI.
+         * An app may use File to check for the existence of files like su, busybox, or others.
+         * NOTE: Currently just for debugging purposes, not normally used.
+         */
         Constructor<?> uriFileConstructor = findConstructorExact(java.io.File.class, URI.class);
         XposedBridge.hookMethod(uriFileConstructor, new XC_MethodHook(XCallback.PRIORITY_HIGHEST) {
             @Override
@@ -575,6 +594,9 @@ public class RootCloak implements IXposedHookLoadPackage {
         });
     }
 
+    /**
+     * Hooks for the device settings.
+     */
     private void initSettingsGlobal(final LoadPackageParam lpparam) {
         // Hooks Settings.Global.getInt. For this method we will prevent the package info from being obtained for any app in the list
         findAndHookMethod(Settings.Global.class, "getInt", ContentResolver.class, String.class, int.class, new XC_MethodHook() {
@@ -582,7 +604,7 @@ public class RootCloak implements IXposedHookLoadPackage {
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 
                 String setting = (String) param.args[0];
-                if (setting != null && Settings.Global.ADB_ENABLED.equals(setting)) {
+                if (setting != null && Settings.Global.ADB_ENABLED.equals(setting)) { // Hide ADB being on from an app
                     param.setResult(0);
                     if (debugPref) {
                         XposedBridge.log("Hooked ADB debugging info, adb status is off");
@@ -592,8 +614,10 @@ public class RootCloak implements IXposedHookLoadPackage {
         });
     }
 
+    /**
+     * Load all preferences, such as keywords, commands, etc.
+     */
     public void loadPrefs() {
-
         StrictMode.ThreadPolicy old = StrictMode.getThreadPolicy();
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder(old)
                 .permitDiskReads()
