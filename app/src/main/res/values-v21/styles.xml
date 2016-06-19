@@ -1,0 +1,10 @@
+<resources>
+
+    <!--
+        Base application theme for API 21+.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Material">
+        <!-- API 21 theme customizations can go here. -->
+    </style>
+
+</resources>
