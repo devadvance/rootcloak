@@ -278,14 +278,22 @@ public class RootCloak implements IXposedHookLoadPackage {
                     }
                 }
 
-                // Set the return value to the clean list
-                param.setResult(packages);
+                param.setResult(packages); // Set the return value to the clean list
             }
         });
     }
 
+    /**
+     * Handles all of the hooking related to the ActivityManager.
+     * @param lpparam Wraps information about the app being loaded.
+     */
     private void initActivityManager(final LoadPackageParam lpparam) {
-        // Hooks getPackageInfo. For this method we will prevent the package info from being obtained for any app in the list
+        /**
+         * Hooks getPackageInfo within the PackageManager.
+         * An app can check for other packages this way. We hook before getPackageInfo is called.
+         * If the package being looked at matches an entry in the keywordSet, then substitute a fake package name.
+         * This will ultimately throw a PackageManager.NameNotFoundException.
+         */
         findAndHookMethod("android.app.ApplicationPackageManager", lpparam.classLoader, "getPackageInfo", String.class, int.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -295,7 +303,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 String name = (String) param.args[0];
 
                 if (name != null && stringContainsFromSet(name, keywordSet)) {
-                    param.args[0] = FAKE_PACKAGE;
+                    param.args[0] = FAKE_PACKAGE; // Set a fake package name
                     if (debugPref) {
                         XposedBridge.log("Found and hid package: " + name);
                     }
@@ -303,7 +311,12 @@ public class RootCloak implements IXposedHookLoadPackage {
             }
         });
 
-        // Hooks getApplicationInfo. For this method we will prevent the package info from being obtained for any app in the list
+        /**
+         * Hooks getApplicationInfo within the PackageManager.
+         * An app can check for other applications this way. We hook before getApplicationInfo is called.
+         * If the application being looked at matches an entry in the keywordSet, then substitute a fake application name.
+         * This will ultimately throw a PackageManager.NameNotFoundException.
+         */
         findAndHookMethod("android.app.ApplicationPackageManager", lpparam.classLoader, "getApplicationInfo", String.class, int.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -314,26 +327,33 @@ public class RootCloak implements IXposedHookLoadPackage {
                 }
 
                 if (name != null && stringContainsFromSet(name, keywordSet)) {
-                    param.args[0] = FAKE_APPLICATION;
+                    param.args[0] = FAKE_APPLICATION; // Set a fake application name
                     if (debugPref) {
                         XposedBridge.log("Found and hid application: " + name);
                     }
                 }
             }
         });
-        // Hooks getRunningServices. For this method we will remove any keywords, such as supersu and superuser, out of the result list.
+
+        /**
+         * Hooks getRunningServices within the ActivityManager.
+         * An app can check for other apps this way. In the context of a rooted device, an app may look for SuperSU, Xposed, Superuser, or others.
+         * Results that match entries in the keywordSet are hidden.
+         */
         findAndHookMethod("android.app.ActivityManager", lpparam.classLoader, "getRunningServices", int.class, new XC_MethodHook() {
             @SuppressWarnings("unchecked")
             @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable { // Hook after getRunningServices is called
                 if (debugPref) {
                     XposedBridge.log("Hooked getRunningServices");
                 }
 
-                List<ActivityManager.RunningServiceInfo> services = (List<RunningServiceInfo>) param.getResult();
+                List<ActivityManager.RunningServiceInfo> services = (List<RunningServiceInfo>) param.getResult(); // Get the results from the method call
                 Iterator<RunningServiceInfo> iter = services.iterator();
                 RunningServiceInfo tempService;
                 String tempProcessName;
+
+                // Iterate through the list of RunningServiceInfo and remove any mentions that match a keyword in the keywordSet
                 while (iter.hasNext()) {
                     tempService = iter.next();
                     tempProcessName = tempService.process;
@@ -344,26 +364,33 @@ public class RootCloak implements IXposedHookLoadPackage {
                         }
                     }
                 }
-                param.setResult(services);
+
+                param.setResult(services); // Set the return value to the clean list
             }
         });
 
-        // Hooks getRunningTasks. For this method we will remove any keywords, such as supersu and superuser, out of the result list.
+        /**
+         * Hooks getRunningTasks within the ActivityManager.
+         * An app can check for other apps this way. In the context of a rooted device, an app may look for SuperSU, Xposed, Superuser, or others.
+         * Results that match entries in the keywordSet are hidden.
+         */
         findAndHookMethod("android.app.ActivityManager", lpparam.classLoader, "getRunningTasks", int.class, new XC_MethodHook() {
             @SuppressWarnings("unchecked")
             @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable { // Hook after getRunningTasks is called
                 if (debugPref) {
                     XposedBridge.log("Hooked getRunningTasks");
                 }
 
-                List<ActivityManager.RunningTaskInfo> services = (List<RunningTaskInfo>) param.getResult();
+                List<ActivityManager.RunningTaskInfo> services = (List<RunningTaskInfo>) param.getResult(); // Get the results from the method call
                 Iterator<RunningTaskInfo> iter = services.iterator();
                 RunningTaskInfo tempTask;
                 String tempBaseActivity;
+
+                // Iterate through the list of RunningTaskInfo and remove any mentions that match a keyword in the keywordSet
                 while (iter.hasNext()) {
                     tempTask = iter.next();
-                    tempBaseActivity = tempTask.baseActivity.flattenToString();
+                    tempBaseActivity = tempTask.baseActivity.flattenToString(); // Need to make it a string for comparison
                     if (tempBaseActivity != null && stringContainsFromSet(tempBaseActivity, keywordSet)) {
                         iter.remove();
                         if (debugPref) {
@@ -371,23 +398,30 @@ public class RootCloak implements IXposedHookLoadPackage {
                         }
                     }
                 }
-                param.setResult(services);
+
+                param.setResult(services); // Set the return value to the clean list
             }
         });
-
-        // Hooks getRunningAppProcesses. For this method we will remove any keywords, such as supersu and superuser, out of the result list.
+        
+        /**
+         * Hooks getRunningAppProcesses within the ActivityManager.
+         * An app can check for other apps this way. In the context of a rooted device, an app may look for SuperSU, Xposed, Superuser, or others.
+         * Results that match entries in the keywordSet are hidden.
+         */
         findAndHookMethod("android.app.ActivityManager", lpparam.classLoader, "getRunningAppProcesses", new XC_MethodHook() {
             @SuppressWarnings("unchecked")
             @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable { // Hook after getRunningAppProcesses is called
                 if (debugPref) {
                     XposedBridge.log("Hooked getRunningAppProcesses");
                 }
 
-                List<ActivityManager.RunningAppProcessInfo> processes = (List<ActivityManager.RunningAppProcessInfo>) param.getResult();
+                List<ActivityManager.RunningAppProcessInfo> processes = (List<ActivityManager.RunningAppProcessInfo>) param.getResult(); // Get the results from the method call
                 Iterator<RunningAppProcessInfo> iter = processes.iterator();
                 RunningAppProcessInfo tempProcess;
                 String tempProcessName;
+
+                // Iterate through the list of RunningAppProcessInfo and remove any mentions that match a keyword in the keywordSet
                 while (iter.hasNext()) {
                     tempProcess = iter.next();
                     tempProcessName = tempProcess.processName;
@@ -398,7 +432,8 @@ public class RootCloak implements IXposedHookLoadPackage {
                         }
                     }
                 }
-                param.setResult(processes);
+
+                param.setResult(processes); // Set the return value to the clean list
             }
         });
     }
