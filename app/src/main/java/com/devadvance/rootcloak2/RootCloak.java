@@ -96,6 +96,7 @@ public class RootCloak implements IXposedHookLoadPackage {
             }
         }
 
+
         findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class , new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
@@ -208,20 +209,30 @@ public class RootCloak implements IXposedHookLoadPackage {
         });
     }
 
+    /**
+     * Handles all of the hooking related to the PackageManager.
+     * @param lpparam Wraps information about the app being loaded.
+     */
     private void initPackageManager(final LoadPackageParam lpparam) {
-        // Hooks getInstalledApplications. For this method we will remove any keywords, such as supersu and superuser, out of the result list.
+        /**
+         * Hooks getInstalledApplications within the PackageManager.
+         * An app can check for other apps this way. In the context of a rooted device, an app may look for SuperSU, Xposed, Superuser, or others.
+         * Results that match entries in the keywordSet are hidden.
+         */
         findAndHookMethod("android.app.ApplicationPackageManager", lpparam.classLoader, "getInstalledApplications", int.class, new XC_MethodHook() {
             @SuppressWarnings("unchecked")
             @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable { // Hook after getIntalledApplications is called
                 if (debugPref) {
                     XposedBridge.log("Hooked getInstalledApplications");
                 }
 
-                List<ApplicationInfo> packages = (List<ApplicationInfo>) param.getResult();
-                Iterator<ApplicationInfo> iter = packages.iterator();
+                List<ApplicationInfo> packages = (List<ApplicationInfo>) param.getResult(); // Get the results from the method call
+                Iterator<ApplicationInfo> iter = packages.iterator(); 
                 ApplicationInfo tempAppInfo;
                 String tempPackageName;
+
+                // Iterate through the list of ApplicationInfo and remove any mentions that match a keyword in the keywordSet
                 while (iter.hasNext()) {
                     tempAppInfo = iter.next();
                     tempPackageName = tempAppInfo.packageName;
@@ -232,23 +243,30 @@ public class RootCloak implements IXposedHookLoadPackage {
                         }
                     }
                 }
-                param.setResult(packages);
+
+                param.setResult(packages); // Set the return value to the clean list
             }
         });
 
-        // Hooks getInstalledPackages. For this method we will remove any keywords, such as supersu and superuser, out of the result list.
+        /**
+         * Hooks getInstalledPackages within the PackageManager.
+         * An app can check for other apps this way. In the context of a rooted device, an app may look for SuperSU, Xposed, Superuser, or others.
+         * Results that match entries in the keywordSet are hidden.
+         */
         findAndHookMethod("android.app.ApplicationPackageManager", lpparam.classLoader, "getInstalledPackages", int.class, new XC_MethodHook() {
             @SuppressWarnings("unchecked")
             @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable { // Hook after getInstalledPackages is called
                 if (debugPref) {
                     XposedBridge.log("Hooked getInstalledPackages");
                 }
 
-                List<PackageInfo> packages = (List<PackageInfo>) param.getResult();
+                List<PackageInfo> packages = (List<PackageInfo>) param.getResult(); // Get the results from the method call
                 Iterator<PackageInfo> iter = packages.iterator();
                 PackageInfo tempPackageInfo;
                 String tempPackageName;
+
+                // Iterate through the list of PackageInfo and remove any mentions that match a keyword in the keywordSet
                 while (iter.hasNext()) {
                     tempPackageInfo = iter.next();
                     tempPackageName = tempPackageInfo.packageName;
@@ -259,11 +277,12 @@ public class RootCloak implements IXposedHookLoadPackage {
                         }
                     }
                 }
+
+                // Set the return value to the clean list
                 param.setResult(packages);
             }
         });
     }
-
 
     private void initActivityManager(final LoadPackageParam lpparam) {
         // Hooks getPackageInfo. For this method we will prevent the package info from being obtained for any app in the list
