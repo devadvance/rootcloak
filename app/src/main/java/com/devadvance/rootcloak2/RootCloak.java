@@ -281,13 +281,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 param.setResult(packages); // Set the return value to the clean list
             }
         });
-    }
 
-    /**
-     * Handles all of the hooking related to the ActivityManager.
-     * @param lpparam Wraps information about the app being loaded.
-     */
-    private void initActivityManager(final LoadPackageParam lpparam) {
         /**
          * Hooks getPackageInfo within the PackageManager.
          * An app can check for other packages this way. We hook before getPackageInfo is called.
@@ -334,7 +328,13 @@ public class RootCloak implements IXposedHookLoadPackage {
                 }
             }
         });
+    }
 
+    /**
+     * Handles all of the hooking related to the ActivityManager.
+     * @param lpparam Wraps information about the app being loaded.
+     */
+    private void initActivityManager(final LoadPackageParam lpparam) {
         /**
          * Hooks getRunningServices within the ActivityManager.
          * An app can check for other apps this way. In the context of a rooted device, an app may look for SuperSU, Xposed, Superuser, or others.
@@ -402,7 +402,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 param.setResult(services); // Set the return value to the clean list
             }
         });
-        
+
         /**
          * Hooks getRunningAppProcesses within the ActivityManager.
          * An app can check for other apps this way. In the context of a rooted device, an app may look for SuperSU, Xposed, Superuser, or others.
