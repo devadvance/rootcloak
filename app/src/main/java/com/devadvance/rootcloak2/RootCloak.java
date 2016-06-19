@@ -492,6 +492,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                         }
 
                         // A bunch of logic follows since the solution depends on which command is being called
+                        // TODO: ***Clean up this logic***
                         if (firstParam.equals("su") || firstParam.endsWith("/su")) { // If its su or ends with su (/bin/su, /xbin/su, etc)
                             param.setThrowable(new IOException()); // Throw an exception to imply the command was not found
                         } else if (commandSet.contains("pm") && (firstParam.equals("pm") || firstParam.endsWith("/pm"))) {
