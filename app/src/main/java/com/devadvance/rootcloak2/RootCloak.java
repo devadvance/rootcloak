@@ -438,18 +438,28 @@ public class RootCloak implements IXposedHookLoadPackage {
         });
     }
 
+    /**
+     * Handles all of the hooking related to java.lang.Runtime, which is used for executing other programs or shell commands.
+     * @param lpparam Wraps information about the app being loaded.
+     */
     private void initRuntime(final LoadPackageParam lpparam) {
-        // Hooks the Runtime.exec() method. This is the only one that needs to be hooked because the other two versions of exec() just end up calling this one.
+        /**
+         * Hooks exec() within java.lang.Runtime.
+         * This is the only version that needs to be hooked, since all of the others are "convenience" variations.
+         * This takes the form: exec(String[] cmdarray, String[] envp, File dir).
+         * There are a lot of different ways that exec can be used to check for a rooted device. See the comments within this section for more details.
+         */
         findAndHookMethod("java.lang.Runtime", lpparam.classLoader, "exec", String[].class, String[].class, File.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 if (debugPref) {
                     XposedBridge.log("Hooked Runtime.exec");
                 }
-                String[] execArray = (String[]) param.args[0];
-                if ((execArray != null) && (execArray.length >= 1)) {
-                    String firstParam = execArray[0];
-                    if (debugPref) {
+
+                String[] execArray = (String[]) param.args[0]; // Grab the tokenized array of commands
+                if ((execArray != null) && (execArray.length >= 1)) { // Do some checking so we don't break anything
+                    String firstParam = execArray[0]; // firstParam is going to be the main command/program being run
+                    if (debugPref) { // If debugging is on, print out what is being called
                         String tempString = "Exec Command:";
                         for (String temp : execArray) {
                             tempString = tempString + " " + temp;
@@ -457,28 +467,32 @@ public class RootCloak implements IXposedHookLoadPackage {
                         XposedBridge.log(tempString);
                     }
 
-                    if (stringEndsWithFromSet(firstParam, commandSet)) {
+                    if (stringEndsWithFromSet(firstParam, commandSet)) { // Check if the firstParam is one of the keywords we want to filter
                         if (debugPref) {
                             XposedBridge.log("Found blacklisted command at the end of the string: " + firstParam);
                         }
 
+                        // A bunch of logic follows since the solution depends on which command is being called
                         if (firstParam.equals("su") || firstParam.endsWith("/su")) { // If its su or ends with su (/bin/su, /xbin/su, etc)
-                            param.setThrowable(new IOException());
+                            param.setThrowable(new IOException()); // Throw an exception to imply the command was not found
                         } else if (commandSet.contains("pm") && (firstParam.equals("pm") || firstParam.endsWith("/pm"))) {
+                            // Trying to run the pm (package manager) using exec. Now let's deal with the subcases
                             if (execArray.length >= 3 && execArray[1].equalsIgnoreCase("list") && execArray[2].equalsIgnoreCase("packages")) {
-                                // If getting list of packages, exclude anything with su
+                                // Trying to list out all of the packages, so we will filter out anything that matches the keywords
                                 //param.args[0] = new String[] {"pm", "list", "packages", "-v", "grep", "-v", "\"su\""};
                                 param.args[0] = buildGrepArraySingle(execArray, true);
                             } else if (execArray.length >= 3 && (execArray[1].equalsIgnoreCase("dump") || execArray[1].equalsIgnoreCase("path"))) {
-                                // If getting dumping or getting the path, don't let it work if it contains any of the keywords
+                                // Trying to either dump package info or list the path to the APK (both will tell the app that the package exists)
+                                // If it matches anything in the keywordSet, stop it from working by using a fake package name
                                 if (stringContainsFromSet(execArray[2], keywordSet)) {
                                     param.args[0] = new String[]{execArray[0], execArray[1], FAKE_PACKAGE};
                                 }
                             }
                         } else if (commandSet.contains("ps") && (firstParam.equals("ps") || firstParam.endsWith("/ps"))) { // This is a process list command
-                            //param.args[0] = new String[] {"ps", "|", "grep", "-v", "\"su\""};
+                            // Trying to run the ps command to see running processes (e.g. looking for things running as su or daemonsu). Filter this out.
                             param.args[0] = buildGrepArraySingle(execArray, true);
-                        } else if (commandSet.contains("which") && (firstParam.equals("which") || firstParam.endsWith("/which"))) { // This is a busybox which command
+                        } else if (commandSet.contains("which") && (firstParam.equals("which") || firstParam.endsWith("/which"))) {
+                            // Busybox "which" command. Thrown an excepton
                             param.setThrowable(new IOException());
                         } else if (commandSet.contains("busybox") && anyWordEndingWithKeyword("busybox", execArray)) {
                             param.setThrowable(new IOException());
@@ -488,7 +502,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                             param.setThrowable(new IOException());
                         }
 
-                        if (debugPref && param.getThrowable() == null) {
+                        if (debugPref && param.getThrowable() == null) { // Print out the new command if debugging is on
                             String tempString = "New Exec Command:";
                             for (String temp : (String[]) param.args[0]) {
                                 tempString = tempString + " " + temp;
@@ -505,7 +519,11 @@ public class RootCloak implements IXposedHookLoadPackage {
                 }
             }
         });
-
+        
+        /**
+         * Hooks loadLibrary() within java.lang.Runtime.
+         * There are libraries specifically built to check for root. This helps us block those and others.
+         */
         findAndHookMethod("java.lang.Runtime", lpparam.classLoader, "loadLibrary", String.class, ClassLoader.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -514,7 +532,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 }
                 String libname = (String) param.args[0];
 
-                if (libname != null && stringContainsFromSet(libname, libnameSet)) {
+                if (libname != null && stringContainsFromSet(libname, libnameSet)) { // If we found one of the libraries we block, let's prevent it from being loaded
                     param.setResult(null);
                     if (debugPref) {
                         XposedBridge.log("Loading of library " + libname + " disabled.");
@@ -522,15 +540,6 @@ public class RootCloak implements IXposedHookLoadPackage {
                 }
             }
         });
-    }
-
-    private Boolean anyWordEndingWithKeyword(String keyword, String[] wordArray) {
-        for (String tempString : wordArray) {
-            if (tempString.endsWith(keyword)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void initProcessBuilder(final LoadPackageParam lpparam) {
@@ -639,6 +648,33 @@ public class RootCloak implements IXposedHookLoadPackage {
 
     }
 
+    /* ********************
+     * Helper method section
+     * ********************/
+
+    // TODO: Clean up these helper methods?
+
+    /**
+     * Takes a keyword string and an array of strings, and checks to see if any values in the array end with the keyword
+     * @param keyword
+     * @param wordArray
+     * @return boolean indicating if any value from the array ends in the keyword
+     */
+    private Boolean anyWordEndingWithKeyword(String keyword, String[] wordArray) {
+        for (String tempString : wordArray) {
+            if (tempString.endsWith(keyword)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Takes a string and a set of strings, and checks to see if the base string contains any of the values from the set.
+     * @param base a string that we want to check the contents of
+     * @param values a set of strings to check the base for
+     * @return boolean indicating if the string contains any value from the set of strings
+     */
     public boolean stringContainsFromSet(String base, Set<String> values) {
         if (base != null && values != null) {
             for (String tempString : values) {
@@ -651,6 +687,12 @@ public class RootCloak implements IXposedHookLoadPackage {
         return false;
     }
 
+    /**
+     * Takes a string and a set of strings, and checks to see if the base string ends with any of the values from the set.
+     * @param base a string that we check the end of
+     * @param values a set of strings to check the end of the base for
+     * @return boolean indicating if the string ends with any value from the set of strings
+     */
     public boolean stringEndsWithFromSet(String base, Set<String> values) {
         if (base != null && values != null) {
             for (String tempString : values) {
@@ -663,6 +705,12 @@ public class RootCloak implements IXposedHookLoadPackage {
         return false;
     }
 
+    /**
+     * This helper takes a command and appends a lot of greps to it. The idea is to filter out anything that matches the keywordSet.
+     * @param original the original command array
+     * @param addSH whether or not to add sh -c to the command array
+     * @return a new String array that has the grep filtering added
+     */
     private String[] buildGrepArraySingle(String[] original, boolean addSH) {
         StringBuilder builder = new StringBuilder();
         ArrayList<String> originalList = new ArrayList<String>();
@@ -675,6 +723,7 @@ public class RootCloak implements IXposedHookLoadPackage {
             builder.append(temp);
         }
         //originalList.addAll(Arrays.asList(original));
+        // ***TODO: Switch to using -e with alternation***
         for (String temp : keywordSet) {
             builder.append(" | grep -v ");
             builder.append(temp);
