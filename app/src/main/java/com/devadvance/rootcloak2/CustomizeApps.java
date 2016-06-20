@@ -104,14 +104,14 @@ public class CustomizeApps extends PreferenceActivity {
                 int i = 0;
                 for (ApplicationInfo info : packages) {
                     //names[i] = info.packageName;
-                    names[i] = (String) info.loadLabel(pm) + "\n(" + info.packageName + ")";
+                    names[i] = info.loadLabel(pm) + "\n(" + info.packageName + ")";
                     nameMap.put(names[i], info.packageName);
                     i++;
                 }
                 Arrays.sort(names);
 
                 new AlertDialog.Builder(this).setTitle(R.string.add_app)
-                        .setItems((CharSequence[]) names, new DialogInterface.OnClickListener() {
+                        .setItems(names, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 savePref(nameMap.get(names[which]));
                                 loadList();
@@ -160,7 +160,8 @@ public class CustomizeApps extends PreferenceActivity {
 
     private void loadDefaultsWithConfirm() {
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeApps.this)
-                .setTitle(R.string.reset_apps)
+                .setTitle(R.string.reset)
+                .setMessage(getString(R.string.reset_apps))
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         loadDefaults();
