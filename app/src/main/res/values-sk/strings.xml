@@ -26,7 +26,7 @@
     <string name="no_apps">Žiadne aplikácie. Ak chcete pridať aplikáciu, buď kliknuite na + pre vybranie z nainštalovaných aplikácií alebo choďte do ponuky a kliknite na Obnoviť predvolené aplikácie pre použitie predvoleného zoznamu.</string>
     <string name="no_keywords">Žiadne kľúčové slová. Ak chcete pridať kľúčové slovo, buď kliknite na + pre pridanie alebo choďte do ponuky a kliknite na Obnoviť predvolené kľúčové slová pre použitie predvoleného zoznamu.</string>
     <string name="no_commands">Žiadne príkazy. Ak chcete pridať príkaz, buď kliknite na  + pre pridanie alebo choďte do ponuky a kliknite na Obnoviť predvolené príkazy pre použitie predvoleného zoznamu.</string>
-    <string name="instructions1">Niektoré aplikácie V Obchode Play sa nespustia, ak detegujú root. RootCloak používa rad metód na zabránenie detekcie rootu.</string>
+    <string name="instructions1">Niektoré aplikácie v Obchode Play sa nespustia, ak detegujú root. RootCloak používa rad metód na zabránenie detekcie rootu.</string>
     <string name="instructions2">Ak chcete použiť RootCloak, pridajte aplikáciu, u ktorej chcete zabrániť v detekcii rootu do zoznamu pomocou sekcie Pridať/Odstrániť aplikácie.</string>
     <string name="instructions3">Ak je už aplikácia spustená, je nutné, aby ste ju vynútene ukončili pre aplikovanie nastavenia.</string>
     <string name="instructions4">Môže si prispôsobiť kľúčové slová a príkazy, ktoré má RootCloak skryť, v sekcii Pridať/Odstrániť kľúčové slová a Pridať/Odstrániť príkazy. TOTO NIE JE NUTNÉ.</string>
@@ -37,11 +37,13 @@
         <item>Pridať/Odstrániť príkazy</item>
         <item>Pokyny</item>
         <item>Zapnúť/Vypnúť ladenie</item>
+        <item>O aplikácii</item>
     </string-array>
 
     <string name="ok">OK</string>
     <string name="cancel">Zrušiť</string>
     <string name="title_activity_customize_keywords">Prispôsobiť kľúčové slová</string>
     <string name="title_activity_customize_commands">Prispôsobiť príkazy</string>
+    <string name="about">O aplikácii</string>
 
 </resources>
