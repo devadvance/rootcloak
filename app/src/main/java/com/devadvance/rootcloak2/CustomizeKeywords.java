@@ -139,7 +139,8 @@ public class CustomizeKeywords extends PreferenceActivity {
 
     private void loadDefaultsWithConfirm() {
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeKeywords.this)
-                .setTitle(R.string.reset_keywords)
+                .setTitle(R.string.reset)
+                .setMessage(getString(R.string.reset_commands))
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         loadDefaults();
