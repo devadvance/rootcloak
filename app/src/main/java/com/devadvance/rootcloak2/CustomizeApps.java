@@ -2,6 +2,7 @@ package com.devadvance.rootcloak2;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -97,6 +98,9 @@ public class CustomizeApps extends PreferenceActivity {
 
             case R.id.action_new:
                 final PackageManager pm = getPackageManager();
+                ProgressDialog loadingApps = new ProgressDialog(this);
+                loadingApps.setMessage(getString(R.string.loading_apps));
+                loadingApps.show();
                 //get a list of installed apps.
                 final List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
                 final String[] names = new String[packages.size()];
@@ -109,6 +113,7 @@ public class CustomizeApps extends PreferenceActivity {
                     i++;
                 }
                 Arrays.sort(names);
+                loadingApps.dismiss();
 
                 new AlertDialog.Builder(this).setTitle(R.string.add_app)
                         .setItems((CharSequence[]) names, new DialogInterface.OnClickListener() {
