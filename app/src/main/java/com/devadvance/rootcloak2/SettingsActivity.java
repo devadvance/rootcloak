@@ -3,6 +3,7 @@ package com.devadvance.rootcloak2;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -63,7 +64,13 @@ public class SettingsActivity extends ListActivity {
                 Log.d(LOG_TAG, "Debug is now on");
                 new AlertDialog.Builder(this)
                         .setMessage(instructionsString)
-                        .setTitle(instructionsTitle).show();
+                        .setTitle(instructionsTitle)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        })
+                        .show();
                 break;
             case 4:
                 boolean debugPref = sharedPref.getBoolean(Common.PACKAGE_NAME
@@ -84,6 +91,18 @@ public class SettingsActivity extends ListActivity {
                 Toast.makeText(getApplicationContext(),
                         debugStatus,
                         Toast.LENGTH_LONG).show();
+                break;
+            case 5:
+                String aboutMsg = getString(R.string.app_name) + ": " + BuildConfig.VERSION_NAME; //TODO!
+                new AlertDialog.Builder(this)
+                        .setMessage(aboutMsg)
+                        .setTitle(R.string.about)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        })
+                        .show();
                 break;
             default:
                 break;

@@ -37,11 +37,13 @@
         <item>Добавить/удалить команды</item>
         <item>Инструкции</item>
         <item>Включить/выключить отладку</item>
+        <item>О программе</item>
     </string-array>
 
     <string name="ok">ОК</string>
     <string name="cancel">Отмена</string>
     <string name="title_activity_customize_keywords">Изменить ключевые слова</string>
     <string name="title_activity_customize_commands">Изменить команды</string>
+    <string name="about">О программе</string>
 
 </resources>
