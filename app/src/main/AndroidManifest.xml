@@ -12,10 +12,10 @@
             android:value="true" />
         <meta-data
             android:name="xposedminversion"
-            android:value="82" />
+            android:value="54" />
         <meta-data
             android:name="xposeddescription"
-            android:value="Hides root from chosen apps." />
+            android:value="@string/module_desc" />
 
         <activity
             android:name="com.devadvance.rootcloak2.SettingsActivity"
