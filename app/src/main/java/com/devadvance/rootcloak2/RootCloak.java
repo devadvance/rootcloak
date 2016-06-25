@@ -604,7 +604,7 @@ public class RootCloak implements IXposedHookLoadPackage {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 
-                String setting = (String) param.args[0];
+                String setting = (String) param.args[1];
                 if (setting != null && Settings.Global.ADB_ENABLED.equals(setting)) { // Hide ADB being on from an app
                     param.setResult(0);
                     if (debugPref) {
