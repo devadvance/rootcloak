@@ -71,5 +71,6 @@
     <string name="clear_app_keywords">Proceed to clear all keywords?</string>
     <string name="reset">Reset</string>
     <string name="about">About</string>
+    <string name="clear">Clear</string>
 
 </resources>

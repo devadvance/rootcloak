@@ -1,6 +1,7 @@
 package com.devadvance.rootcloak2;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -8,7 +9,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,12 +49,11 @@ public class CustomizeKeywords extends PreferenceActivity {
                     .setTitle(res.getString(R.string.important_title))
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            sharedPref.edit().putBoolean(Common.SHOW_WARNING, false);
+                            sharedPref.edit().putBoolean(Common.SHOW_WARNING, false).apply();
                         }
                     })
                     .show();
         }
-
     }
 
     public void onListItemClick(ListView parent, View v, int position, long id) {
@@ -76,11 +75,12 @@ public class CustomizeKeywords extends PreferenceActivity {
     }
 
     /**
-     * Set up the {@link android.app.ActionBar}.
+     * Set up the {@link ActionBar}.
      */
     private void setupActionBar() {
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar ab = getActionBar();
+        if (ab != null) ab.setDisplayHomeAsUpEnabled(true);
 
     }
 
@@ -94,10 +94,6 @@ public class CustomizeKeywords extends PreferenceActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-
             case R.id.action_new:
                 final EditText input = new EditText(this);
                 new AlertDialog.Builder(CustomizeKeywords.this)
@@ -129,11 +125,11 @@ public class CustomizeKeywords extends PreferenceActivity {
         keywordSet = Common.DEFAULT_KEYWORD_SET;
         Editor editor = sharedPref.edit();
         editor.remove(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY);
-        editor.commit();
+        editor.apply();
         editor.putStringSet(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY, keywordSet);
-        editor.commit();
+        editor.apply();
         editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-        editor.commit();
+        editor.apply();
         loadList();
     }
 
@@ -162,13 +158,13 @@ public class CustomizeKeywords extends PreferenceActivity {
             } else {
                 Editor editor = sharedPref.edit();
                 editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-                editor.commit();
+                editor.apply();
             }
         }
-        keywordList = keywordSet.toArray(new String[0]);
+        keywordList = keywordSet.toArray(new String[keywordSet.size()]);
         Arrays.sort(keywordList);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, keywordList);
         // Bind to our new adapter.
         setListAdapter(adapter);
@@ -177,11 +173,12 @@ public class CustomizeKeywords extends PreferenceActivity {
     private void clearList() {
         final Editor editor = sharedPref.edit();
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeKeywords.this)
-                .setTitle(R.string.clear_app_keywords)
+                .setTitle(R.string.clear)
+                .setMessage(R.string.clear_app_keywords)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         editor.remove(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY);
-                        editor.commit();
+                        editor.apply();
                         loadList();
                     }
                 });
@@ -197,11 +194,11 @@ public class CustomizeKeywords extends PreferenceActivity {
             keywordSet.add(keyword);
             Editor editor = sharedPref.edit();
             editor.remove(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY);
-            editor.commit();
+            editor.apply();
             editor.putStringSet(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY, keywordSet);
-            editor.commit();
+            editor.apply();
             editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -210,9 +207,8 @@ public class CustomizeKeywords extends PreferenceActivity {
         keywordSet.remove(tempName);
         Editor editor = sharedPref.edit();
         editor.remove(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY);
-        editor.commit();
+        editor.apply();
         editor.putStringSet(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY, keywordSet);
-        editor.commit();
+        editor.apply();
     }
-
 }
