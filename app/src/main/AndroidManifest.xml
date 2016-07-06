@@ -1,4 +1,5 @@
-<manifest package="com.devadvance.rootcloak2"
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    package="com.devadvance.rootcloak2"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
@@ -15,7 +16,8 @@
             android:value="54" />
         <meta-data
             android:name="xposeddescription"
-            android:value="@string/module_desc" />
+            android:value="@string/module_desc"
+            tools:ignore="ManifestResource" />
 
         <activity
             android:name="com.devadvance.rootcloak2.SettingsActivity"
@@ -53,7 +55,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.devadvance.rootcloak2.SettingsActivity" />
         </activity>
-
     </application>
 
 </manifest>

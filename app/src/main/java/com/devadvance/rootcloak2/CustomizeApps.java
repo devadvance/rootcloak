@@ -1,6 +1,7 @@
 package com.devadvance.rootcloak2;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -10,7 +11,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,7 +71,8 @@ public class CustomizeApps extends PreferenceActivity {
      */
     private void setupActionBar() {
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar ab = getActionBar();
+        if (ab != null) ab.setDisplayHomeAsUpEnabled(true);
 
     }
 
@@ -85,17 +86,6 @@ public class CustomizeApps extends PreferenceActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                // This ID represents the Home or Up button. In the case of this
-                // activity, the Up button is shown. Use NavUtils to allow users
-                // to navigate up one level in the application structure. For
-                // more details, see the Navigation pattern on Android Design:
-                //
-                // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-                //
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-
             case R.id.action_new:
                 final PackageManager pm = getPackageManager();
                 ProgressDialog loadingApps = new ProgressDialog(this);
@@ -104,7 +94,7 @@ public class CustomizeApps extends PreferenceActivity {
                 //get a list of installed apps.
                 final List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
                 final String[] names = new String[packages.size()];
-                final HashMap<String, String> nameMap = new HashMap<String, String>();
+                final HashMap<String, String> nameMap = new HashMap<>();
                 int i = 0;
                 for (ApplicationInfo info : packages) {
                     //names[i] = info.packageName;
@@ -155,11 +145,11 @@ public class CustomizeApps extends PreferenceActivity {
         appSet = Common.DEFAULT_APPS_SET;
         Editor editor = sharedPref.edit();
         editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
-        editor.commit();
+        editor.apply();
         editor.putStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, appSet);
-        editor.commit();
+        editor.apply();
         editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-        editor.commit();
+        editor.apply();
         loadList();
     }
 
@@ -188,13 +178,13 @@ public class CustomizeApps extends PreferenceActivity {
             } else {
                 Editor editor = sharedPref.edit();
                 editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-                editor.commit();
+                editor.apply();
             }
         }
-        appList = appSet.toArray(new String[0]);
+        appList = appSet.toArray(new String[appSet.size()]);
         Arrays.sort(appList);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, appList);
         // Bind to our new adapter.
         setListAdapter(adapter);
@@ -203,11 +193,12 @@ public class CustomizeApps extends PreferenceActivity {
     private void clearList() {
         final Editor editor = sharedPref.edit();
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeApps.this)
-                .setTitle(R.string.clear_all_apps)
+                .setTitle(R.string.clear)
+                .setMessage(R.string.clear_all_apps)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
-                        editor.commit();
+                        editor.apply();
                         loadList();
                     }
                 });
@@ -223,11 +214,11 @@ public class CustomizeApps extends PreferenceActivity {
             appSet.add(appName);
             Editor editor = sharedPref.edit();
             editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
-            editor.commit();
+            editor.apply();
             editor.putStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, appSet);
-            editor.commit();
+            editor.apply();
             editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -236,9 +227,9 @@ public class CustomizeApps extends PreferenceActivity {
         appSet.remove(tempName);
         Editor editor = sharedPref.edit();
         editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
-        editor.commit();
+        editor.apply();
         editor.putStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, appSet);
-        editor.commit();
+        editor.apply();
     }
 
 }

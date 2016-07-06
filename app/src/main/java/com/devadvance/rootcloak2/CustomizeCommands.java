@@ -1,6 +1,7 @@
 package com.devadvance.rootcloak2;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -8,7 +9,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,7 +49,7 @@ public class CustomizeCommands extends PreferenceActivity {
                     .setTitle(res.getString(R.string.important_title))
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            sharedPref.edit().putBoolean(Common.SHOW_WARNING, false);
+                            sharedPref.edit().putBoolean(Common.SHOW_WARNING, false).apply();
                         }
                     })
                     .show();
@@ -80,7 +80,8 @@ public class CustomizeCommands extends PreferenceActivity {
      */
     private void setupActionBar() {
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar ab = getActionBar();
+        if (ab != null) ab.setDisplayHomeAsUpEnabled(true);
 
     }
 
@@ -94,10 +95,6 @@ public class CustomizeCommands extends PreferenceActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-
             case R.id.action_new:
                 final EditText input = new EditText(this);
                 new AlertDialog.Builder(CustomizeCommands.this)
@@ -129,11 +126,11 @@ public class CustomizeCommands extends PreferenceActivity {
         commandSet = Common.DEFAULT_COMMAND_SET;
         Editor editor = sharedPref.edit();
         editor.remove(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY);
-        editor.commit();
+        editor.apply();
         editor.putStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, commandSet);
-        editor.commit();
+        editor.apply();
         editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-        editor.commit();
+        editor.apply();
         loadList();
     }
 
@@ -162,13 +159,13 @@ public class CustomizeCommands extends PreferenceActivity {
             } else {
                 Editor editor = sharedPref.edit();
                 editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-                editor.commit();
+                editor.apply();
             }
         }
-        commandList = commandSet.toArray(new String[0]);
+        commandList = commandSet.toArray(new String[commandSet.size()]);
         Arrays.sort(commandList);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, commandList);
         // Bind to our new adapter.
         setListAdapter(adapter);
@@ -177,11 +174,12 @@ public class CustomizeCommands extends PreferenceActivity {
     private void clearList() {
         final Editor editor = sharedPref.edit();
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeCommands.this)
-                .setTitle(R.string.clear_all_commands)
+                .setTitle(R.string.clear)
+                .setMessage(R.string.clear_all_commands)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         editor.remove(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY);
-                        editor.commit();
+                        editor.apply();
                         loadList();
                     }
                 });
@@ -197,11 +195,11 @@ public class CustomizeCommands extends PreferenceActivity {
             commandSet.add(command);
             Editor editor = sharedPref.edit();
             editor.remove(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY);
-            editor.commit();
+            editor.apply();
             editor.putStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, commandSet);
-            editor.commit();
+            editor.apply();
             editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -210,9 +208,9 @@ public class CustomizeCommands extends PreferenceActivity {
         commandSet.remove(tempName);
         Editor editor = sharedPref.edit();
         editor.remove(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY);
-        editor.commit();
+        editor.apply();
         editor.putStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, commandSet);
-        editor.commit();
+        editor.apply();
     }
 
 }

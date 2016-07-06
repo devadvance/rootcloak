@@ -45,5 +45,30 @@
     <string name="title_activity_customize_keywords">Prispôsobiť kľúčové slová</string>
     <string name="title_activity_customize_commands">Prispôsobiť príkazy</string>
     <string name="about">O aplikácii</string>
+    <string name="add_app">Pridať aplikáciu</string>
+    <string name="add_command">Pridať príkaz</string>
+    <string name="add_keyword">Pridať kľúčové slovo</string>
+    <string name="clear">Vymazať</string>
+    <string name="clear_all_apps">Vymazať všetky aplikácie</string>
+    <string name="clear_all_commands">Vymazať všetky príkazy</string>
+    <string name="clear_app_keywords">Vymazať všetky kľúčové slová</string>
+    <string name="debug_off">Ladenie je vypnuté.</string>
+    <string name="hide_warning">Skryť toto varovanie</string>
+    <string name="debug_on">Ladenie je zapnuté.</string>
+    <string name="input_command">Zadajte príkaz:</string>
+    <string name="input_keyword">Zadajte kľúčové slovo:</string>
+    <string name="input_package_name">Zadajte názov balíka aplikácie:</string>
+    <string name="loading_apps">Načítavanie aplikácií...</string>
+    <string name="module_desc">Skrytie rootu z vybraných aplikácií.</string>
+    <string name="reset">Obnoviť</string>
+    <string name="reset_apps">Obnoviť aplikácie na predvolené?</string>
+    <string name="reset_commands">Obnoviť príkazy na predvolené?</string>
+    <string name="reset_keywords">Obnoviť kľúčové slová na predvolené?</string>
+    <string name="remove_app_message">Odstrániť túto aplikáciu?</string>
+    <string name="remove_app_title">Odstrániť aplikáciu</string>
+    <string name="remove_command_message">Odstrániť tento príkaz?</string>
+    <string name="remove_command_title">Odstrániť príkaz</string>
+    <string name="remove_keyword_message">Odstrániť toto kľúčové slovo?</string>
+    <string name="remove_keyword_title">Odstrániť kľúčové slovo</string>
 
 </resources>
