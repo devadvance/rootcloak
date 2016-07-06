@@ -1,4 +1,6 @@
 # Changelog
+v2.1.1 - Adds an easier-to-see icon for adding apps, etc. (pylerSM)
+
 v2.1.0 - Fixes a crash when an app attempts to read from Settings, adds translation strings and UI updates (pylerSM)
 
 v2.0.1 - Prep for release to Xposed. No changes other than to increment version information.
