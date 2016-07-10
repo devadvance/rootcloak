@@ -42,7 +42,7 @@ public class SettingsActivity extends ListActivity {
                 android.R.layout.simple_list_item_1, menuItems);
         setListAdapter(adapter);
 
-        sharedPref = getSharedPreferences(Common.PREFS_APPS, MODE_WORLD_READABLE);
+        sharedPref = getSharedPreferences(Common.PREFS_SETTINGS, MODE_WORLD_READABLE);
     }
 
     public void onListItemClick(ListView parent, View v, int position, long id) {

@@ -1,82 +1,113 @@
 package com.devadvance.rootcloak2;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceActivity;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Common {
-    public static final String PREFS_APPS = "CustomizeApps";
-    public static final String PREFS_KEYWORDS = "CustomizeKeywords";
-    public static final String PREFS_COMMANDS = "CustomizeCommands";
-    public static final String PREFS_LIBNAMES = "CustomizeLibnames";
     public static final String PREFS_SETTINGS = "CustomizeSettings";
     public static final String PACKAGE_NAME = BuildConfig.APPLICATION_ID;
     public static final String FIRST_RUN_KEY = "IS_FIRST_RUN";
-    public static final String[] DEFAULT_APPS_LIST = { "com.fde.DomesticDigitalCopy",
-                                                       "com.directv.application.android.go.production",
-                                                       "com.res.bby",
-                                                       "dk.excitor.dmemail",
-                                                       "com.BHTV",
-                                                       "com.bradfordnetworks.bma",
-                                                       "com.apriva.mobile.bams",
-                                                       "com.apriva.mobile.aprivapay",
-                                                       "pl.pkobp.iko",
-                                                       "au.com.auspost",
-                                                       "com.rogers.citytv.phone",
-                                                       "com.zenprise",
-                                                       "net.flixster.android",
-                                                       "com.starfinanz.smob.android.sfinanzstatus",
-                                                       "com.ovidos.yuppi",
-                                                       "klb.android.lovelive",
-                                                       "klb.android.lovelive_en",
-                                                       "com.nintendo.zaaa",
-                                                       "com.incube.epub",
-                                                       "com.airwatch.androidagent",
-                                                       "com.zappware.twintv.d3",
-                                                       "com.starfinanz.mobile.android.pushtan",
-                                                       "com.stofa.webtv",
-                                                       "com.barclays.android.barclaysmobilebanking",
-                                                       "com.bskyb.skygo",
-                                                       "com.hanaskcard.rocomo.potal",
-                                                       "com.hanabank.ebk.channel.android.hananbank",
-                                                       "com.ahnlab.v3mobileplus",
-                                                       "com.good.android.gfe",
-                                                       "it.phoenixspa.inbank",
-                                                       "dk.tv2.tv2play",
-                                                       "com.enterproid.divideinstaller",
-                                                       "com.isis.mclient.verizon.activity",
-                                                       "com.isis.mclient.atnt.activity",
-                                                       "be.telenet.yelo",
-                                                       "no.rdml.android.mobiletv",
-                                                       "uk.co.barclays.barclayshomeowner",
-                                                       "com.mcafee.apps.emmagent",
-                                                       "com.virginmedia.tvanywhere",
-                                                       "com.amis.mobiatv",
-                                                       "it.telecomitalia.cubovision",
-                                                       "nl.ziggo.android.tv",
-                                                       "com.orange.fr.ocs",
-                                                       "com.adb.android.app.iti",
-                                                       "com.mobileiron"};
-    public static final Set<String> DEFAULT_APPS_SET = new HashSet<String>(Arrays.asList(DEFAULT_APPS_LIST));
     public static final String DEBUG_KEY = "DEBUGGERPREF";
-
-    public static final String APP_SET_KEY = "APPS_LIST"; // Uses the name LIST for legacy purposes
-
-    public static final String KEYWORD_SET_KEY = "KEYWORD_SET";
-    public static final String COMMAND_SET_KEY = "APPS_SET";
-    public static final String LIBRARY_SET_KEY = "LIBNAMES_SET";
-
-    public static final String[] DEFAULT_KEYWORD_LIST = new String[]{"supersu", "superuser", "Superuser",
-            "noshufou", "xposed", "rootcloak",
-            "chainfire", "titanium", "Titanium",
-            "substrate", "greenify", "daemonsu",
-            "root", "busybox", "titanium",
-            ".tmpsu", "su", "rootcloak2"};
-    public static final Set<String> DEFAULT_KEYWORD_SET = new HashSet<String>(Arrays.asList(DEFAULT_KEYWORD_LIST));
-    public static final String[] DEFAULT_COMMAND_LIST = new String[]{"su", "which", "busybox", "pm", "am", "sh", "ps"};
-    public static final Set<String> DEFAULT_COMMAND_SET = new HashSet<String>(Arrays.asList(DEFAULT_COMMAND_LIST));
-    public static final String[] DEFAULT_LIBNAME_LIST = new String[]{"tool-checker"}; // RootBearNative
-    public static final Set<String> DEFAULT_LIBNAME_SET = new HashSet<String>(Arrays.asList(DEFAULT_LIBNAME_LIST));
-
     public static final String SHOW_WARNING = "SHOW_WARNING";
+
+    public static final PrefSet APPS = new AppsSet();
+    public static final PrefSet KEYWORDS = new KeywordSet();
+    public static final PrefSet COMMANDS = new CommandSet();
+    public static final PrefSet LIBRARIES = new LibrarySet();
+
+    public static abstract class PrefSet {
+        abstract String getPrefKey();
+        abstract String getSetKey();
+        abstract Set<String> getDefaultSet();
+
+        public SharedPreferences getSharedPreferences(PreferenceActivity activity) {
+            activity.getPreferenceManager().setSharedPreferencesMode(Context.MODE_WORLD_READABLE);
+            return activity.getSharedPreferences(getPrefKey(), Context.MODE_WORLD_READABLE);
+        }
+    }
+
+    public static class AppsSet extends PrefSet {
+        public static final String PREFS_APPS = "CustomizeApps";
+        public static final String APP_SET_KEY = "APPS_LIST"; // Uses the name LIST for legacy purposes
+        public static final Set<String> DEFAULT_APPS_SET = new HashSet<String>(Arrays.asList(DefaultLists.DEFAULT_APPS_LIST));
+
+        @Override
+        public String getPrefKey() {
+            return PREFS_APPS;
+        }
+
+        @Override
+        public String getSetKey() {
+            return APP_SET_KEY;
+        }
+        @Override
+        public Set<String> getDefaultSet() {
+            return DEFAULT_APPS_SET;
+        }
+    }
+
+    public static class KeywordSet extends PrefSet {
+        public static final String PREFS_KEYWORDS = "CustomizeKeywords";
+        public static final String KEYWORD_SET_KEY = "KEYWORD_SET";
+        public static final Set<String> DEFAULT_KEYWORD_SET = new HashSet<String>(Arrays.asList(DefaultLists.DEFAULT_KEYWORD_LIST));
+
+        @Override
+        public String getPrefKey() {
+            return PREFS_KEYWORDS;
+        }
+
+        @Override
+        public String getSetKey() {
+            return KEYWORD_SET_KEY;
+        }
+        @Override
+        public Set<String> getDefaultSet() {
+            return DEFAULT_KEYWORD_SET;
+        }
+    }
+
+    public static class CommandSet extends PrefSet {
+        public static final String PREFS_COMMANDS = "CustomizeCommands";
+        public static final String COMMAND_SET_KEY = "APPS_SET";
+        public static final Set<String> DEFAULT_COMMAND_SET = new HashSet<String>(Arrays.asList(DefaultLists.DEFAULT_COMMAND_LIST));
+
+        @Override
+        public String getPrefKey() {
+            return PREFS_COMMANDS;
+        }
+
+        @Override
+        public String getSetKey() {
+            return COMMAND_SET_KEY;
+        }
+        @Override
+        public Set<String> getDefaultSet() {
+            return DEFAULT_COMMAND_SET;
+        }
+    }
+
+    public static class LibrarySet extends PrefSet {
+        public static final String PREFS_LIBNAMES = "CustomizeLibnames";
+        public static final String LIBRARY_SET_KEY = "LIBNAMES_SET";
+        public static final Set<String> DEFAULT_LIBNAME_SET = new HashSet<String>(Arrays.asList(DefaultLists.DEFAULT_LIBNAME_LIST));
+
+        @Override
+        public String getPrefKey() {
+            return PREFS_LIBNAMES;
+        }
+
+        @Override
+        public String getSetKey() {
+            return LIBRARY_SET_KEY;
+        }
+        @Override
+        public Set<String> getDefaultSet() {
+            return DEFAULT_LIBNAME_SET;
+        }
+    }
 }

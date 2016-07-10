@@ -30,6 +30,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import de.robv.android.xposed.callbacks.XCallback;
 
+
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findConstructorExact;
 
@@ -38,43 +39,43 @@ public class RootCloak implements IXposedHookLoadPackage {
     private static final String FAKE_FILE = "FAKEJUNKFILE";
     private static final String FAKE_PACKAGE = "FAKE.JUNK.PACKAGE";
     private static final String FAKE_APPLICATION = "FAKE.JUNK.APPLICATION";
-    private static XSharedPreferences prefApps;
-    private static XSharedPreferences prefKeywords;
-    private static XSharedPreferences prefCommands;
-    private static XSharedPreferences prefLibnames;
     private Set<String> appSet;
     private Set<String> keywordSet;
     private Set<String> commandSet;
     private Set<String> libnameSet;
     private boolean debugPref;
-    private boolean isFirstRunApps;
-    private boolean isFirstRunKeywords;
-    private boolean isFirstRunCommands;
-    private boolean isFirstRunLibnames;
     private boolean isRootCloakLoadingPref = false;
 
     public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
-        loadPrefs(); // Load prefs for any app. This way we can determine if it matches the list of apps to hide root from.
+        isRootCloakLoadingPref = true;
+        Set<String> tmpAppSet = loadSetFromPrefs(Common.APPS); // Load prefs for any app. This way we can determine if it matches the list of apps to hide root from.
 //		if (debugPref) {
 //			XposedBridge.log("Found app: " + lpparam.packageName);
 //		}
 
-        if (!(appSet.contains(lpparam.packageName))) { // If the app doesn't match, don't hook into anything, and just return.
-            return;
-        }
+        if (!(tmpAppSet.contains(lpparam.packageName))) { // If the app doesn't match, don't hook into anything, and just return.
+            isRootCloakLoadingPref = false;
+        } else {
+            appSet = tmpAppSet;
+            keywordSet = loadSetFromPrefs(Common.KEYWORDS);
+            commandSet = loadSetFromPrefs(Common.COMMANDS);
+            libnameSet = loadSetFromPrefs(Common.LIBRARIES);
+            initSettings();
+            isRootCloakLoadingPref = false;
 
-        if (debugPref) {
-            XposedBridge.log("Loaded app: " + lpparam.packageName);
-        }
+            if (debugPref) {
+                XposedBridge.log("Loaded app: " + lpparam.packageName);
+            }
 
-        // Do all of the hooks
-        initOther(lpparam);
-        initFile(lpparam);
-        initPackageManager(lpparam);
-        initActivityManager(lpparam);
-        initRuntime(lpparam);
-        initProcessBuilder(lpparam);
-        initSettingsGlobal(lpparam);
+            // Do all of the hooks
+            initOther(lpparam);
+            initFile(lpparam);
+            initPackageManager(lpparam);
+            initActivityManager(lpparam);
+            initRuntime(lpparam);
+            initProcessBuilder(lpparam);
+            initSettingsGlobal(lpparam);
+        }
     }
 
     /**
@@ -615,62 +616,39 @@ public class RootCloak implements IXposedHookLoadPackage {
         });
     }
 
+    private void initSettings() {
+        final XSharedPreferences prefSettings = new XSharedPreferences(Common.PACKAGE_NAME, Common.PREFS_SETTINGS);
+        prefSettings.makeWorldReadable();
+        debugPref = prefSettings.getBoolean(Common.PACKAGE_NAME + Common.DEBUG_KEY, false);
+    }
+
     /**
      * Load all preferences, such as keywords, commands, etc.
      */
-    public void loadPrefs() {
+    private static Set<String> loadSetFromPrefs(Common.PrefSet type) {
         StrictMode.ThreadPolicy old = StrictMode.getThreadPolicy();
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder(old)
                 .permitDiskReads()
                 .permitDiskWrites()
                 .build());
 
-        isRootCloakLoadingPref = true;
-
+        Set<String> loadedSet = null;
         try {
-            prefApps = new XSharedPreferences(Common.PACKAGE_NAME, Common.PREFS_APPS);
-            prefApps.makeWorldReadable();
+            final XSharedPreferences loadedPrefs = new XSharedPreferences(Common.PACKAGE_NAME, type.getPrefKey());
+            loadedPrefs.makeWorldReadable();
 
-            prefKeywords = new XSharedPreferences(Common.PACKAGE_NAME, Common.PREFS_KEYWORDS);
-            prefKeywords.makeWorldReadable();
-
-            prefCommands = new XSharedPreferences(Common.PACKAGE_NAME, Common.PREFS_COMMANDS);
-            prefCommands.makeWorldReadable();
-
-            prefLibnames = new XSharedPreferences(Common.PACKAGE_NAME, Common.PREFS_LIBNAMES);
-            prefLibnames.makeWorldReadable();
-
-            debugPref = prefApps.getBoolean(Common.PACKAGE_NAME + Common.DEBUG_KEY, false); // This enables/disables printing of debug messages
-
-            isFirstRunApps = prefApps.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.
-            isFirstRunKeywords = prefKeywords.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.
-            isFirstRunCommands = prefCommands.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.
-            isFirstRunLibnames = prefLibnames.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.
-
-            appSet = prefApps.getStringSet(Common.PACKAGE_NAME + Common.APP_SET_KEY, new HashSet<String>()); // Load appSet. This is the set of apps to hide root from.
-            keywordSet = prefKeywords.getStringSet(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY, new HashSet<String>()); // Load keywordSet.
-            commandSet = prefCommands.getStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, new HashSet<String>()); // Load commandSet.
-            libnameSet = prefLibnames.getStringSet(Common.PACKAGE_NAME + Common.LIBRARY_SET_KEY, new HashSet<String>()); // Load libnameSet.
+            final boolean isFirstRun = loadedPrefs.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.
+            loadedSet = loadedPrefs.getStringSet(Common.PACKAGE_NAME + type.getSetKey(), null);
 
             // If the settings for any of the sets have never been modified, possibly need to use default sets.
-            if (isFirstRunApps && appSet.isEmpty()) {
-                appSet = Common.DEFAULT_APPS_SET;
-            }
-            if (isFirstRunKeywords && keywordSet.isEmpty()) {
-                keywordSet = Common.DEFAULT_KEYWORD_SET;
-            }
-            if (isFirstRunCommands && commandSet.isEmpty()) {
-                commandSet = Common.DEFAULT_COMMAND_SET;
-            }
-            if (isFirstRunLibnames && libnameSet.isEmpty()) {
-                libnameSet = Common.DEFAULT_LIBNAME_SET;
+            if (isFirstRun && loadedSet == null) {
+                loadedSet = type.getDefaultSet();
             }
         } finally {
             StrictMode.setThreadPolicy(old);
-
-            isRootCloakLoadingPref = false;
         }
 
+        return loadedSet == null ? new HashSet<String>(0) : loadedSet;
     }
 
     /* ********************
