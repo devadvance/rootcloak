@@ -9,6 +9,7 @@ public class Common {
     public static final String PREFS_KEYWORDS = "CustomizeKeywords";
     public static final String PREFS_COMMANDS = "CustomizeCommands";
     public static final String PREFS_LIBNAMES = "CustomizeLibnames";
+    public static final String PREFS_SETTINGS = "CustomizeSettings";
     public static final String PACKAGE_NAME = "com.devadvance.rootcloak2";
     public static final String FIRST_RUN_KEY = "IS_FIRST_RUN";
     public static final String[] DEFAULT_APPS_LIST = { "com.fde.DomesticDigitalCopy",
@@ -59,7 +60,7 @@ public class Common {
     public static final Set<String> DEFAULT_APPS_SET = new HashSet<String>(Arrays.asList(DEFAULT_APPS_LIST));
     public static final String DEBUG_KEY = "DEBUGGERPREF";
 
-    public static final String APP_LIST_KEY = "APPS_LIST"; // Uses the name LIST for legacy purposes
+    public static final String APP_SET_KEY = "APPS_LIST"; // Uses the name LIST for legacy purposes
 
     public static final String KEYWORD_SET_KEY = "KEYWORD_SET";
     public static final String COMMAND_SET_KEY = "APPS_SET";

@@ -42,7 +42,7 @@ public class SettingsActivity extends ListActivity {
                 android.R.layout.simple_list_item_1, menuItems);
         setListAdapter(adapter);
 
-        sharedPref = getSharedPreferences(Common.PREFS_APPS, MODE_WORLD_READABLE);
+        sharedPref = getSharedPreferences(Common.PREFS_SETTINGS, MODE_WORLD_READABLE);
     }
 
     public void onListItemClick(ListView parent, View v, int position, long id) {
@@ -61,7 +61,6 @@ public class SettingsActivity extends ListActivity {
                 startActivity(intent);
                 break;
             case 3:
-                Log.d(LOG_TAG, "Debug is now on");
                 new AlertDialog.Builder(this)
                         .setMessage(instructionsString)
                         .setTitle(instructionsTitle)
@@ -81,16 +80,9 @@ public class SettingsActivity extends ListActivity {
                 editor.commit();
                 editor.putBoolean(Common.PACKAGE_NAME + Common.DEBUG_KEY, debugPref);
                 editor.commit();
-                String debugStatusOff = getString(R.string.debug_on);
-                String debugStatusOn = getString(R.string.debug_off);
-                String debugStatus = debugStatusOff;
-                if (debugPref) {
-                    Log.d(LOG_TAG, "Debug is now on");
-                    debugStatus = debugStatusOn;
-                }
-                Toast.makeText(getApplicationContext(),
-                        debugStatus,
-                        Toast.LENGTH_LONG).show();
+                String debugStatus = getString(debugPref ? R.string.debug_on : R.string.debug_off);
+                Log.d(LOG_TAG, debugStatus);
+                Toast.makeText(getApplicationContext(), debugStatus, Toast.LENGTH_LONG).show();
                 break;
             case 5:
                 String aboutMsg = getString(R.string.app_name) + ": " + BuildConfig.VERSION_NAME; //TODO!
