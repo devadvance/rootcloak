@@ -101,7 +101,7 @@ public class RootCloak implements IXposedHookLoadPackage {
         }
 
         // Tell the app that SELinux is enforcing, even if it is not.
-        findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class , new XC_MethodHook() {
+        findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
                 if (((String) param.args[0]).equals("ro.build.selinux")) {
@@ -647,7 +647,7 @@ public class RootCloak implements IXposedHookLoadPackage {
             isFirstRunCommands = prefCommands.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.
             isFirstRunLibnames = prefLibnames.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.
 
-            appSet = prefApps.getStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, new HashSet<String>()); // Load appSet. This is the set of apps to hide root from.
+            appSet = prefApps.getStringSet(Common.PACKAGE_NAME + Common.APP_SET_KEY, new HashSet<String>()); // Load appSet. This is the set of apps to hide root from.
             keywordSet = prefKeywords.getStringSet(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY, new HashSet<String>()); // Load keywordSet.
             commandSet = prefCommands.getStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, new HashSet<String>()); // Load commandSet.
             libnameSet = prefLibnames.getStringSet(Common.PACKAGE_NAME + Common.LIBRARY_SET_KEY, new HashSet<String>()); // Load libnameSet.

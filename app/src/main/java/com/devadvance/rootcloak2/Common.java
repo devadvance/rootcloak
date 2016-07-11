@@ -59,7 +59,7 @@ public class Common {
     public static final Set<String> DEFAULT_APPS_SET = new HashSet<String>(Arrays.asList(DEFAULT_APPS_LIST));
     public static final String DEBUG_KEY = "DEBUGGERPREF";
 
-    public static final String APP_LIST_KEY = "APPS_LIST"; // Uses the name LIST for legacy purposes
+    public static final String APP_SET_KEY = "APPS_LIST"; // Uses the name LIST for legacy purposes
 
     public static final String KEYWORD_SET_KEY = "KEYWORD_SET";
     public static final String COMMAND_SET_KEY = "APPS_SET";
