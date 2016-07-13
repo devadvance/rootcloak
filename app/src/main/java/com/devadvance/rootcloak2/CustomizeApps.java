@@ -190,11 +190,11 @@ public class CustomizeApps extends PreferenceActivity {
     private void loadDefaults() {
         appSet = Common.APPS.getDefaultSet();
         Editor editor = sharedPref.edit();
-        editor.remove(Common.PACKAGE_NAME + Common.APPS.getSetKey());
+        editor.remove(Common.APPS.getSetKey());
         editor.apply();
-        editor.putStringSet(Common.PACKAGE_NAME + Common.APPS.getSetKey(), appSet);
+        editor.putStringSet(Common.APPS.getSetKey(), appSet);
         editor.apply();
-        editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
+        editor.putBoolean(Common.FIRST_RUN_KEY, false);
         editor.apply();
         loadList();
     }
@@ -216,14 +216,14 @@ public class CustomizeApps extends PreferenceActivity {
     }
 
     private void loadList() {
-        appSet = sharedPref.getStringSet(Common.PACKAGE_NAME + Common.APPS.getSetKey(), new HashSet<String>());
-        isFirstRun = sharedPref.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true);
+        appSet = sharedPref.getStringSet(Common.APPS.getSetKey(), new HashSet<String>());
+        isFirstRun = sharedPref.getBoolean(Common.FIRST_RUN_KEY, true);
         if (isFirstRun) {
             if (appSet.isEmpty()) {
                 loadDefaults();
             } else {
                 Editor editor = sharedPref.edit();
-                editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
+                editor.putBoolean(Common.FIRST_RUN_KEY, false);
                 editor.apply();
             }
         }
@@ -243,7 +243,7 @@ public class CustomizeApps extends PreferenceActivity {
                 .setMessage(R.string.clear_all_apps)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        editor.remove(Common.PACKAGE_NAME + Common.APPS.getSetKey());
+                        editor.remove(Common.APPS.getSetKey());
                         editor.apply();
                         loadList();
                     }
@@ -259,11 +259,11 @@ public class CustomizeApps extends PreferenceActivity {
         if (!(appSet.contains(appName))) {
             appSet.add(appName);
             Editor editor = sharedPref.edit();
-            editor.remove(Common.PACKAGE_NAME + Common.APPS.getSetKey());
+            editor.remove(Common.APPS.getSetKey());
             editor.apply();
-            editor.putStringSet(Common.PACKAGE_NAME + Common.APPS.getSetKey(), appSet);
+            editor.putStringSet(Common.APPS.getSetKey(), appSet);
             editor.apply();
-            editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
+            editor.putBoolean(Common.FIRST_RUN_KEY, false);
             editor.apply();
         }
     }
@@ -272,9 +272,9 @@ public class CustomizeApps extends PreferenceActivity {
         String tempName = appList[position];
         appSet.remove(tempName);
         Editor editor = sharedPref.edit();
-        editor.remove(Common.PACKAGE_NAME + Common.APPS.getSetKey());
+        editor.remove(Common.APPS.getSetKey());
         editor.apply();
-        editor.putStringSet(Common.PACKAGE_NAME + Common.APPS.getSetKey(), appSet);
+        editor.putStringSet(Common.APPS.getSetKey(), appSet);
         editor.apply();
     }
 

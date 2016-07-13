@@ -11,8 +11,8 @@ import java.util.Set;
 public class Common {
     public static final String PREFS_SETTINGS = "CustomizeSettings";
     public static final String PACKAGE_NAME = BuildConfig.APPLICATION_ID;
-    public static final String FIRST_RUN_KEY = "IS_FIRST_RUN";
-    public static final String DEBUG_KEY = "DEBUGGERPREF";
+    public static final String FIRST_RUN_KEY = Common.PACKAGE_NAME + "IS_FIRST_RUN";
+    public static final String DEBUG_KEY = Common.PACKAGE_NAME + "DEBUGGERPREF";
     public static final String SHOW_WARNING = "SHOW_WARNING";
 
     public static final PrefSet APPS = new AppsSet();
@@ -33,7 +33,7 @@ public class Common {
 
     public static class AppsSet extends PrefSet {
         public static final String PREFS_APPS = "CustomizeApps";
-        public static final String APP_SET_KEY = "APPS_LIST"; // Uses the name LIST for legacy purposes
+        public static final String APP_SET_KEY = PACKAGE_NAME+"APPS_LIST"; // Uses the name LIST for legacy purposes
         public static final Set<String> DEFAULT_APPS_SET = new HashSet<String>(Arrays.asList(DefaultLists.DEFAULT_APPS_LIST));
 
         @Override
@@ -53,7 +53,7 @@ public class Common {
 
     public static class KeywordSet extends PrefSet {
         public static final String PREFS_KEYWORDS = "CustomizeKeywords";
-        public static final String KEYWORD_SET_KEY = "KEYWORD_SET";
+        public static final String KEYWORD_SET_KEY = PACKAGE_NAME+"KEYWORD_SET";
         public static final Set<String> DEFAULT_KEYWORD_SET = new HashSet<String>(Arrays.asList(DefaultLists.DEFAULT_KEYWORD_LIST));
 
         @Override
@@ -73,7 +73,7 @@ public class Common {
 
     public static class CommandSet extends PrefSet {
         public static final String PREFS_COMMANDS = "CustomizeCommands";
-        public static final String COMMAND_SET_KEY = "APPS_SET";
+        public static final String COMMAND_SET_KEY = PACKAGE_NAME+"APPS_SET";
         public static final Set<String> DEFAULT_COMMAND_SET = new HashSet<String>(Arrays.asList(DefaultLists.DEFAULT_COMMAND_LIST));
 
         @Override

@@ -72,13 +72,12 @@ public class SettingsActivity extends ListActivity {
                         .show();
                 break;
             case 4:
-                boolean debugPref = sharedPref.getBoolean(Common.PACKAGE_NAME
-                        + Common.DEBUG_KEY, false);
+                boolean debugPref = sharedPref.getBoolean(Common.DEBUG_KEY, false);
                 debugPref = !debugPref;
                 Editor editor = sharedPref.edit();
-                editor.remove(Common.PACKAGE_NAME + Common.DEBUG_KEY);
+                editor.remove(Common.DEBUG_KEY);
                 editor.commit();
-                editor.putBoolean(Common.PACKAGE_NAME + Common.DEBUG_KEY, debugPref);
+                editor.putBoolean(Common.DEBUG_KEY, debugPref);
                 editor.commit();
                 String debugStatus = getString(debugPref ? R.string.debug_on : R.string.debug_off);
                 Log.d(LOG_TAG, debugStatus);

@@ -619,7 +619,7 @@ public class RootCloak implements IXposedHookLoadPackage {
     private void initSettings() {
         final XSharedPreferences prefSettings = new XSharedPreferences(Common.PACKAGE_NAME, Common.PREFS_SETTINGS);
         prefSettings.makeWorldReadable();
-        debugPref = prefSettings.getBoolean(Common.PACKAGE_NAME + Common.DEBUG_KEY, false);
+        debugPref = prefSettings.getBoolean(Common.DEBUG_KEY, false);
     }
 
     /**
@@ -637,8 +637,8 @@ public class RootCloak implements IXposedHookLoadPackage {
             final XSharedPreferences loadedPrefs = new XSharedPreferences(Common.PACKAGE_NAME, type.getPrefKey());
             loadedPrefs.makeWorldReadable();
 
-            final boolean isFirstRun = loadedPrefs.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.
-            loadedSet = loadedPrefs.getStringSet(Common.PACKAGE_NAME + type.getSetKey(), null);
+            final boolean isFirstRun = loadedPrefs.getBoolean(Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.
+            loadedSet = loadedPrefs.getStringSet(type.getSetKey(), null);
 
             // If the settings for any of the sets have never been modified, possibly need to use default sets.
             if (isFirstRun && loadedSet == null) {
