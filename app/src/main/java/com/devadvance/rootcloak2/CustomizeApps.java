@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +32,8 @@ public class CustomizeApps extends PreferenceActivity {
     Set<String> appSet;
     String[] appList;
     boolean isFirstRun;
+
+    ProgressDialog progressDialog;
 
     @SuppressLint("WorldReadableFiles")
     @SuppressWarnings("deprecation")
@@ -77,6 +81,14 @@ public class CustomizeApps extends PreferenceActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.customize_apps, menu);
@@ -87,32 +99,14 @@ public class CustomizeApps extends PreferenceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_new:
-                final PackageManager pm = getPackageManager();
-                ProgressDialog loadingApps = new ProgressDialog(this);
-                loadingApps.setMessage(getString(R.string.loading_apps));
-                loadingApps.show();
-                //get a list of installed apps.
-                final List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-                final String[] names = new String[packages.size()];
-                final HashMap<String, String> nameMap = new HashMap<>();
-                int i = 0;
-                for (ApplicationInfo info : packages) {
-                    //names[i] = info.packageName;
-                    names[i] = info.loadLabel(pm) + "\n(" + info.packageName + ")";
-                    nameMap.put(names[i], info.packageName);
-                    i++;
+                if (progressDialog == null) {
+                    progressDialog = new ProgressDialog(this);
+                    progressDialog.setMessage(getString(R.string.loading_apps));
                 }
-                Arrays.sort(names);
-                loadingApps.dismiss();
+                progressDialog.show();
 
-                new AlertDialog.Builder(this).setTitle(R.string.add_app)
-                        .setItems(names, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                savePref(nameMap.get(names[which]));
-                                loadList();
-                            }
-                        }).show();
-
+                // Load application list on a background thread while the ProgressDialog spins
+                new LoadAppList(this).execute(getPackageManager());
                 return true;
             case R.id.action_new_custom:
                 final EditText input = new EditText(this);
@@ -139,6 +133,60 @@ public class CustomizeApps extends PreferenceActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private static class LoadAppList extends AsyncTask<PackageManager, Void, Void> {
+        WeakReference<CustomizeApps> callbackHolder;
+        HashMap<String, String> nameMap;
+        String[] names;
+
+        public LoadAppList(CustomizeApps activity) {
+            callbackHolder = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected Void doInBackground(PackageManager... params) {
+            PackageManager pm = params[0];
+            final List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+            names = new String[packages.size()];
+            nameMap = new HashMap<>();
+            int i = 0;
+            for (ApplicationInfo info : packages) {
+                //names[i] = info.packageName;
+                names[i] = info.loadLabel(pm) + "\n(" + info.packageName + ")";
+                nameMap.put(names[i], info.packageName);
+                i++;
+            }
+            Arrays.sort(names);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void avoid) {
+            // Now that the list is loaded, show the dialog on the UI thread
+            final CustomizeApps callbackReference;
+            if ((callbackReference = callbackHolder.get()) != null) {
+                callbackReference.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        callbackReference.onAppListLoaded(nameMap, names);
+                    }
+                });
+            }
+        }
+    }
+
+    public void onAppListLoaded(final HashMap<String, String> nameMap, final String[] names) {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        new AlertDialog.Builder(CustomizeApps.this).setTitle(R.string.add_app)
+                .setItems(names, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        savePref(nameMap.get(names[which]));
+                        loadList();
+                    }
+                }).show();
     }
 
     private void loadDefaults() {
