@@ -189,13 +189,10 @@ public class CustomizeApps extends PreferenceActivity {
 
     private void loadDefaults() {
         appSet = Common.APPS.getDefaultSet();
-        Editor editor = sharedPref.edit();
-        editor.remove(Common.APPS.getSetKey());
-        editor.apply();
-        editor.putStringSet(Common.APPS.getSetKey(), appSet);
-        editor.apply();
-        editor.putBoolean(Common.FIRST_RUN_KEY, false);
-        editor.apply();
+        sharedPref.edit()
+            .putStringSet(Common.APPS.getSetKey(), appSet)
+            .putBoolean(Common.FIRST_RUN_KEY, false)
+            .apply();
         loadList();
     }
 
@@ -243,8 +240,8 @@ public class CustomizeApps extends PreferenceActivity {
                 .setMessage(R.string.clear_all_apps)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        editor.remove(Common.APPS.getSetKey());
-                        editor.apply();
+                        editor.remove(Common.APPS.getSetKey())
+                            .apply();
                         loadList();
                     }
                 });
@@ -258,24 +255,19 @@ public class CustomizeApps extends PreferenceActivity {
     private void savePref(String appName) {
         if (!(appSet.contains(appName))) {
             appSet.add(appName);
-            Editor editor = sharedPref.edit();
-            editor.remove(Common.APPS.getSetKey());
-            editor.apply();
-            editor.putStringSet(Common.APPS.getSetKey(), appSet);
-            editor.apply();
-            editor.putBoolean(Common.FIRST_RUN_KEY, false);
-            editor.apply();
+            sharedPref.edit()
+                .putStringSet(Common.APPS.getSetKey(), appSet)
+                .putBoolean(Common.FIRST_RUN_KEY, false)
+                .apply();
         }
     }
 
     private void removeApp(int position) {
         String tempName = appList[position];
         appSet.remove(tempName);
-        Editor editor = sharedPref.edit();
-        editor.remove(Common.APPS.getSetKey());
-        editor.apply();
-        editor.putStringSet(Common.APPS.getSetKey(), appSet);
-        editor.apply();
+        sharedPref.edit()
+            .putStringSet(Common.APPS.getSetKey(), appSet)
+            .apply();
     }
 
 }

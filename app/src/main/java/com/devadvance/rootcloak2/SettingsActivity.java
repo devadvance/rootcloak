@@ -74,11 +74,9 @@ public class SettingsActivity extends ListActivity {
             case 4:
                 boolean debugPref = sharedPref.getBoolean(Common.DEBUG_KEY, false);
                 debugPref = !debugPref;
-                Editor editor = sharedPref.edit();
-                editor.remove(Common.DEBUG_KEY);
-                editor.commit();
-                editor.putBoolean(Common.DEBUG_KEY, debugPref);
-                editor.commit();
+                sharedPref.edit()
+                        .putBoolean(Common.DEBUG_KEY, debugPref)
+                        .apply();
                 String debugStatus = getString(debugPref ? R.string.debug_on : R.string.debug_off);
                 Log.d(LOG_TAG, debugStatus);
                 Toast.makeText(getApplicationContext(), debugStatus, Toast.LENGTH_LONG).show();

@@ -40,7 +40,6 @@ public class Common {
         public String getPrefKey() {
             return PREFS_APPS;
         }
-
         @Override
         public String getSetKey() {
             return APP_SET_KEY;
@@ -60,7 +59,6 @@ public class Common {
         public String getPrefKey() {
             return PREFS_KEYWORDS;
         }
-
         @Override
         public String getSetKey() {
             return KEYWORD_SET_KEY;
@@ -80,7 +78,6 @@ public class Common {
         public String getPrefKey() {
             return PREFS_COMMANDS;
         }
-
         @Override
         public String getSetKey() {
             return COMMAND_SET_KEY;
@@ -100,7 +97,6 @@ public class Common {
         public String getPrefKey() {
             return PREFS_LIBNAMES;
         }
-
         @Override
         public String getSetKey() {
             return LIBRARY_SET_KEY;
