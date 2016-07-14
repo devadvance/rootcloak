@@ -23,7 +23,7 @@ import java.util.Set;
 public class CustomizeCommands extends PreferenceActivity {
 
     SharedPreferences sharedPref;
-    Set<String> commandSet;
+    Set<String> commandSet = new HashSet<>();
     String[] commandList;
     boolean isFirstRunCommands;
 
@@ -36,9 +36,7 @@ public class CustomizeCommands extends PreferenceActivity {
         // Show the Up button in the action bar.
         setupActionBar();
 
-
-        getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
-        sharedPref = getSharedPreferences(Common.PREFS_COMMANDS, MODE_WORLD_READABLE);
+        sharedPref = Common.COMMANDS.getSharedPreferences(this);
 
         loadList();
 
@@ -123,14 +121,12 @@ public class CustomizeCommands extends PreferenceActivity {
     }
 
     private void loadDefaults() {
-        commandSet = Common.DEFAULT_COMMAND_SET;
-        Editor editor = sharedPref.edit();
-        editor.remove(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY);
-        editor.apply();
-        editor.putStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, commandSet);
-        editor.apply();
-        editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-        editor.apply();
+        commandSet.clear();
+        commandSet.addAll(Common.COMMANDS.getDefaultSet());
+        sharedPref.edit()
+            .putStringSet(Common.COMMANDS.getSetKey(), commandSet)
+            .putBoolean(Common.FIRST_RUN_KEY, false)
+            .apply();
         loadList();
     }
 
@@ -151,15 +147,16 @@ public class CustomizeCommands extends PreferenceActivity {
     }
 
     private void loadList() {
-        commandSet = sharedPref.getStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, new HashSet<String>());
-        isFirstRunCommands = sharedPref.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true);
+        commandSet.clear();
+        commandSet.addAll(sharedPref.getStringSet(Common.COMMANDS.getSetKey(), new HashSet<String>()));
+        isFirstRunCommands = sharedPref.getBoolean(Common.FIRST_RUN_KEY, true);
         if (isFirstRunCommands) {
             if (commandSet.isEmpty()) {
                 loadDefaults();
             } else {
-                Editor editor = sharedPref.edit();
-                editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-                editor.apply();
+                sharedPref.edit()
+                    .putBoolean(Common.FIRST_RUN_KEY, false)
+                    .apply();
             }
         }
         commandList = commandSet.toArray(new String[commandSet.size()]);
@@ -178,8 +175,8 @@ public class CustomizeCommands extends PreferenceActivity {
                 .setMessage(R.string.clear_all_commands)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        editor.remove(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY);
-                        editor.apply();
+                        editor.remove(Common.COMMANDS.getSetKey())
+                            .apply();
                         loadList();
                     }
                 });
@@ -193,24 +190,20 @@ public class CustomizeCommands extends PreferenceActivity {
     private void savePref(String command) {
         if (!(commandSet.contains(command))) {
             commandSet.add(command);
-            Editor editor = sharedPref.edit();
-            editor.remove(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY);
-            editor.apply();
-            editor.putStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, commandSet);
-            editor.apply();
-            editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-            editor.apply();
+            sharedPref.edit()
+                .putStringSet(Common.COMMANDS.getSetKey(), commandSet)
+                .putBoolean(Common.FIRST_RUN_KEY, false)
+                .apply();
         }
     }
 
     private void removeCommand(int position) {
         String tempName = commandList[position];
         commandSet.remove(tempName);
-        Editor editor = sharedPref.edit();
-        editor.remove(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY);
-        editor.apply();
-        editor.putStringSet(Common.PACKAGE_NAME + Common.COMMAND_SET_KEY, commandSet);
-        editor.apply();
+        sharedPref.edit()
+            .remove(Common.COMMANDS.getSetKey())
+            .putStringSet(Common.COMMANDS.getSetKey(), commandSet)
+            .apply();
     }
 
 }

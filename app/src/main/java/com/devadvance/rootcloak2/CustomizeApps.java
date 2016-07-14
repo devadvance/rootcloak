@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,9 +29,11 @@ import java.util.Set;
 public class CustomizeApps extends PreferenceActivity {
 
     SharedPreferences sharedPref;
-    Set<String> appSet;
+    Set<String> appSet = new HashSet<>();
     String[] appList;
     boolean isFirstRun;
+
+    ProgressDialog progressDialog;
 
     @SuppressLint("WorldReadableFiles")
     @SuppressWarnings("deprecation")
@@ -40,9 +44,7 @@ public class CustomizeApps extends PreferenceActivity {
         // Show the Up button in the action bar.
         setupActionBar();
 
-
-        getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
-        sharedPref = getSharedPreferences(Common.PREFS_APPS, MODE_WORLD_READABLE);
+        sharedPref = Common.APPS.getSharedPreferences(this);
 
         loadList();
 
@@ -77,6 +79,14 @@ public class CustomizeApps extends PreferenceActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.customize_apps, menu);
@@ -87,32 +97,14 @@ public class CustomizeApps extends PreferenceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_new:
-                final PackageManager pm = getPackageManager();
-                ProgressDialog loadingApps = new ProgressDialog(this);
-                loadingApps.setMessage(getString(R.string.loading_apps));
-                loadingApps.show();
-                //get a list of installed apps.
-                final List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-                final String[] names = new String[packages.size()];
-                final HashMap<String, String> nameMap = new HashMap<>();
-                int i = 0;
-                for (ApplicationInfo info : packages) {
-                    //names[i] = info.packageName;
-                    names[i] = info.loadLabel(pm) + "\n(" + info.packageName + ")";
-                    nameMap.put(names[i], info.packageName);
-                    i++;
+                if (progressDialog == null) {
+                    progressDialog = new ProgressDialog(this);
+                    progressDialog.setMessage(getString(R.string.loading_apps));
                 }
-                Arrays.sort(names);
-                loadingApps.dismiss();
+                progressDialog.show();
 
-                new AlertDialog.Builder(this).setTitle(R.string.add_app)
-                        .setItems(names, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                savePref(nameMap.get(names[which]));
-                                loadList();
-                            }
-                        }).show();
-
+                // Load application list on a background thread while the ProgressDialog spins
+                new LoadAppList(this).execute(getPackageManager());
                 return true;
             case R.id.action_new_custom:
                 final EditText input = new EditText(this);
@@ -141,15 +133,67 @@ public class CustomizeApps extends PreferenceActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private static class LoadAppList extends AsyncTask<PackageManager, Void, Void> {
+        WeakReference<CustomizeApps> callbackHolder;
+        HashMap<String, String> nameMap;
+        String[] names;
+
+        public LoadAppList(CustomizeApps activity) {
+            callbackHolder = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected Void doInBackground(PackageManager... params) {
+            PackageManager pm = params[0];
+            final List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+            names = new String[packages.size()];
+            nameMap = new HashMap<>();
+            int i = 0;
+            for (ApplicationInfo info : packages) {
+                //names[i] = info.packageName;
+                names[i] = info.loadLabel(pm) + "\n(" + info.packageName + ")";
+                nameMap.put(names[i], info.packageName);
+                i++;
+            }
+            Arrays.sort(names);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void avoid) {
+            // Now that the list is loaded, show the dialog on the UI thread
+            final CustomizeApps callbackReference;
+            if ((callbackReference = callbackHolder.get()) != null) {
+                callbackReference.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        callbackReference.onAppListLoaded(nameMap, names);
+                    }
+                });
+            }
+        }
+    }
+
+    public void onAppListLoaded(final HashMap<String, String> nameMap, final String[] names) {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        new AlertDialog.Builder(CustomizeApps.this).setTitle(R.string.add_app)
+                .setItems(names, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        savePref(nameMap.get(names[which]));
+                        loadList();
+                    }
+                }).show();
+    }
+
     private void loadDefaults() {
-        appSet = Common.DEFAULT_APPS_SET;
-        Editor editor = sharedPref.edit();
-        editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
-        editor.apply();
-        editor.putStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, appSet);
-        editor.apply();
-        editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-        editor.apply();
+        appSet.clear();
+        appSet.addAll(Common.APPS.getDefaultSet());
+        sharedPref.edit()
+            .putStringSet(Common.APPS.getSetKey(), appSet)
+            .putBoolean(Common.FIRST_RUN_KEY, false)
+            .apply();
         loadList();
     }
 
@@ -170,14 +214,15 @@ public class CustomizeApps extends PreferenceActivity {
     }
 
     private void loadList() {
-        appSet = sharedPref.getStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, new HashSet<String>());
-        isFirstRun = sharedPref.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true);
+        appSet.clear();
+        appSet.addAll(sharedPref.getStringSet(Common.APPS.getSetKey(), new HashSet<String>()));
+        isFirstRun = sharedPref.getBoolean(Common.FIRST_RUN_KEY, true);
         if (isFirstRun) {
             if (appSet.isEmpty()) {
                 loadDefaults();
             } else {
                 Editor editor = sharedPref.edit();
-                editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
+                editor.putBoolean(Common.FIRST_RUN_KEY, false);
                 editor.apply();
             }
         }
@@ -197,8 +242,8 @@ public class CustomizeApps extends PreferenceActivity {
                 .setMessage(R.string.clear_all_apps)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
-                        editor.apply();
+                        editor.remove(Common.APPS.getSetKey())
+                            .apply();
                         loadList();
                     }
                 });
@@ -212,24 +257,19 @@ public class CustomizeApps extends PreferenceActivity {
     private void savePref(String appName) {
         if (!(appSet.contains(appName))) {
             appSet.add(appName);
-            Editor editor = sharedPref.edit();
-            editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
-            editor.apply();
-            editor.putStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, appSet);
-            editor.apply();
-            editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-            editor.apply();
+            sharedPref.edit()
+                .putStringSet(Common.APPS.getSetKey(), appSet)
+                .putBoolean(Common.FIRST_RUN_KEY, false)
+                .apply();
         }
     }
 
     private void removeApp(int position) {
         String tempName = appList[position];
         appSet.remove(tempName);
-        Editor editor = sharedPref.edit();
-        editor.remove(Common.PACKAGE_NAME + Common.APP_LIST_KEY);
-        editor.apply();
-        editor.putStringSet(Common.PACKAGE_NAME + Common.APP_LIST_KEY, appSet);
-        editor.apply();
+        sharedPref.edit()
+            .putStringSet(Common.APPS.getSetKey(), appSet)
+            .apply();
     }
 
 }

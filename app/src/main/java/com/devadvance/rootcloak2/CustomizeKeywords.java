@@ -23,7 +23,7 @@ import java.util.Set;
 public class CustomizeKeywords extends PreferenceActivity {
 
     SharedPreferences sharedPref;
-    Set<String> keywordSet;
+    Set<String> keywordSet = new HashSet<>();
     String[] keywordList;
     boolean isFirstRunKeywords;
 
@@ -36,9 +36,7 @@ public class CustomizeKeywords extends PreferenceActivity {
         // Show the Up button in the action bar.
         setupActionBar();
 
-
-        getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
-        sharedPref = getSharedPreferences(Common.PREFS_KEYWORDS, MODE_WORLD_READABLE);
+        sharedPref = Common.KEYWORDS.getSharedPreferences(this);
 
         loadList();
 
@@ -122,14 +120,12 @@ public class CustomizeKeywords extends PreferenceActivity {
     }
 
     private void loadDefaults() {
-        keywordSet = Common.DEFAULT_KEYWORD_SET;
-        Editor editor = sharedPref.edit();
-        editor.remove(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY);
-        editor.apply();
-        editor.putStringSet(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY, keywordSet);
-        editor.apply();
-        editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-        editor.apply();
+        keywordSet.clear();
+        keywordSet.addAll(Common.KEYWORDS.getDefaultSet());
+        sharedPref.edit()
+                .putStringSet(Common.KEYWORDS.getSetKey(), keywordSet)
+                .putBoolean(Common.FIRST_RUN_KEY, false)
+                .apply();
         loadList();
     }
 
@@ -150,15 +146,16 @@ public class CustomizeKeywords extends PreferenceActivity {
     }
 
     private void loadList() {
-        keywordSet = sharedPref.getStringSet(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY, new HashSet<String>());
-        isFirstRunKeywords = sharedPref.getBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, true);
+        keywordSet.clear();
+        keywordSet.addAll(sharedPref.getStringSet(Common.KEYWORDS.getSetKey(), new HashSet<String>()));
+        isFirstRunKeywords = sharedPref.getBoolean(Common.FIRST_RUN_KEY, true);
         if (isFirstRunKeywords) {
             if (keywordSet.isEmpty()) {
                 loadDefaults();
             } else {
-                Editor editor = sharedPref.edit();
-                editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-                editor.apply();
+                sharedPref.edit()
+                    .putBoolean(Common.FIRST_RUN_KEY, false)
+                    .apply();
             }
         }
         keywordList = keywordSet.toArray(new String[keywordSet.size()]);
@@ -177,8 +174,8 @@ public class CustomizeKeywords extends PreferenceActivity {
                 .setMessage(R.string.clear_app_keywords)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        editor.remove(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY);
-                        editor.apply();
+                        editor.remove(Common.KEYWORDS.getSetKey())
+                            .apply();
                         loadList();
                     }
                 });
@@ -192,23 +189,18 @@ public class CustomizeKeywords extends PreferenceActivity {
     private void savePref(String keyword) {
         if (!(keywordSet.contains(keyword))) {
             keywordSet.add(keyword);
-            Editor editor = sharedPref.edit();
-            editor.remove(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY);
-            editor.apply();
-            editor.putStringSet(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY, keywordSet);
-            editor.apply();
-            editor.putBoolean(Common.PACKAGE_NAME + Common.FIRST_RUN_KEY, false);
-            editor.apply();
+            sharedPref.edit()
+                .putStringSet(Common.KEYWORDS.getSetKey(), keywordSet)
+                .putBoolean(Common.FIRST_RUN_KEY, false)
+                .apply();
         }
     }
 
     private void removeKeyword(int position) {
         String tempName = keywordList[position];
         keywordSet.remove(tempName);
-        Editor editor = sharedPref.edit();
-        editor.remove(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY);
-        editor.apply();
-        editor.putStringSet(Common.PACKAGE_NAME + Common.KEYWORD_SET_KEY, keywordSet);
-        editor.apply();
+        sharedPref.edit()
+            .putStringSet(Common.KEYWORDS.getSetKey(), keywordSet)
+            .apply();
     }
 }
