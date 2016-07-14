@@ -23,7 +23,7 @@ import java.util.Set;
 public class CustomizeKeywords extends PreferenceActivity {
 
     SharedPreferences sharedPref;
-    Set<String> keywordSet;
+    Set<String> keywordSet = new HashSet<>();
     String[] keywordList;
     boolean isFirstRunKeywords;
 
@@ -120,7 +120,8 @@ public class CustomizeKeywords extends PreferenceActivity {
     }
 
     private void loadDefaults() {
-        keywordSet = Common.KEYWORDS.getDefaultSet();
+        keywordSet.clear();
+        keywordSet.addAll(Common.KEYWORDS.getDefaultSet());
         sharedPref.edit()
                 .putStringSet(Common.KEYWORDS.getSetKey(), keywordSet)
                 .putBoolean(Common.FIRST_RUN_KEY, false)
@@ -145,7 +146,8 @@ public class CustomizeKeywords extends PreferenceActivity {
     }
 
     private void loadList() {
-        keywordSet = sharedPref.getStringSet(Common.KEYWORDS.getSetKey(), new HashSet<String>());
+        keywordSet.clear();
+        keywordSet.addAll(sharedPref.getStringSet(Common.KEYWORDS.getSetKey(), new HashSet<String>()));
         isFirstRunKeywords = sharedPref.getBoolean(Common.FIRST_RUN_KEY, true);
         if (isFirstRunKeywords) {
             if (keywordSet.isEmpty()) {

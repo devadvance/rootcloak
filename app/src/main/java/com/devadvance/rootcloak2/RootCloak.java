@@ -632,23 +632,25 @@ public class RootCloak implements IXposedHookLoadPackage {
                 .permitDiskWrites()
                 .build());
 
-        Set<String> loadedSet = null;
+        final Set<String> newSet = new HashSet<>();
         try {
             final XSharedPreferences loadedPrefs = new XSharedPreferences(Common.PACKAGE_NAME, type.getPrefKey());
             loadedPrefs.makeWorldReadable();
 
             final boolean isFirstRun = loadedPrefs.getBoolean(Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.
-            loadedSet = loadedPrefs.getStringSet(type.getSetKey(), null);
 
-            // If the settings for any of the sets have never been modified, possibly need to use default sets.
-            if (isFirstRun && loadedSet == null) {
-                loadedSet = type.getDefaultSet();
+            // Loaded set is IMMUTABLE. We need to copy the values out of it.
+            final Set<String> loadedSet = loadedPrefs.getStringSet(type.getSetKey(), null);
+            if (loadedSet != null) {
+                newSet.addAll(loadedSet);
+            } else if (isFirstRun) {
+                newSet.addAll(type.getDefaultSet());
             }
         } finally {
             StrictMode.setThreadPolicy(old);
         }
 
-        return loadedSet == null ? new HashSet<String>(0) : loadedSet;
+        return newSet;
     }
 
     /* ********************

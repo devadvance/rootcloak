@@ -29,7 +29,7 @@ import java.util.Set;
 public class CustomizeApps extends PreferenceActivity {
 
     SharedPreferences sharedPref;
-    Set<String> appSet;
+    Set<String> appSet = new HashSet<>();
     String[] appList;
     boolean isFirstRun;
 
@@ -188,7 +188,8 @@ public class CustomizeApps extends PreferenceActivity {
     }
 
     private void loadDefaults() {
-        appSet = Common.APPS.getDefaultSet();
+        appSet.clear();
+        appSet.addAll(Common.APPS.getDefaultSet());
         sharedPref.edit()
             .putStringSet(Common.APPS.getSetKey(), appSet)
             .putBoolean(Common.FIRST_RUN_KEY, false)
@@ -213,7 +214,8 @@ public class CustomizeApps extends PreferenceActivity {
     }
 
     private void loadList() {
-        appSet = sharedPref.getStringSet(Common.APPS.getSetKey(), new HashSet<String>());
+        appSet.clear();
+        appSet.addAll(sharedPref.getStringSet(Common.APPS.getSetKey(), new HashSet<String>()));
         isFirstRun = sharedPref.getBoolean(Common.FIRST_RUN_KEY, true);
         if (isFirstRun) {
             if (appSet.isEmpty()) {

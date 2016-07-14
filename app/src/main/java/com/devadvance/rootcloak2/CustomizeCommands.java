@@ -23,7 +23,7 @@ import java.util.Set;
 public class CustomizeCommands extends PreferenceActivity {
 
     SharedPreferences sharedPref;
-    Set<String> commandSet;
+    Set<String> commandSet = new HashSet<>();
     String[] commandList;
     boolean isFirstRunCommands;
 
@@ -121,7 +121,8 @@ public class CustomizeCommands extends PreferenceActivity {
     }
 
     private void loadDefaults() {
-        commandSet = Common.COMMANDS.getDefaultSet();
+        commandSet.clear();
+        commandSet.addAll(Common.COMMANDS.getDefaultSet());
         sharedPref.edit()
             .putStringSet(Common.COMMANDS.getSetKey(), commandSet)
             .putBoolean(Common.FIRST_RUN_KEY, false)
@@ -146,7 +147,8 @@ public class CustomizeCommands extends PreferenceActivity {
     }
 
     private void loadList() {
-        commandSet = sharedPref.getStringSet(Common.COMMANDS.getSetKey(), new HashSet<String>());
+        commandSet.clear();
+        commandSet.addAll(sharedPref.getStringSet(Common.COMMANDS.getSetKey(), new HashSet<String>()));
         isFirstRunCommands = sharedPref.getBoolean(Common.FIRST_RUN_KEY, true);
         if (isFirstRunCommands) {
             if (commandSet.isEmpty()) {
