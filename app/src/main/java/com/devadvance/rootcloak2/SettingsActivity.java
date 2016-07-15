@@ -6,7 +6,6 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,6 +60,10 @@ public class SettingsActivity extends ListActivity {
                 startActivity(intent);
                 break;
             case 3:
+                intent = new Intent(this, NativeHookingApps.class);
+                startActivity(intent);
+                break;
+            case 4:
                 new AlertDialog.Builder(this)
                         .setMessage(instructionsString)
                         .setTitle(instructionsTitle)
@@ -71,7 +74,7 @@ public class SettingsActivity extends ListActivity {
                         })
                         .show();
                 break;
-            case 4:
+            case 5:
                 boolean debugPref = sharedPref.getBoolean(Common.DEBUG_KEY, false);
                 debugPref = !debugPref;
                 sharedPref.edit()
@@ -81,7 +84,7 @@ public class SettingsActivity extends ListActivity {
                 Log.d(LOG_TAG, debugStatus);
                 Toast.makeText(getApplicationContext(), debugStatus, Toast.LENGTH_LONG).show();
                 break;
-            case 5:
+            case 6:
                 String aboutMsg = getString(R.string.app_name) + ": " + BuildConfig.VERSION_NAME; //TODO!
                 new AlertDialog.Builder(this)
                         .setMessage(aboutMsg)
