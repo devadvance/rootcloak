@@ -14,6 +14,10 @@ public class Common {
     public static final String FIRST_RUN_KEY = Common.PACKAGE_NAME + "IS_FIRST_RUN";
     public static final String DEBUG_KEY = Common.PACKAGE_NAME + "DEBUGGERPREF";
     public static final String SHOW_WARNING = "SHOW_WARNING";
+    
+    public static final int ROOT_UID = 0;
+	public static final int SYSTEM_UID = 1000;
+    public static final int SHELL_UID = 2000;
 
     public static final PrefSet APPS = new AppsSet();
     public static final PrefSet KEYWORDS = new KeywordSet();
