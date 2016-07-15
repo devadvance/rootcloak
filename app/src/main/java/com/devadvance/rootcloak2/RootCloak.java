@@ -7,6 +7,7 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.content.ContentResolver;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.os.Binder;
 import android.os.Build;
 import android.os.StrictMode;
 import android.provider.Settings;
@@ -244,7 +245,7 @@ public class RootCloak implements IXposedHookLoadPackage {
         initPackageManager(lpparam, false);
     }
     
-    private void initPackageManager(final LoadPackageParam lpparam, boolean shellOnly) {
+    private void initPackageManager(final LoadPackageParam lpparam, final boolean shellOnly) {
         /**
          * Hooks getInstalledApplications within the PackageManager.
          * An app can check for other apps this way. In the context of a rooted device, an app may look for SuperSU, Xposed, Superuser, or others.
@@ -260,7 +261,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 
                 int uid = Binder.getCallingUid();
                 if (debugPref) {
-                    XposedBridge.log("UID: ", uid);
+                    XposedBridge.log("UID: " + uid);
                 }
                 if (shellOnly && (uid != Common.SHELL_UID)) {
                     return;
@@ -302,7 +303,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 
                 int uid = Binder.getCallingUid();
                 if (debugPref) {
-                    XposedBridge.log("UID: ", uid);
+                    XposedBridge.log("UID: " + uid);
                 }
                 if (shellOnly && (uid != Common.SHELL_UID)) {
                     return;
@@ -344,7 +345,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 
                 int uid = Binder.getCallingUid();
                 if (debugPref) {
-                    XposedBridge.log("UID: ", uid);
+                    XposedBridge.log("UID: " + uid);
                 }
                 if (shellOnly && (uid != Common.SHELL_UID)) {
                     return;
@@ -378,7 +379,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 
                 int uid = Binder.getCallingUid();
                 if (debugPref) {
-                    XposedBridge.log("UID: ", uid);
+                    XposedBridge.log("UID: " + uid);
                 }
                 if (shellOnly && (uid != Common.SHELL_UID)) {
                     return;
