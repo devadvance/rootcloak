@@ -81,9 +81,7 @@ public class CustomizeApps extends PreferenceActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
+        dismissProgressDialog();
     }
 
     @Override
@@ -164,20 +162,13 @@ public class CustomizeApps extends PreferenceActivity {
             // Now that the list is loaded, show the dialog on the UI thread
             final CustomizeApps callbackReference;
             if ((callbackReference = callbackHolder.get()) != null) {
-                callbackReference.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        callbackReference.onAppListLoaded(nameMap, names);
-                    }
-                });
+                callbackReference.onAppListLoaded(nameMap, names);
             }
         }
     }
 
     public void onAppListLoaded(final HashMap<String, String> nameMap, final String[] names) {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
+        dismissProgressDialog();
         new AlertDialog.Builder(CustomizeApps.this).setTitle(R.string.add_app)
                 .setItems(names, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -185,6 +176,12 @@ public class CustomizeApps extends PreferenceActivity {
                         loadList();
                     }
                 }).show();
+    }
+
+    private void dismissProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
     private void loadDefaults() {
