@@ -16,15 +16,21 @@
 #include <android/log.h>
 #include <errno.h>
 
+#define DEBUG_LOGS 0 // 1 to enable logs
+
 
 FILE *fopen(const char *path, const char *mode) {
-    printf("In our own fopen, opening %s\n", path);
-    __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "fopen(): path %s, mode %s", path, mode);
+    if (DEBUG_LOGS) {
+        printf("In our own fopen, opening %s\n", path);
+        __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "fopen(): path %s, mode %s", path, mode);
+    }
 
     char *fname = basename(path);
 
     if (strcasecmp("su", fname) == 0 || strcasecmp("daemonsu", fname) == 0 || strcasecmp("superuser.apk", fname) == 0) {
+        if (DEBUG_LOGS) {
         __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "fopen(): Hiding su file %s", path);
+        }
         errno = ENOENT;
         return NULL;
     }
@@ -38,13 +44,17 @@ FILE *fopen(const char *path, const char *mode) {
 
 
 int stat(const char *path, struct stat *buf) {
-    printf("In our own stat, stat()'ing %s\n", path);
-    __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "stat(): path %s", path);
+    if (DEBUG_LOGS) {
+        printf("In our own stat, stat()'ing %s\n", path);
+        __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "stat(): path %s", path);
+    }
 
     char *fname = basename(path);
 
     if (strcasecmp("su", fname) == 0 || strcasecmp("daemonsu", fname) == 0 || strcasecmp("superuser.apk", fname) == 0) {
-        __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "stat(): Hiding su file %s", path);
+        if (DEBUG_LOGS) {
+            __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "stat(): Hiding su file %s", path);
+        }
         errno = ENOENT;
         return -1;
     }
@@ -58,13 +68,17 @@ int stat(const char *path, struct stat *buf) {
 }
 
 int lstat(const char *path, struct stat *buf) {
-    printf("In our own lstat, lstat()'ing %s\n", path);
-    __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "stat(): path %s", path);
+    if (DEBUG_LOGS) {
+        printf("In our own lstat, lstat()'ing %s\n", path);
+        __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "stat(): path %s", path);
+    }
 
     char *fname = basename(path);
 
     if (strcasecmp("su", fname) == 0 || strcasecmp("daemonsu", fname) == 0 || strcasecmp("superuser.apk", fname) == 0) {
+        if (DEBUG_LOGS) {
         __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "stat(): Hiding su file %s", path);
+        }
         errno = ENOENT;
         return -1;
     }
@@ -78,8 +92,10 @@ int lstat(const char *path, struct stat *buf) {
 }
 
 struct dirent *readdir(DIR *dirp) {
-    printf("In our own readdir\n");
-    __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "readdir()");
+    if (DEBUG_LOGS) {
+        printf("In our own readdir\n");
+        __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "readdir()");
+    }
 
     static struct dirent *(*original_readdir)(DIR*);
     if (!original_readdir) {
@@ -91,15 +107,21 @@ struct dirent *readdir(DIR *dirp) {
         return ret;
     }
 
-    printf("readdir(): d_name = %s\n", ret->d_name);
-    __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "readdir(): d_name = %s", ret->d_name);
+    if (DEBUG_LOGS) {
+        printf("readdir(): d_name = %s\n", ret->d_name);
+        __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "readdir(): d_name = %s", ret->d_name);
+    }
 
     unsigned int found = 0;
     do {
         if (strcasecmp("su", ret->d_name) == 0 || strcasecmp("daemonsu", ret->d_name) == 0 || strcasecmp("superuser.apk", ret->d_name) == 0) {
-            printf("Found su file, reading next...");
+            if (DEBUG_LOGS) {
+                printf("Found su file, reading next...");
+            }
             ret = original_readdir(dirp);
-            printf(" done!\n");
+            if (DEBUG_LOGS) {
+                printf(" done!\n");
+            }
         } else {
             found = 0;
         }
@@ -110,13 +132,17 @@ struct dirent *readdir(DIR *dirp) {
 }
 
 int execl(const char *path, const char *arg, ...) {
-    printf("In our own execl, execl()'ing %s\n", path);
-    __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "execl(): path %s", path);
+    if (DEBUG_LOGS) {
+        printf("In our own execl, execl()'ing %s\n", path);
+        __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "execl(): path %s", path);
+    }
 
     char *fname = basename(path);
 
     if (strcasecmp("su", fname) == 0 || strcasecmp("daemonsu", fname) == 0 || strcasecmp("superuser.apk", fname) == 0) {
-        __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "execl(): Hiding su file %s", path);
+        if (DEBUG_LOGS) {
+            __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "execl(): Hiding su file %s", path);
+        }
         errno = ENOENT;
         return -1;
     }
