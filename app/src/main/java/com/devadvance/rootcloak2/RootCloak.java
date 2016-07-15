@@ -39,7 +39,7 @@ public class RootCloak implements IXposedHookLoadPackage {
     private static final String FAKE_FILE = "FAKEJUNKFILE";
     private static final String FAKE_PACKAGE = "FAKE.JUNK.PACKAGE";
     private static final String FAKE_APPLICATION = "FAKE.JUNK.APPLICATION";
-    private Set<String> appSet;
+    private static final boolean NATIVE_HOOKING = true;
     private Set<String> keywordSet;
     private Set<String> commandSet;
     private Set<String> libnameSet;
@@ -48,20 +48,26 @@ public class RootCloak implements IXposedHookLoadPackage {
 
     public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
         isRootCloakLoadingPref = true;
-        Set<String> tmpAppSet = loadSetFromPrefs(Common.APPS); // Load prefs for any app. This way we can determine if it matches the list of apps to hide root from.
+        Set<String> appSet = loadSetFromPrefs(Common.APPS); // Load prefs for any app. This way we can determine if it matches the list of apps to hide root from.
 //		if (debugPref) {
 //			XposedBridge.log("Found app: " + lpparam.packageName);
 //		}
 
-        if (!(tmpAppSet.contains(lpparam.packageName))) { // If the app doesn't match, don't hook into anything, and just return.
+        if (NATIVE_HOOKING && "android".equals(lpparam.packageName)) {
+            // for pm utility
+            keywordSet = loadSetFromPrefs(Common.KEYWORDS);
+            initSettings();
+            initPackageManager(lpparam);
+        }
+        
+        if (!(appSet.contains(lpparam.packageName))) { // If the app doesn't match, don't hook into anything, and just return.
             isRootCloakLoadingPref = false;
+            return;
         } else {
-            appSet = tmpAppSet;
             keywordSet = loadSetFromPrefs(Common.KEYWORDS);
             commandSet = loadSetFromPrefs(Common.COMMANDS);
             libnameSet = loadSetFromPrefs(Common.LIBRARIES);
             initSettings();
-            isRootCloakLoadingPref = false;
 
             if (debugPref) {
                 XposedBridge.log("Loaded app: " + lpparam.packageName);
@@ -76,6 +82,8 @@ public class RootCloak implements IXposedHookLoadPackage {
             initProcessBuilder(lpparam);
             initSettingsGlobal(lpparam);
         }
+        
+        isRootCloakLoadingPref = false;
     }
 
     /**
