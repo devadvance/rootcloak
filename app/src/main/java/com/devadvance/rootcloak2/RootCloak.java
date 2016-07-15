@@ -39,7 +39,6 @@ public class RootCloak implements IXposedHookLoadPackage {
     private static final String FAKE_FILE = "FAKEJUNKFILE";
     private static final String FAKE_PACKAGE = "FAKE.JUNK.PACKAGE";
     private static final String FAKE_APPLICATION = "FAKE.JUNK.APPLICATION";
-    private static final boolean NATIVE_HOOKING = true;
     private Set<String> keywordSet;
     private Set<String> commandSet;
     private Set<String> libnameSet;
@@ -53,11 +52,11 @@ public class RootCloak implements IXposedHookLoadPackage {
 //			XposedBridge.log("Found app: " + lpparam.packageName);
 //		}
 
-        if (NATIVE_HOOKING && "android".equals(lpparam.packageName)) {
+        if ("android".equals(lpparam.packageName)) {
             // for pm utility
             keywordSet = loadSetFromPrefs(Common.KEYWORDS);
             initSettings();
-            initPackageManager(lpparam);
+            initPackageManager(lpparam, true);
         }
         
         if (!(appSet.contains(lpparam.packageName))) { // If the app doesn't match, don't hook into anything, and just return.
@@ -242,6 +241,10 @@ public class RootCloak implements IXposedHookLoadPackage {
      * @param lpparam Wraps information about the app being loaded.
      */
     private void initPackageManager(final LoadPackageParam lpparam) {
+        initPackageManager(lpparam, false);
+    }
+    
+    private void initPackageManager(final LoadPackageParam lpparam, boolean shellOnly) {
         /**
          * Hooks getInstalledApplications within the PackageManager.
          * An app can check for other apps this way. In the context of a rooted device, an app may look for SuperSU, Xposed, Superuser, or others.
@@ -254,7 +257,15 @@ public class RootCloak implements IXposedHookLoadPackage {
                 if (debugPref) {
                     XposedBridge.log("Hooked getInstalledApplications");
                 }
-
+                
+                int uid = Binder.getCallingUid();
+                if (debugPref) {
+                    XposedBridge.log("UID: ", uid);
+                }
+                if (shellOnly && (uid == Common.SHELL_UID || uid == Common.ROOT_UID)) {
+                    return;
+                }
+                
                 List<ApplicationInfo> packages = (List<ApplicationInfo>) param.getResult(); // Get the results from the method call
                 Iterator<ApplicationInfo> iter = packages.iterator(); 
                 ApplicationInfo tempAppInfo;
@@ -287,6 +298,14 @@ public class RootCloak implements IXposedHookLoadPackage {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable { // Hook after getInstalledPackages is called
                 if (debugPref) {
                     XposedBridge.log("Hooked getInstalledPackages");
+                }
+                
+                int uid = Binder.getCallingUid();
+                if (debugPref) {
+                    XposedBridge.log("UID: ", uid);
+                }
+                if (shellOnly && (uid == Common.SHELL_UID || uid == Common.ROOT_UID)) {
+                    return;
                 }
 
                 List<PackageInfo> packages = (List<PackageInfo>) param.getResult(); // Get the results from the method call
@@ -322,6 +341,15 @@ public class RootCloak implements IXposedHookLoadPackage {
                 if (debugPref) {
                     XposedBridge.log("Hooked getPackageInfo");
                 }
+                
+                int uid = Binder.getCallingUid();
+                if (debugPref) {
+                    XposedBridge.log("UID: ", uid);
+                }
+                if (shellOnly && (uid == Common.SHELL_UID || uid == Common.ROOT_UID)) {
+                    return;
+                }
+                
                 String name = (String) param.args[0];
 
                 if (name != null && stringContainsFromSet(name, keywordSet)) {
@@ -346,6 +374,14 @@ public class RootCloak implements IXposedHookLoadPackage {
                 String name = (String) param.args[0];
                 if (debugPref) {
                     XposedBridge.log("Hooked getApplicationInfo : " + name);
+                }
+                
+                int uid = Binder.getCallingUid();
+                if (debugPref) {
+                    XposedBridge.log("UID: ", uid);
+                }
+                if (shellOnly && (uid == Common.SHELL_UID || uid == Common.ROOT_UID)) {
+                    return;
                 }
 
                 if (name != null && stringContainsFromSet(name, keywordSet)) {
