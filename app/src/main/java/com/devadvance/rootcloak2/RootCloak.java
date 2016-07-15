@@ -262,7 +262,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 if (debugPref) {
                     XposedBridge.log("UID: ", uid);
                 }
-                if (shellOnly && (uid == Common.SHELL_UID || uid == Common.ROOT_UID)) {
+                if (shellOnly && (uid != Common.SHELL_UID)) {
                     return;
                 }
                 
@@ -304,7 +304,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 if (debugPref) {
                     XposedBridge.log("UID: ", uid);
                 }
-                if (shellOnly && (uid == Common.SHELL_UID || uid == Common.ROOT_UID)) {
+                if (shellOnly && (uid != Common.SHELL_UID)) {
                     return;
                 }
 
@@ -346,7 +346,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 if (debugPref) {
                     XposedBridge.log("UID: ", uid);
                 }
-                if (shellOnly && (uid == Common.SHELL_UID || uid == Common.ROOT_UID)) {
+                if (shellOnly && (uid != Common.SHELL_UID)) {
                     return;
                 }
                 
@@ -380,7 +380,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 if (debugPref) {
                     XposedBridge.log("UID: ", uid);
                 }
-                if (shellOnly && (uid == Common.SHELL_UID || uid == Common.ROOT_UID)) {
+                if (shellOnly && (uid != Common.SHELL_UID)) {
                     return;
                 }
 
