@@ -75,5 +75,7 @@
     <string name="native_app_hooking">Odstrániť natívnu detekciu rootu</string>
     <string name="library_installation">Inštalácia knižnice</string>
     <string name="library_installation_info">Pre fungovanie tejto funkcie je potrebné nainštalovať podpornú knižnicu.</string>
+    <string name="install">Nainštalovať</string>
+    <string name="native_hooking_apps">Odstrániť natívnu detekciu rootu v aplikáciách</string>
 
 </resources>

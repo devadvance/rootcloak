@@ -2,6 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <MultiSelectListPreference
         android:key="native_hooking_apps"
-        android:title="Native hooking for apps" />
+        android:title="@string/native_hooking_apps" />
 
 </PreferenceScreen>
