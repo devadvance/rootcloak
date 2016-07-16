@@ -1,3 +1,9 @@
+/*
+* Initial work and improvements: pyler
+* Main code: NHellFire
+*/
+
+
 #define _GNU_SOURCE
 
 // stat
