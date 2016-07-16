@@ -125,8 +125,9 @@ public class NativeHookingApps extends PreferenceActivity {
 
         public void uninstallLibrary() {
             if (!Shell.SU.available()) {
-                getActivity().finish();
                 Toast.makeText(mContext, R.string.library_uninstallation_failed, Toast.LENGTH_LONG).show();
+                getActivity().finish();
+                return;
             }
 
             Shell.SU.run("rm /data/local/librootcloak.so");
