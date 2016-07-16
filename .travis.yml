@@ -14,6 +14,7 @@ before_script:
     - rm android-ndk-${NDK_VERSION}-linux-x86_64.bin
     - export ANDROID_NDK_HOME=`pwd`/android-ndk-${NDK_VERSION}
     - export PATH=${ANDROID_NDK_HOME}:${PATH}
+    - echo "ndk.dir=$ANDROID_NDK_HOME" > local.properties
 script:
 - 
 - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && ./gradlew AssembleRelease || ./gradlew AssembleUnsigneddebug'
