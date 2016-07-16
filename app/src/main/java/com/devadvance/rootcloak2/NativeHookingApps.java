@@ -57,6 +57,7 @@ public class NativeHookingApps extends PreferenceActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     uninstallLibrary();
+                    getActivity().finish();
                     return false;
                 }
             });
