@@ -103,6 +103,7 @@ public class NativeHookingApps extends PreferenceActivity {
             }
 
             Shell.SU.run("mkdir /data/local/");
+            Shell.SU.run("chmod 755 /data/local/");
             String library = mContext.getApplicationInfo().nativeLibraryDir + File.separator + "librootcloak.so";
             Shell.SU.run("cp '" + library + "' /data/local/");
 
