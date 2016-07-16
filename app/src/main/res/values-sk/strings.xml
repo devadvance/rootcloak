@@ -77,5 +77,9 @@
     <string name="library_installation_info">Pre fungovanie tejto funkcie je potrebné nainštalovať podpornú knižnicu.</string>
     <string name="install">Nainštalovať</string>
     <string name="native_hooking_apps">Odstrániť natívnu detekciu rootu v aplikáciách</string>
+    <string name="library_installation_failed">Inštalácia zlyhala</string>
+    <string name="library_uninstallation_failed">Odinštalácia zlyhala</string>
+    <string name="successfully_uninstalled">Úspešne odinštalované</string>
+    <string name="uninstall_library">Odinštalovať knižnicu</string>
 
 </resources>
