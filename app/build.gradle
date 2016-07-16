@@ -14,6 +14,11 @@ android {
         targetSdkVersion 23
         versionCode 14
         versionName "3.0 beta2"
+        ndk {
+            moduleName "rootcloak"
+            cFlags "-fPIC -shared"
+            ldLibs "log"
+        }
     }
 
     signingConfigs {
