@@ -154,3 +154,26 @@ int execl(const char *path, const char *arg, ...) {
     }
     return (int) original_execl(path, arg);
 }
+
+
+char *strstr(const char *haystack, const char *needle) {
+    if (DEBUG_LOGS) {
+        printf("In our own strstr, opening haystack %s, needle %s\n", haystack, needle);
+        __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "strstr(): haystack %s, needle %s", haystack, needle);
+    }
+
+    if (strcasecmp("su", needle) == 0 || strcasecmp("eu.chainfire.supersu", needle) == 0 ||
+        strcasestr(needle, "package:eu.chainfire.supersu") != NULL || strcasecmp("rootkeeper", needle) == 0 ||
+        strcasecmp("hidemyroot", needle) == 0) {
+        if (DEBUG_LOGS) {
+            __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "strstr(): Hiding su %s", needle);
+        }
+        return NULL;
+    }
+
+    static char *(*original_strstr)(const char*, const char*) = NULL;
+    if (!original_strstr) {
+        original_strstr = dlsym(RTLD_NEXT, "strstr");
+    }
+    return original_strstr(haystack, needle);
+}
