@@ -52,7 +52,7 @@ public class NativeHookingApps extends PreferenceActivity {
             addPreferencesFromResource(R.xml.native_hooking_apps);
             mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-            final Preference uninstallLibrary = (Preference) findPreference("uninstall_library");
+            Preference uninstallLibrary = (Preference) findPreference("uninstall_library");
             uninstallLibrary.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
