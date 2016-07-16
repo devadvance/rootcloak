@@ -43,6 +43,9 @@ public class NativeHookingReceiver extends BroadcastReceiver {
         List<ApplicationInfo> packages = pm
                 .getInstalledApplications(PackageManager.GET_META_DATA);
         for (ApplicationInfo app : packages) {
+            if (!isUserApp(app)) {
+                continue;
+            }
             String property = packageNameToProperty(app.packageName);
             String command = "setprop " + property + " ''";
             Shell.SU.run(command);
@@ -61,5 +64,12 @@ public class NativeHookingReceiver extends BroadcastReceiver {
         }
 
         return property;
+    }
+
+    public boolean isUserApp(ApplicationInfo appInfo) {
+        if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+            return false;
+        }
+        return true;
     }
 }
