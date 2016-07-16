@@ -163,7 +163,7 @@ char *strstr(const char *haystack, const char *needle) {
     }
 
     if (strcasecmp("su", needle) == 0 || strcasecmp("eu.chainfire.supersu", needle) == 0 ||
-        strcasestr(needle, "package:eu.chainfire.supersu") != NULL || strcasecmp("rootkeeper", needle) == 0 ||
+        strcasestr(needle, "eu.chainfire.supersu") != NULL || strcasecmp("rootkeeper", needle) == 0 ||
         strcasecmp("hidemyroot", needle) == 0) {
         if (DEBUG_LOGS) {
             __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "strstr(): Hiding su %s", needle);
