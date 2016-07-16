@@ -3,5 +3,8 @@
     <MultiSelectListPreference
         android:key="native_hooking_apps"
         android:title="@string/native_hooking_apps" />
+    <Preference
+        android:key="uninstall_library"
+        android:title="@string/uninstall_library" />
 
 </PreferenceScreen>

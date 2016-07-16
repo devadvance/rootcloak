@@ -4,8 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -17,6 +20,10 @@ public class NativeHookingReceiver extends BroadcastReceiver {
         if (!Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) && !Common.REFRESH_APPS_INTENT.equals(intent.getAction())) {
             return;
         }
+
+        if (Common.REFRESH_APPS_INTENT.equals(intent.getAction())) {
+            resetNativeHooks(context);
+        }
         applyNativeHooks(context);
     }
 
@@ -27,6 +34,17 @@ public class NativeHookingReceiver extends BroadcastReceiver {
         for (String app : nativeHookingApps) {
             String property = packageNameToProperty(app);
             String command = "setprop " + property + " 'logwrapper /data/local/rootcloak-wrapper.sh'";
+            Shell.SU.run(command);
+        }
+    }
+
+    public void resetNativeHooks(Context context) {
+        PackageManager pm = context.getPackageManager();
+        List<ApplicationInfo> packages = pm
+                .getInstalledApplications(PackageManager.GET_META_DATA);
+        for (ApplicationInfo app : packages) {
+            String property = packageNameToProperty(app.packageName);
+            String command = "setprop " + property + " ''";
             Shell.SU.run(command);
         }
     }
