@@ -8,6 +8,7 @@ android:
   - extra-android-m2repository
   - extra-android-support
 before_install:
+  - NDK_VERSION=r10e
   - wget http://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-x86_64.bin
   - chmod +x android-ndk-$NDK_VERSION-linux-x86_64.bin
   - ./android-ndk-$NDK_VERSION-linux-x86_64.bin | egrep -v ^Extracting
