@@ -98,13 +98,14 @@ public class NativeHookingApps extends PreferenceActivity {
         }
 
         public void installLibrary() {
-            if (!Shell.SU.available()) {
+            String library = mContext.getApplicationInfo().nativeLibraryDir + File.separator + "librootcloak.so";
+
+            if (!Shell.SU.available() || !new File(library).exists()) {
                 Toast.makeText(mContext, R.string.library_installation_failed, Toast.LENGTH_LONG).show();
             }
 
             Shell.SU.run("mkdir /data/local/");
             Shell.SU.run("chmod 755 /data/local/");
-            String library = mContext.getApplicationInfo().nativeLibraryDir + File.separator + "librootcloak.so";
             Shell.SU.run("cp '" + library + "' /data/local/");
 
             String wrapper = "#!/system/bin/sh\n" +
