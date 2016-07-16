@@ -102,6 +102,7 @@ public class NativeHookingApps extends PreferenceActivity {
                 Toast.makeText(mContext, R.string.library_installation_failed, Toast.LENGTH_LONG).show();
             }
 
+            Shell.SU.run("mkdir /data/local/");
             String library = mContext.getApplicationInfo().nativeLibraryDir + File.separator + "librootcloak.so";
             Shell.SU.run("cp '" + library + "' /data/local/");
 
