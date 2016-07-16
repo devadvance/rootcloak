@@ -13,7 +13,12 @@ android {
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 14
-        versionName "3.0 beta1"
+        versionName "3.0 beta2"
+        ndk {
+            moduleName "rootcloak"
+            cFlags "-fPIC -shared"
+            ldLibs "log"
+        }
     }
 
     signingConfigs {
@@ -50,7 +55,7 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs = ['src/main/libs']
-            jni.srcDirs = []
+            jni.srcDirs = ['src/main/jni']
         }
     }
 
