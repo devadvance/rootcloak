@@ -56,5 +56,5 @@ public class DefaultLists {
 
     public static final String[] DEFAULT_COMMAND_LIST = new String[]{"su", "which", "busybox", "pm", "am", "sh", "ps"};
 
-    public static final String[] DEFAULT_LIBNAME_LIST = new String[]{""}; // off
+    public static final String[] DEFAULT_LIBNAME_LIST = new String[]{}; // off
 }
