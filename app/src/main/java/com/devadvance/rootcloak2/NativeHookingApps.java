@@ -68,14 +68,14 @@ public class NativeHookingApps extends PreferenceActivity {
                         .setPositiveButton(R.string.install, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
-                                installLibrary();
+                                installLibrary();;
                             }
                         })
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
-                                Intent refreshApps = new Intent(mContext, SettingsActivity.class);
-                                mContext.sendBroadcast(refreshApps);
+                                getActivity().finish();
+
                             }
                         })
                         .show();
