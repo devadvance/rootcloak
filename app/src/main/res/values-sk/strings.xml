@@ -70,5 +70,7 @@
     <string name="remove_command_title">Odstrániť príkaz</string>
     <string name="remove_keyword_message">Odstrániť toto kľúčové slovo?</string>
     <string name="remove_keyword_title">Odstrániť kľúčové slovo</string>
+    <string name="turn_off_debug">Vypnúť ladenie</string>
+    <string name="turn_on_debug">Zapnúť ladenie</string>
 
 </resources>
