@@ -83,5 +83,7 @@
     <string name="library_installation_failed">Installation failed</string>
     <string name="library_uninstallation_failed">Uninstallation failed</string>
     <string name="successfully_uninstalled">Successfully uninstalled</string>
+    <string name="turn_off_debug">Turn Off Debug</string>
+    <string name="turn_on_debug">Turn On Debug</string>
 
 </resources>
