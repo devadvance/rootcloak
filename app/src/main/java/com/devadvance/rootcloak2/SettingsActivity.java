@@ -37,11 +37,29 @@ public class SettingsActivity extends ListActivity {
 
         instructionsTitle = res.getString(R.string.instructions_title);
 
+        sharedPref = getSharedPreferences(Common.PREFS_SETTINGS, MODE_WORLD_READABLE);
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, menuItems);
         setListAdapter(adapter);
 
         sharedPref = getSharedPreferences(Common.PREFS_SETTINGS, MODE_WORLD_READABLE);
+
+        refreshDebugSettingLabel();
+
+    }
+
+    public void refreshDebugSettingLabel() {
+        boolean debugPref = sharedPref.getBoolean(Common.DEBUG_KEY, false);
+        if (debugPref) {
+            menuItems[5] = getString(R.string.turn_off_debug);
+        } else {
+            menuItems[5] = getString(R.string.turn_on_debug);
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, menuItems);
+        setListAdapter(adapter);
     }
 
     public void onListItemClick(ListView parent, View v, int position, long id) {
@@ -82,7 +100,8 @@ public class SettingsActivity extends ListActivity {
                         .apply();
                 String debugStatus = getString(debugPref ? R.string.debug_on : R.string.debug_off);
                 Log.d(LOG_TAG, debugStatus);
-                Toast.makeText(getApplicationContext(), debugStatus, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), debugStatus, Toast.LENGTH_SHORT).show();
+                refreshDebugSettingLabel();
                 break;
             case 6:
                 String aboutMsg = getString(R.string.app_name) + ": " + BuildConfig.VERSION_NAME; //TODO!
