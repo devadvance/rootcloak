@@ -6,7 +6,6 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,11 +37,29 @@ public class SettingsActivity extends ListActivity {
 
         instructionsTitle = res.getString(R.string.instructions_title);
 
+        sharedPref = getSharedPreferences(Common.PREFS_SETTINGS, MODE_WORLD_READABLE);
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, menuItems);
         setListAdapter(adapter);
 
         sharedPref = getSharedPreferences(Common.PREFS_SETTINGS, MODE_WORLD_READABLE);
+
+        refreshDebugSettingLabel();
+
+    }
+
+    public void refreshDebugSettingLabel() {
+        boolean debugPref = sharedPref.getBoolean(Common.DEBUG_KEY, false);
+        if (debugPref) {
+            menuItems[5] = getString(R.string.turn_off_debug);
+        } else {
+            menuItems[5] = getString(R.string.turn_on_debug);
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, menuItems);
+        setListAdapter(adapter);
     }
 
     public void onListItemClick(ListView parent, View v, int position, long id) {
@@ -61,6 +78,10 @@ public class SettingsActivity extends ListActivity {
                 startActivity(intent);
                 break;
             case 3:
+                intent = new Intent(this, NativeHookingApps.class);
+                startActivity(intent);
+                break;
+            case 4:
                 new AlertDialog.Builder(this)
                         .setMessage(instructionsString)
                         .setTitle(instructionsTitle)
@@ -71,7 +92,7 @@ public class SettingsActivity extends ListActivity {
                         })
                         .show();
                 break;
-            case 4:
+            case 5:
                 boolean debugPref = sharedPref.getBoolean(Common.DEBUG_KEY, false);
                 debugPref = !debugPref;
                 sharedPref.edit()
@@ -79,9 +100,10 @@ public class SettingsActivity extends ListActivity {
                         .apply();
                 String debugStatus = getString(debugPref ? R.string.debug_on : R.string.debug_off);
                 Log.d(LOG_TAG, debugStatus);
-                Toast.makeText(getApplicationContext(), debugStatus, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), debugStatus, Toast.LENGTH_SHORT).show();
+                refreshDebugSettingLabel();
                 break;
-            case 5:
+            case 6:
                 String aboutMsg = getString(R.string.app_name) + ": " + BuildConfig.VERSION_NAME; //TODO!
                 new AlertDialog.Builder(this)
                         .setMessage(aboutMsg)
