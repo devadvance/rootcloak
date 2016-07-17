@@ -168,8 +168,13 @@ char *strstr(const char *haystack, const char *needle) {
         __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "strstr(): haystack %s, needle %s", haystack, needle);
     }
 
-    if (strcasecmp("su", needle) == 0 || strcasestr(needle, "supersu") != NULL ||
-        strcasestr(needle, "rootkeeper") != NULL || strcasestr(needle, "hidemyroot") != NULL) {
+    static char *(*original_strcasestr)(const char*, const char*) = NULL;
+    if (!original_strcasestr) {
+        original_strcasestr = dlsym(RTLD_NEXT, "strcasestr");
+    }
+
+    if (strcasecmp("su", needle) == 0 || original_strcasestr(needle, "supersu") != NULL ||
+        original_strcasestr(needle, "rootkeeper") != NULL || original_strcasestr(needle, "hidemyroot") != NULL) {
         if (DEBUG_LOGS) {
             __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "strstr(): Hiding su %s", needle);
         }
@@ -181,4 +186,26 @@ char *strstr(const char *haystack, const char *needle) {
         original_strstr = dlsym(RTLD_NEXT, "strstr");
     }
     return original_strstr(haystack, needle);
+}
+
+char *strcasestr(const char *haystack, const char *needle) {
+    if (DEBUG_LOGS) {
+        printf("In our own strcasestr, haystack %s, needle %s\n", haystack, needle);
+        __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "strcasestr(): haystack %s, needle %s", haystack, needle);
+    }
+
+    static char *(*original_strcasestr)(const char*, const char*) = NULL;
+    if (!original_strcasestr) {
+        original_strcasestr = dlsym(RTLD_NEXT, "strcasestr");
+    }
+
+    if (strcasecmp("su", needle) == 0 || original_strcasestr(needle, "supersu") != NULL ||
+        original_strcasestr(needle, "rootkeeper") != NULL || original_strcasestr(needle, "hidemyroot") != NULL) {
+        if (DEBUG_LOGS) {
+            __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "strcasestr(): Hiding su %s", needle);
+        }
+        return NULL;
+    }
+
+    return original_strcasestr(haystack, needle);
 }
