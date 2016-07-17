@@ -72,5 +72,7 @@
     <string name="reset">Reset</string>
     <string name="about">About</string>
     <string name="clear">Clear</string>
+    <string name="turn_off_debug">Turn Off Debug</string>
+    <string name="turn_on_debug">Turn On Debug</string>
 
 </resources>
