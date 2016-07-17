@@ -46,7 +46,7 @@ FILE *fopen(const char *path, const char *mode) {
         return NULL;
     }
 
-    static int *(*original_fopen)(const char*, const char*) = NULL;
+    static FILE *(*original_fopen)(const char*, const char*) = NULL;
     if (!original_fopen) {
         original_fopen = dlsym(RTLD_NEXT, "fopen");
     }
@@ -69,11 +69,11 @@ int open(const char *path, int oflag, ... ) {
         return -1;
     }
 
-    static FILE *(*original_open)(const char *path, int oflag, ... ) = NULL;
+    static int *(*original_open)(const char *path, int oflag, ... ) = NULL;
     if (!original_open) {
         original_open = dlsym(RTLD_NEXT, "open");
     }
-    return original_open(path, oflag);
+    return (int) original_open(path, oflag);
 }
 
 
