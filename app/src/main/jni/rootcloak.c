@@ -69,7 +69,7 @@ int open(const char *path, int oflag, ... ) {
         return -1;
     }
 
-    static int *(*original_open)(const char *path, int oflag, ... ) = NULL;
+    static int (*original_open)(const char *path, int oflag, ... ) = NULL;
     if (!original_open) {
         original_open = dlsym(RTLD_NEXT, "open");
     }
