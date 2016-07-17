@@ -24,6 +24,26 @@
 
 #define DEBUG_LOGS 0 // 1 to enable logs
 
+int fname_is_blacklisted (const char *fname) {
+    if (strcasecmp("su", fname) == 0 || strcasecmp("daemonsu", fname) == 0 || strcasecmp("superuser.apk", fname) == 0) {
+		return 1;
+	}
+	return 0;
+}
+
+int str_is_blacklisted (const char *needle) {
+    static char *(*original_strcasestr)(const char*, const char*) = NULL;
+    if (!original_strcasestr) {
+        original_strcasestr = dlsym(RTLD_NEXT, "strcasestr");
+    }
+
+    if (strcasecmp("su", needle) == 0 || original_strcasestr(needle, "supersu") != NULL ||
+        original_strcasestr(needle, "rootkeeper") != NULL || original_strcasestr(needle, "hidemyroot") != NULL) {
+        return 1;
+    }
+    return 0;
+}
+
 
 FILE *fopen(const char *path, const char *mode) {
     if (DEBUG_LOGS) {
@@ -33,7 +53,7 @@ FILE *fopen(const char *path, const char *mode) {
 
     char *fname = basename(path);
 
-    if (strcasecmp("su", fname) == 0 || strcasecmp("daemonsu", fname) == 0 || strcasecmp("superuser.apk", fname) == 0) {
+    if (fname_is_blacklisted(fname)) {
         if (DEBUG_LOGS) {
         __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "fopen(): Hiding su file %s", path);
         }
@@ -57,7 +77,7 @@ int stat(const char *path, struct stat *buf) {
 
     char *fname = basename(path);
 
-    if (strcasecmp("su", fname) == 0 || strcasecmp("daemonsu", fname) == 0 || strcasecmp("superuser.apk", fname) == 0) {
+    if (fname_is_blacklisted(fname)) {
         if (DEBUG_LOGS) {
             __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "stat(): Hiding su file %s", path);
         }
@@ -81,7 +101,7 @@ int lstat(const char *path, struct stat *buf) {
 
     char *fname = basename(path);
 
-    if (strcasecmp("su", fname) == 0 || strcasecmp("daemonsu", fname) == 0 || strcasecmp("superuser.apk", fname) == 0) {
+	if (fname_is_blacklisted(fname)) {
         if (DEBUG_LOGS) {
         __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "stat(): Hiding su file %s", path);
         }
@@ -120,7 +140,7 @@ struct dirent *readdir(DIR *dirp) {
 
     unsigned int found = 0;
     do {
-        if (strcasecmp("su", ret->d_name) == 0 || strcasecmp("daemonsu", ret->d_name) == 0 || strcasecmp("superuser.apk", ret->d_name) == 0) {
+		if (fname_is_blacklisted(ret->d_name)) {
             if (DEBUG_LOGS) {
                 printf("Found su file, reading next...");
             }
@@ -145,7 +165,7 @@ int execl(const char *path, const char *arg, ...) {
 
     char *fname = basename(path);
 
-    if (strcasecmp("su", fname) == 0 || strcasecmp("daemonsu", fname) == 0 || strcasecmp("superuser.apk", fname) == 0) {
+    if (fname_is_blacklisted(fname)) {
         if (DEBUG_LOGS) {
             __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "execl(): Hiding su file %s", path);
         }
@@ -168,13 +188,7 @@ char *strstr(const char *haystack, const char *needle) {
         __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "strstr(): haystack %s, needle %s", haystack, needle);
     }
 
-    static char *(*original_strcasestr)(const char*, const char*) = NULL;
-    if (!original_strcasestr) {
-        original_strcasestr = dlsym(RTLD_NEXT, "strcasestr");
-    }
-
-    if (strcasecmp("su", needle) == 0 || original_strcasestr(needle, "supersu") != NULL ||
-        original_strcasestr(needle, "rootkeeper") != NULL || original_strcasestr(needle, "hidemyroot") != NULL) {
+    if (str_is_blacklisted(needle)) {
         if (DEBUG_LOGS) {
             __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "strstr(): Hiding su %s", needle);
         }
@@ -199,8 +213,7 @@ char *strcasestr(const char *haystack, const char *needle) {
         original_strcasestr = dlsym(RTLD_NEXT, "strcasestr");
     }
 
-    if (strcasecmp("su", needle) == 0 || original_strcasestr(needle, "supersu") != NULL ||
-        original_strcasestr(needle, "rootkeeper") != NULL || original_strcasestr(needle, "hidemyroot") != NULL) {
+    if (str_is_blacklisted(needle)) {
         if (DEBUG_LOGS) {
             __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "strcasestr(): Hiding su %s", needle);
         }
