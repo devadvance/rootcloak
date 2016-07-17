@@ -81,5 +81,7 @@
     <string name="library_uninstallation_failed">Odinštalácia zlyhala</string>
     <string name="successfully_uninstalled">Úspešne odinštalované</string>
     <string name="uninstall_library">Odinštalovať knižnicu</string>
+    <string name="turn_off_debug">Vypnúť ladenie</string>
+    <string name="turn_on_debug">Zapnúť ladenie</string>
 
 </resources>
