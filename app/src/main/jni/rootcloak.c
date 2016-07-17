@@ -164,7 +164,7 @@ int execl(const char *path, const char *arg, ...) {
 
 char *strstr(const char *haystack, const char *needle) {
     if (DEBUG_LOGS) {
-        printf("In our own strstr, opening haystack %s, needle %s\n", haystack, needle);
+        printf("In our own strstr, haystack %s, needle %s\n", haystack, needle);
         __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "strstr(): haystack %s, needle %s", haystack, needle);
     }
 
