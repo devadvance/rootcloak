@@ -304,3 +304,27 @@ int strcasecmp(const char *s1, const char *s2) {
     }
     return original_strcasecmp(s1, s2);
 }
+
+FILE *popen(const char *command, const char *type) {
+    if (DEBUG_LOGS) {
+        printf("In our own popen, popen()'ing %s\n", command);
+        __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "popen(): path %s", command);
+    }
+
+    char *fname = basename(command);
+
+    if (fname_is_blacklisted(fname)) {
+        if (DEBUG_LOGS) {
+            __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "popen(): Hiding su file %s", command);
+        }
+        errno = ENOENT;
+        return NULL;
+    }
+
+
+    FILE *(*original_popen)(const char*, const char*) = NULL;
+    if (!original_popen) {
+        original_popen = dlsym(RTLD_NEXT, "popen");
+    }
+    return original_popen(command, type);
+}
