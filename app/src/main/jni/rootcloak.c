@@ -244,7 +244,7 @@ char *strcasestr(const char *haystack, const char *needle) {
 
     if (str_is_blacklisted(needle)) {
         if (DEBUG_LOGS) {
-            __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "strcasestr(): Hiding su", needle);
+            __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "strcasestr(): Hiding su %s", needle);
         }
         return NULL;
     }
