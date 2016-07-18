@@ -36,7 +36,7 @@ char *rootcloak_strcasestr(const char *haystack, const char *needle) {
 }
 
 int rootcloak_strcasecmp(const char *s1, const char *s2) {
-    static int (*original_strcasecmp)(const char *s1, const char *s2) = NULL;
+    static int (*original_strcasecmp)(const char*, const char*) = NULL;
     if (!original_strcasecmp) {
         original_strcasecmp = dlsym(RTLD_NEXT, "strcasecmp");
     }
@@ -133,14 +133,14 @@ int stat(const char *path, struct stat *buf) {
 int lstat(const char *path, struct stat *buf) {
     if (DEBUG_LOGS) {
         printf("In our own lstat, lstat()'ing %s\n", path);
-        __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "stat(): path %s", path);
+        __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "lstat(): path %s", path);
     }
 
     char *fname = basename(path);
 
     if (fname_is_blacklisted(fname)) {
         if (DEBUG_LOGS) {
-            __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "stat(): Hiding su file %s", path);
+            __android_log_print(ANDROID_LOG_INFO, "ROOTCLOAK", "lstat(): Hiding su file %s", path);
         }
         errno = ENOENT;
         return -1;
@@ -294,7 +294,7 @@ int strcasecmp(const char *s1, const char *s2) {
         return -1;
     }
 
-    static int (*original_strcasecmp)(const char *s1, const char *s2) = NULL;
+    static int (*original_strcasecmp)(const char*, const char*) = NULL;
     if (!original_strcasecmp) {
         original_strcasecmp = dlsym(RTLD_NEXT, "strcasecmp");
     }
