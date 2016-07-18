@@ -52,7 +52,8 @@ int fname_is_blacklisted (const char *fname) {
 
 int str_is_blacklisted (const char *needle) {
     if (rootcloak_strcasecmp("su", needle) == 0 || rootcloak_strcasestr(needle, "supersu") != NULL ||
-            rootcloak_strcasestr(needle, "rootkeeper") != NULL || rootcloak_strcasestr(needle, "hidemyroot") != NULL) {
+        rootcloak_strcasestr(needle, "rootkeeper") != NULL || rootcloak_strcasestr(needle, "hidemyroot") != NULL ||
+        rootcloak_strcasestr(needle, "rootcloak") != NULL) {
         return 1;
     }
     return 0;
@@ -322,7 +323,7 @@ FILE *popen(const char *command, const char *type) {
     }
 
 
-    FILE *(*original_popen)(const char*, const char*) = NULL;
+    static FILE *(*original_popen)(const char*, const char*) = NULL;
     if (!original_popen) {
         original_popen = dlsym(RTLD_NEXT, "popen");
     }
