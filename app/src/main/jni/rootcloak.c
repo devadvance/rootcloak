@@ -148,6 +148,7 @@ struct dirent *readdir(DIR *dirp) {
             if (DEBUG_LOGS) {
                 printf(" done!\n");
             }
+            found = 1;
         } else {
             found = 0;
         }
