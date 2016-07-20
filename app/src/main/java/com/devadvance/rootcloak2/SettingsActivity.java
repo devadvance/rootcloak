@@ -1,9 +1,10 @@
 package com.devadvance.rootcloak2;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -11,13 +12,16 @@ import android.preference.PreferenceActivity;
 
 @SuppressWarnings("deprecation")
 public class SettingsActivity extends PreferenceActivity {
-    public static Context mContext;
+
+    @SuppressLint("WorldReadableFiles")
+    @Override
+    public SharedPreferences getSharedPreferences(String name, int mode) {
+        return getApplicationContext().getSharedPreferences(Common.PREFS_SETTINGS, MODE_WORLD_READABLE);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getApplicationContext();
-
         getPreferenceManager()
                 .setSharedPreferencesMode(MODE_WORLD_READABLE);
         addPreferencesFromResource(R.xml.preferences);
@@ -26,7 +30,7 @@ public class SettingsActivity extends PreferenceActivity {
         manageApps.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent(mContext, CustomizeApps.class);
+                Intent intent = new Intent(SettingsActivity.this, CustomizeApps.class);
                 startActivity(intent);
                 return false;
             }
@@ -36,7 +40,7 @@ public class SettingsActivity extends PreferenceActivity {
         manageKeywords.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent(mContext, CustomizeKeywords.class);
+                Intent intent = new Intent(SettingsActivity.this, CustomizeKeywords.class);
                 startActivity(intent);
                 return false;
             }
@@ -46,7 +50,7 @@ public class SettingsActivity extends PreferenceActivity {
         manageCommands.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent(mContext, CustomizeCommands.class);
+                Intent intent = new Intent(SettingsActivity.this, CustomizeCommands.class);
                 startActivity(intent);
                 return false;
             }
@@ -79,7 +83,7 @@ public class SettingsActivity extends PreferenceActivity {
         nativeRootDetection.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent(mContext, NativeRootDetection.class);
+                Intent intent = new Intent(SettingsActivity.this, NativeRootDetection.class);
                 startActivity(intent);
                 return false;
             }

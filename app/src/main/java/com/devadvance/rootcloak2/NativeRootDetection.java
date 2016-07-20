@@ -2,7 +2,6 @@ package com.devadvance.rootcloak2;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,13 +26,11 @@ import eu.chainfire.libsuperuser.Shell;
 
 @SuppressWarnings("deprecation")
 public class NativeRootDetection extends PreferenceActivity {
-    public static Context mContext;
-    public static SharedPreferences mPrefs;
+    private static SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getApplicationContext();
 
         ActionBar ab = getActionBar();
         if (ab != null) ab.setDisplayHomeAsUpEnabled(true);
@@ -41,7 +38,7 @@ public class NativeRootDetection extends PreferenceActivity {
         getPreferenceManager()
                 .setSharedPreferencesMode(MODE_WORLD_READABLE);
         addPreferencesFromResource(R.xml.native_root_detection);
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         Preference uninstallLibrary = findPreference("uninstall_library");
         uninstallLibrary.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -53,7 +50,7 @@ public class NativeRootDetection extends PreferenceActivity {
             }
         });
 
-        if (!mPrefs.getBoolean("installed", false)) {
+        if (!mPrefs.getBoolean("native_library_installed", false)) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.library_installation_info)
                     .setTitle(R.string.library_installation)
@@ -78,10 +75,10 @@ public class NativeRootDetection extends PreferenceActivity {
 
 
     public void installLibrary() {
-        String library = mContext.getApplicationInfo().nativeLibraryDir + File.separator + "librootcloak.so";
+        String library = getApplicationInfo().nativeLibraryDir + File.separator + "librootcloak.so";
 
         if (!Shell.SU.available() || !new File(library).exists()) {
-            Toast.makeText(mContext, R.string.library_installation_failed, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.library_installation_failed, Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -98,14 +95,14 @@ public class NativeRootDetection extends PreferenceActivity {
         Shell.SU.run("chmod 755 /data/local/librootcloak.so");
         Shell.SU.run("chmod 755 /data/local/rootcloak-wrapper.sh");
 
-        Toast.makeText(mContext, R.string.successfully_installed, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.successfully_installed, Toast.LENGTH_LONG).show();
 
-        mPrefs.edit().putBoolean("installed", true).apply();
+        mPrefs.edit().putBoolean("native_library_installed", true).apply();
     }
 
     public void uninstallLibrary() {
         if (!Shell.SU.available()) {
-            Toast.makeText(mContext, R.string.library_uninstallation_failed, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.library_uninstallation_failed, Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -113,12 +110,12 @@ public class NativeRootDetection extends PreferenceActivity {
         Shell.SU.run("rm /data/local/librootcloak.so");
         Shell.SU.run("rm /data/local/rootcloak-wrapper.sh");
 
-        Toast.makeText(mContext, R.string.successfully_uninstalled, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.successfully_uninstalled, Toast.LENGTH_LONG).show();
 
         mPrefs.edit().putStringSet("remove_native_root_detection_apps", new HashSet<String>()).apply();
-        mPrefs.edit().putBoolean("installed", false).apply();
+        mPrefs.edit().putBoolean("native_library_installed", false).apply();
         Intent refreshApps = new Intent(Common.REFRESH_APPS_INTENT);
-        mContext.sendBroadcast(refreshApps);
+        sendBroadcast(refreshApps);
     }
 
 
@@ -135,7 +132,7 @@ public class NativeRootDetection extends PreferenceActivity {
         MultiSelectListPreference removeNativeRootDetectionApps = (MultiSelectListPreference) findPreference("remove_native_root_detection_apps");
         List<CharSequence> appNames = new ArrayList<>();
         List<CharSequence> packageNames = new ArrayList<>();
-        PackageManager pm = mContext.getPackageManager();
+        PackageManager pm = getPackageManager();
         List<ApplicationInfo> packages = pm
                 .getInstalledApplications(PackageManager.GET_META_DATA);
 
@@ -152,7 +149,7 @@ public class NativeRootDetection extends PreferenceActivity {
                 if (isUserApp(app)) {
                     sortedApps.add(new String[]{
                             app.packageName,
-                            app.loadLabel(mContext.getPackageManager())
+                            app.loadLabel(pm)
                                     .toString()});
                 }
             }
@@ -184,7 +181,7 @@ public class NativeRootDetection extends PreferenceActivity {
                 public boolean onPreferenceChange(
                         Preference preference, Object newValue) {
                     Intent refreshApps = new Intent(Common.REFRESH_APPS_INTENT);
-                    mContext.sendBroadcast(refreshApps);
+                    sendBroadcast(refreshApps);
                     return true;
                 }
             });
