@@ -26,7 +26,7 @@ import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
 
-public class NativeHookingApps extends PreferenceActivity {
+public class NativeRootDetection extends PreferenceActivity {
     public static Context mContext;
     public static SharedPreferences mPrefs;
 
@@ -49,7 +49,7 @@ public class NativeHookingApps extends PreferenceActivity {
             super.onCreate(savedInstanceState);
             getPreferenceManager()
                     .setSharedPreferencesMode(MODE_WORLD_READABLE);
-            addPreferencesFromResource(R.xml.native_hooking_apps);
+            addPreferencesFromResource(R.xml.native_root_detection);
             mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
             Preference uninstallLibrary = (Preference) findPreference("uninstall_library");
@@ -72,7 +72,7 @@ public class NativeHookingApps extends PreferenceActivity {
                                 installLibrary();;
                             }
                         })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                                 getActivity().finish();
@@ -136,7 +136,7 @@ public class NativeHookingApps extends PreferenceActivity {
 
             Toast.makeText(mContext, R.string.successfully_uninstalled, Toast.LENGTH_LONG).show();
 
-            mPrefs.edit().putStringSet("native_hooking_apps", new HashSet<String>()).apply();
+            mPrefs.edit().putStringSet("remove_native_root_detection_apps", new HashSet<String>()).apply();
             mPrefs.edit().putBoolean("installed", false).apply();
             Intent refreshApps = new Intent(Common.REFRESH_APPS_INTENT);
             mContext.sendBroadcast(refreshApps);
@@ -156,7 +156,7 @@ public class NativeHookingApps extends PreferenceActivity {
         }
 
         public class LoadApps extends AsyncTask<Void, Void, Void> {
-            MultiSelectListPreference nativeHookingApps = (MultiSelectListPreference) findPreference("native_hooking_apps");
+            MultiSelectListPreference nativeHookingApps = (MultiSelectListPreference) findPreference("remove_native_root_detection_apps");
             List<CharSequence> appNames = new ArrayList<CharSequence>();
             List<CharSequence> packageNames = new ArrayList<CharSequence>();
             PackageManager pm = mContext.getPackageManager();

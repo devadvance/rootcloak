@@ -13,7 +13,7 @@ import java.util.Set;
 
 import eu.chainfire.libsuperuser.Shell;
 
-public class NativeHookingReceiver extends BroadcastReceiver {
+public class NativeRootDetectionReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent == null) return;
@@ -29,7 +29,7 @@ public class NativeHookingReceiver extends BroadcastReceiver {
 
     public void applyNativeHooks(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(Common.PREFS_NAME, Context.MODE_WORLD_READABLE);
-        Set<String> nativeHookingApps = prefs.getStringSet("native_hooking_apps",
+        Set<String> nativeHookingApps = prefs.getStringSet("remove_native_root_detection_apps",
                 new HashSet<String>());
         for (String app : nativeHookingApps) {
             String property = packageNameToProperty(app);

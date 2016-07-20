@@ -30,8 +30,8 @@
         </activity>
 
         <activity
-            android:name="com.devadvance.rootcloak2.NativeHookingApps"
-            android:label="@string/native_app_hooking"
+            android:name="com.devadvance.rootcloak2.NativeRootDetection"
+            android:label="@string/native_root_detection"
             android:parentActivityName="com.devadvance.rootcloak2.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -65,7 +65,7 @@
                 android:value="com.devadvance.rootcloak2.SettingsActivity" />
         </activity>
 
-        <receiver android:name="com.devadvance.rootcloak2.NativeHookingReceiver">
+        <receiver android:name="com.devadvance.rootcloak2.NativeRootDetectionReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="com.devadvance.rootcloak2.REFRESH_APPS" />
