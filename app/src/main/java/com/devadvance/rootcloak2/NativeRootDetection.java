@@ -139,6 +139,7 @@ public class NativeRootDetection extends PreferenceActivity {
         @Override
         protected void onPreExecute() {
             removeNativeRootDetectionApps.setEnabled(false);
+            removeNativeRootDetectionApps.setSummary(R.string.loading_apps);
         }
 
         @Override
@@ -190,6 +191,7 @@ public class NativeRootDetection extends PreferenceActivity {
             removeNativeRootDetectionApps.setEntryValues(packageNamesList);
 
             removeNativeRootDetectionApps.setEnabled(true);
+            removeNativeRootDetectionApps.setSummary(null);
         }
     }
 }
