@@ -27,7 +27,9 @@ android {
     }
 
     lintOptions {
-        abortOnError false
+        disable 'MissingTranslation'
+        disable 'ManifestResource'
+        disable 'ExtraTranslation'
     }
 
     buildTypes {
