@@ -72,5 +72,6 @@
     <string name="manage_keywords">Spravovať kľúčové slová</string>
     <string name="native_root_detection">Natívna detekcia rootu</string>
     <string name="debug_logs">Záznamy pre ladenie</string>
+    <string name="app_launcher_icon">Ikona v spúšťači aplikácií</string>
 
 </resources>

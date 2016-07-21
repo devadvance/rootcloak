@@ -2,9 +2,11 @@ package com.devadvance.rootcloak2;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -88,6 +90,25 @@ public class SettingsActivity extends PreferenceActivity {
                 return false;
             }
         });
+
+        Preference appLauncherIcon = findPreference("app_launcher_icon");
+        appLauncherIcon.setOnPreferenceChangeListener(
+                new Preference.OnPreferenceChangeListener() {
+
+                    @Override
+                    public boolean onPreferenceChange(Preference preference,
+                                                      Object newValue) {
+                        PackageManager packageManager = getPackageManager();
+                        int state = (boolean) newValue ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                                : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+                        String settings = Common.PACKAGE_NAME + ".Settings";
+                        ComponentName alias = new ComponentName(SettingsActivity.this, settings);
+                        packageManager.setComponentEnabledSetting(alias, state,
+                                PackageManager.DONT_KILL_APP);
+                        return true;
+                    }
+                });
+
 
         Preference about = findPreference("about");
         about.setSummary("RootCloak v" + BuildConfig.VERSION_NAME);

@@ -74,5 +74,6 @@
     <string name="manage_apps">Manage Apps</string>
     <string name="manage_keywords">Manage Keywords</string>
     <string name="manage_commands">Manage Commands</string>
+    <string name="app_launcher_icon">App Launcher Icon</string>
 
 </resources>
