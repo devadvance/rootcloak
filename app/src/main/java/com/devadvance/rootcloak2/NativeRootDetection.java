@@ -124,10 +124,6 @@ public class NativeRootDetection extends PreferenceActivity {
     }
 
 
-    public boolean isUserApp(ApplicationInfo appInfo) {
-        return (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0;
-    }
-
     public class LoadApps extends AsyncTask<Void, Void, Void> {
         MultiSelectListPreference removeNativeRootDetectionApps = (MultiSelectListPreference) findPreference("remove_native_root_detection_apps");
         List<CharSequence> appNames = new ArrayList<>();
@@ -147,7 +143,7 @@ public class NativeRootDetection extends PreferenceActivity {
             List<String[]> sortedApps = new ArrayList<>();
 
             for (ApplicationInfo app : packages) {
-                if (isUserApp(app)) {
+                if (Common.isUserApp(app)) {
                     sortedApps.add(new String[]{
                             app.packageName,
                             app.loadLabel(pm)

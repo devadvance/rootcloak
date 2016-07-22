@@ -3,6 +3,7 @@ package com.devadvance.rootcloak2;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.preference.PreferenceActivity;
 
 import java.util.Arrays;
@@ -15,7 +16,6 @@ public class Common {
     public static final String FIRST_RUN_KEY = Common.PACKAGE_NAME + "IS_FIRST_RUN";
     public static final String DEBUG_KEY = Common.PACKAGE_NAME + "DEBUGGERPREF";
     public static final String SHOW_WARNING = "SHOW_WARNING";
-    public static final String PREFS_NAME = PACKAGE_NAME + "_preferences";
 
     public static final PrefSet APPS = new AppsSet();
     public static final PrefSet KEYWORDS = new KeywordSet();
@@ -23,6 +23,16 @@ public class Common {
     public static final PrefSet LIBRARIES = new LibrarySet();
 
     public static final String REFRESH_APPS_INTENT = "com.devadvance.rootcloak2.REFRESH_APPS";
+
+    public static boolean isUserApp(ApplicationInfo appInfo) {
+        /* Hide RootCloak */
+        if (BuildConfig.APPLICATION_ID.equals(appInfo.packageName)) return false;
+
+        if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+            return false;
+        }
+        return true;
+    }
 
     public static abstract class PrefSet {
         abstract String getPrefKey();
