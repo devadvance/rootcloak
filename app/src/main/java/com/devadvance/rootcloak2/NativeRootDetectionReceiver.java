@@ -35,6 +35,7 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
             String property = packageNameToProperty(app);
             String command = "setprop " + property + " 'logwrapper /data/local/rootcloak-wrapper.sh'";
             Shell.SU.run(command);
+            Shell.SU.run("am force-stop " + app);
         }
     }
 
@@ -49,6 +50,7 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
             String property = packageNameToProperty(app.packageName);
             String command = "setprop " + property + " ''";
             Shell.SU.run(command);
+            Shell.SU.run("am force-stop " + app);
         }
     }
 
