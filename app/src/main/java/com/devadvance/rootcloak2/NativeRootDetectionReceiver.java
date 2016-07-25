@@ -28,7 +28,7 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         applyNativeHooks(context);
     }
 
-    private void applyNativeHooks(Context context) {
+    public void applyNativeHooks(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         Set<String> nativeHookingApps = prefs.getStringSet("remove_native_root_detection_apps",
                 new HashSet<String>());
