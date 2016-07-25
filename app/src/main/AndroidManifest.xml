@@ -2,6 +2,8 @@
     package="com.devadvance.rootcloak2"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -25,8 +27,30 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
+            </intent-filter>
+        </activity>
+
+        <activity-alias
+            android:name="com.devadvance.rootcloak2.Settings"
+            android:enabled="true"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/app_name"
+            android:targetActivity="com.devadvance.rootcloak2.SettingsActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity-alias>
+
+        <activity
+            android:name="com.devadvance.rootcloak2.NativeRootDetection"
+            android:label="@string/native_root_detection"
+            android:parentActivityName="com.devadvance.rootcloak2.SettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.devadvance.rootcloak2.SettingsActivity" />
         </activity>
 
         <activity
@@ -55,6 +79,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.devadvance.rootcloak2.SettingsActivity" />
         </activity>
+
+        <receiver android:name="com.devadvance.rootcloak2.NativeRootDetectionReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.devadvance.rootcloak2.REFRESH_APPS" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -31,17 +31,6 @@
     <string name="instructions3">如果應用程式已經在運行, 您必須強往設定將其強制關閉來達到效果.</string>
     <string name="instructions4">您可以自訂您想要隱藏的關鍵字或是指令， RootCloak 藉由使用新增/移除關鍵字，新增/移除指令來隱藏. 這是沒有必要.</string>
 
-    <string-array name="menu_array">
-        <item>新增/移除程式</item>
-        <item>新增/移除由 RootCloak 隱藏的關鍵字</item>
-        <item>新增/移除由 RootCloak 隱藏的指令</item>
-        <item>說明</item>
-        <item>開啟/關閉偵錯</item>
-        <item>About</item>
-    </string-array>
-
-    <string name="ok">確定</string>
-    <string name="cancel">取消</string>
     <string name="title_activity_customize_keywords">自訂關鍵字</string>
     <string name="title_activity_customize_commands">自訂指令</string>
 

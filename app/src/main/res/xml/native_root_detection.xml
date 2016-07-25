@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <MultiSelectListPreference
+        android:key="remove_native_root_detection_apps"
+        android:title="@string/remove_native_root_detection_apps" />
+    <Preference
+        android:key="uninstall_library"
+        android:title="@string/uninstall_library" />
+
+</PreferenceScreen>

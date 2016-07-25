@@ -134,12 +134,12 @@ public class CustomizeCommands extends PreferenceActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeCommands.this)
                 .setTitle(R.string.reset)
                 .setMessage(getString(R.string.reset_keywords))
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         loadDefaults();
                     }
                 });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // Do nothing on cancel
             }
@@ -173,14 +173,14 @@ public class CustomizeCommands extends PreferenceActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeCommands.this)
                 .setTitle(R.string.clear)
                 .setMessage(R.string.clear_all_commands)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         editor.remove(Common.COMMANDS.getSetKey())
                             .apply();
                         loadList();
                     }
                 });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // Do nothing on cancel
             }

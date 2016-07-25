@@ -34,17 +34,6 @@
     <string name="instructions3">If the app is already running, you need to FORCE CLOSE it for the settings to take effect.</string>
     <string name="instructions4">You can customize which keywords and commands RootCloak hides by using the Add/Remove Keywords and Add/Remove Commands options. THIS IS NOT NECESSARY.</string>
 
-    <string-array name="menu_array">
-        <item>Add/Remove Apps</item>
-        <item>Add/Remove Keywords Hidden by RootCloak</item>
-        <item>Add/Remove Commands Hidden by RootCloak</item>
-        <item>Instructions</item>
-        <item>Turn On/Off Debug</item>
-        <item>About</item>
-    </string-array>
-
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
     <string name="title_activity_customize_keywords">Customize Keywords</string>
     <string name="title_activity_customize_commands">Customize Commands</string>
     <string name="remove_app_title">Remove App</string>
@@ -55,8 +44,6 @@
     <string name="input_package_name">Input the app package name:</string>
     <string name="reset_apps">Reset apps to default?</string>
     <string name="clear_all_apps">Proceed to clear all apps?</string>
-    <string name="debug_on">Debug is now on.</string>
-    <string name="debug_off">Debug is now off.</string>
     <string name="remove_command_title">Remove Command</string>
     <string name="remove_command_message">Are you sure you want to remove this command?</string>
     <string name="add_command">Add Command</string>
@@ -72,5 +59,21 @@
     <string name="reset">Reset</string>
     <string name="about">About</string>
     <string name="clear">Clear</string>
+    <string name="native_root_detection">Native Root Detection</string>
+    <string name="successfully_installed">Successfully installed</string>
+    <string name="library_installation">Library installation</string>
+    <string name="install">Install</string>
+    <string name="library_installation_info">We need to install our support native library to make this feature working.</string>
+    <string name="remove_native_root_detection_apps">Remove native root detection for apps</string>
+    <string name="uninstall_library">Uninstall library</string>
+    <string name="library_installation_failed">Installation failed</string>
+    <string name="library_uninstallation_failed">Uninstallation failed</string>
+    <string name="successfully_uninstalled">Successfully uninstalled</string>
+    <string name="instructions">Instructions</string>
+    <string name="debug_logs">Debug Logs</string>
+    <string name="manage_apps">Manage Apps</string>
+    <string name="manage_keywords">Manage Keywords</string>
+    <string name="manage_commands">Manage Commands</string>
+    <string name="app_launcher_icon">App Launcher Icon</string>
 
 </resources>

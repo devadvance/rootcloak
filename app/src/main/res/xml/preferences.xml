@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:key="manage_apps"
+        android:title="@string/manage_apps" />
+    <Preference
+        android:key="manage_keywords"
+        android:title="@string/manage_keywords" />
+    <Preference
+        android:key="manage_commands"
+        android:title="@string/manage_commands" />
+
+    <Preference
+        android:key="native_root_detection"
+        android:title="@string/native_root_detection" />
+
+    <Preference
+        android:key="instructions"
+        android:title="@string/instructions" />
+
+    <CheckBoxPreference
+        android:key="debug_logs"
+        android:title="@string/debug_logs" />
+
+    <CheckBoxPreference
+        android:key="app_launcher_icon"
+        android:defaultValue="true"
+        android:title="@string/app_launcher_icon" />
+
+    <Preference
+        android:key="about"
+        android:title="@string/about" />
+
+</PreferenceScreen>

@@ -31,17 +31,6 @@
     <string name="instructions3">Ak je už aplikácia spustená, je nutné, aby ste ju vynútene ukončili pre aplikovanie nastavenia.</string>
     <string name="instructions4">Môže si prispôsobiť kľúčové slová a príkazy, ktoré má RootCloak skryť, v sekcii Pridať/Odstrániť kľúčové slová a Pridať/Odstrániť príkazy. TOTO NIE JE NUTNÉ.</string>
 
-    <string-array name="menu_array">
-        <item>Pridať/Odstrániť aplikácie</item>
-        <item>Pridať/Odstrániť kľúčové slová</item>
-        <item>Pridať/Odstrániť príkazy</item>
-        <item>Pokyny</item>
-        <item>Zapnúť/Vypnúť ladenie</item>
-        <item>O aplikácii</item>
-    </string-array>
-
-    <string name="ok">OK</string>
-    <string name="cancel">Zrušiť</string>
     <string name="title_activity_customize_keywords">Prispôsobiť kľúčové slová</string>
     <string name="title_activity_customize_commands">Prispôsobiť príkazy</string>
     <string name="about">O aplikácii</string>
@@ -52,9 +41,7 @@
     <string name="clear_all_apps">Vymazať všetky aplikácie</string>
     <string name="clear_all_commands">Vymazať všetky príkazy</string>
     <string name="clear_app_keywords">Vymazať všetky kľúčové slová</string>
-    <string name="debug_off">Ladenie je vypnuté.</string>
     <string name="hide_warning">Skryť toto varovanie</string>
-    <string name="debug_on">Ladenie je zapnuté.</string>
     <string name="input_command">Zadajte príkaz:</string>
     <string name="input_keyword">Zadajte kľúčové slovo:</string>
     <string name="input_package_name">Zadajte názov balíka aplikácie:</string>
@@ -70,5 +57,21 @@
     <string name="remove_command_title">Odstrániť príkaz</string>
     <string name="remove_keyword_message">Odstrániť toto kľúčové slovo?</string>
     <string name="remove_keyword_title">Odstrániť kľúčové slovo</string>
+    <string name="successfully_installed">Úspešne nainštalované</string>
+    <string name="library_installation">Inštalácia knižnice</string>
+    <string name="library_installation_info">Pre fungovanie tejto funkcie je potrebné nainštalovať podpornú knižnicu.</string>
+    <string name="install">Nainštalovať</string>
+    <string name="remove_native_root_detection_apps">Odstrániť natívnu detekciu rootu v aplikáciách</string>
+    <string name="library_installation_failed">Inštalácia zlyhala</string>
+    <string name="library_uninstallation_failed">Odinštalácia zlyhala</string>
+    <string name="successfully_uninstalled">Úspešne odinštalované</string>
+    <string name="uninstall_library">Odinštalovať knižnicu</string>
+    <string name="instructions">Pokyny</string>
+    <string name="manage_apps">Spravovať aplikácie</string>
+    <string name="manage_commands">Spravovať príkazy</string>
+    <string name="manage_keywords">Spravovať kľúčové slová</string>
+    <string name="native_root_detection">Natívna detekcia rootu</string>
+    <string name="debug_logs">Záznamy pre ladenie</string>
+    <string name="app_launcher_icon">Ikona v spúšťači aplikácií</string>
 
 </resources>
