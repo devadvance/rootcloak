@@ -15,9 +15,18 @@ import java.util.Set;
 import eu.chainfire.libsuperuser.Shell;
 
 public class NativeRootDetectionReceiver extends BroadcastReceiver {
+    private static RootUtil mRootShell;
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent == null) return;
+        if (intent == null) {
+            return;
+        }
+
+        mRootShell = new RootUtil();
+        if (mRootShell.isSU()) {
+            return;
+        }
+        
         if (!Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) && !Common.REFRESH_APPS_INTENT.equals(intent.getAction())) {
             return;
         }
@@ -37,14 +46,14 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         for (String app : nativeHookingApps) {
             String property = packageNameToProperty(app);
             String command = "setprop " + property + " 'logwrapper /data/local/rootcloak-wrapper.sh'";
-            Shell.SU.run(command);
-            Shell.SU.run("am force-stop " + app);
+            mRootShell.runCommand(command);
+            mRootShell.runCommand("am force-stop " + app);
         }
 
         if (libraryInstalled) {
-            Shell.SU.run("chmod 755 /data/local/");
-            Shell.SU.run("chmod 755 /data/local/librootcloak.so");
-            Shell.SU.run("chmod 755 /data/local/rootcloak-wrapper.sh");
+            mRootShell.runCommand("chmod 755 /data/local/");
+            mRootShell.runCommand("chmod 755 /data/local/librootcloak.so");
+            mRootShell.runCommand("chmod 755 /data/local/rootcloak-wrapper.sh");
         }
     }
 
@@ -58,8 +67,8 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
             }
             String property = packageNameToProperty(app.packageName);
             String command = "setprop " + property + " ''";
-            Shell.SU.run(command);
-            Shell.SU.run("am force-stop " + app.packageName);
+            mRootShell.runCommand(command);
+            mRootShell.runCommand("am force-stop " + app.packageName);
         }
     }
 
