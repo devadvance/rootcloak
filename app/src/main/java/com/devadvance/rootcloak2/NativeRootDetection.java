@@ -76,9 +76,7 @@ public class NativeRootDetection extends PreferenceActivity {
     
     @Override
     protected void onResume() {
-        if (mRootShell == null) {
-            mRootShell = new RootUtil();
-        }
+        mRootShell = new RootUtil();
         super.onResume();
     }
 
