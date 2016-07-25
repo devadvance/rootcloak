@@ -23,7 +23,7 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         }
 
         mRootShell = new RootUtil();
-        if (mRootShell.isSU()) {
+        if (!mRootShell.isSU()) {
             return;
         }
         
