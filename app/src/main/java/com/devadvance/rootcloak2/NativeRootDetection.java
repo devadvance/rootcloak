@@ -41,8 +41,6 @@ public class NativeRootDetection extends PreferenceActivity {
         addPreferencesFromResource(R.xml.native_root_detection);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         
-        mRootShell = new RootUtil();
-
         Preference uninstallLibrary = findPreference("uninstall_library");
         uninstallLibrary.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -74,6 +72,14 @@ public class NativeRootDetection extends PreferenceActivity {
         }
 
         reloadAppsList();
+    }
+    
+    @Override
+    protected void onResume() {
+        if (mRootShell == null) {
+            mRootShell = new RootUtil();
+        }
+        super.onResume();
     }
 
 
