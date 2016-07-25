@@ -28,16 +28,23 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         applyNativeHooks(context);
     }
 
-    public void applyNativeHooks(Context context) {
+    private void applyNativeHooks(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         Set<String> nativeHookingApps = prefs.getStringSet("remove_native_root_detection_apps",
                 new HashSet<String>());
+        boolean libraryInstalled = prefs.getBoolean("native_library_installed", false);
 
         for (String app : nativeHookingApps) {
             String property = packageNameToProperty(app);
             String command = "setprop " + property + " 'logwrapper /data/local/rootcloak-wrapper.sh'";
             Shell.SU.run(command);
             Shell.SU.run("am force-stop " + app);
+        }
+
+        if (libraryInstalled) {
+            Shell.SU.run("chmod 755 /data/local/");
+            Shell.SU.run("chmod 755 /data/local/librootcloak.so");
+            Shell.SU.run("chmod 755 /data/local/rootcloak-wrapper.sh");
         }
     }
 
