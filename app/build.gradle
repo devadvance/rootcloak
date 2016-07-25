@@ -13,7 +13,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 14
-        versionName "3.0 beta2"
+        versionName "3.0 beta4"
         ndk {
             moduleName "rootcloak"
             cFlags "-fPIC -shared"
@@ -32,7 +32,9 @@ android {
     }
 
     lintOptions {
-        abortOnError false
+        disable 'MissingTranslation'
+        disable 'ManifestResource'
+        disable 'ExtraTranslation'
     }
 
     buildTypes {

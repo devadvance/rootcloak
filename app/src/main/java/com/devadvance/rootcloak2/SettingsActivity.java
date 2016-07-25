@@ -2,102 +2,117 @@ package com.devadvance.rootcloak2;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.ListActivity;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
 
-public class SettingsActivity extends ListActivity {
-    public static final String LOG_TAG = "Settings";
-    SharedPreferences sharedPref;
-    String[] menuItems;
-    String instructionsString;
-    String instructionsTitle;
+
+@SuppressWarnings("deprecation")
+public class SettingsActivity extends PreferenceActivity {
 
     @SuppressLint("WorldReadableFiles")
-    @SuppressWarnings("deprecation")
+    @Override
+    public SharedPreferences getSharedPreferences(String name, int mode) {
+        return getApplicationContext().getSharedPreferences(Common.PREFS_SETTINGS, MODE_WORLD_READABLE);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        getPreferenceManager()
+                .setSharedPreferencesMode(MODE_WORLD_READABLE);
+        addPreferencesFromResource(R.xml.preferences);
 
-        Resources res = getResources();
-        menuItems = res.getStringArray(R.array.menu_array);
-        instructionsString = res.getString(R.string.instructions1) + "\n\n"
-                + res.getString(R.string.instructions2) + "\n\n"
-                + res.getString(R.string.instructions3) + "\n\n"
-                + res.getString(R.string.instructions4);
-
-        instructionsTitle = res.getString(R.string.instructions_title);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, menuItems);
-        setListAdapter(adapter);
-
-        sharedPref = getSharedPreferences(Common.PREFS_SETTINGS, MODE_WORLD_READABLE);
-    }
-
-    public void onListItemClick(ListView parent, View v, int position, long id) {
-        Intent intent;
-        switch (position) {
-            case 0:
-                intent = new Intent(this, CustomizeApps.class);
+        Preference manageApps = findPreference("manage_apps");
+        manageApps.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(SettingsActivity.this, CustomizeApps.class);
                 startActivity(intent);
-                break;
-            case 1:
-                intent = new Intent(this, CustomizeKeywords.class);
+                return false;
+            }
+        });
+
+        Preference manageKeywords = findPreference("manage_keywords");
+        manageKeywords.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(SettingsActivity.this, CustomizeKeywords.class);
                 startActivity(intent);
-                break;
-            case 2:
-                intent = new Intent(this, CustomizeCommands.class);
+                return false;
+            }
+        });
+
+        Preference manageCommands = findPreference("manage_commands");
+        manageCommands.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(SettingsActivity.this, CustomizeCommands.class);
                 startActivity(intent);
-                break;
-            case 3:
-                intent = new Intent(this, NativeHookingApps.class);
-                startActivity(intent);
-                break;
-            case 4:
-                new AlertDialog.Builder(this)
+                return false;
+            }
+        });
+
+        Preference instructions = findPreference("instructions");
+        instructions.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String instructionsString = getString(R.string.instructions1) + "\n\n"
+                        + getString(R.string.instructions2) + "\n\n"
+                        + getString(R.string.instructions3) + "\n\n"
+                        + getString(R.string.instructions4);
+
+                String instructionsTitle = getString(R.string.instructions_title);
+                new AlertDialog.Builder(SettingsActivity.this)
                         .setMessage(instructionsString)
                         .setTitle(instructionsTitle)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
                         })
                         .show();
-                break;
-            case 5:
-                boolean debugPref = sharedPref.getBoolean(Common.DEBUG_KEY, false);
-                debugPref = !debugPref;
-                sharedPref.edit()
-                        .putBoolean(Common.DEBUG_KEY, debugPref)
-                        .apply();
-                String debugStatus = getString(debugPref ? R.string.debug_on : R.string.debug_off);
-                Log.d(LOG_TAG, debugStatus);
-                Toast.makeText(getApplicationContext(), debugStatus, Toast.LENGTH_LONG).show();
-                break;
-            case 6:
-                String aboutMsg = getString(R.string.app_name) + ": " + BuildConfig.VERSION_NAME; //TODO!
-                new AlertDialog.Builder(this)
-                        .setMessage(aboutMsg)
-                        .setTitle(R.string.about)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        })
-                        .show();
-                break;
-            default:
-                break;
-        }
+                return false;
+            }
+        });
+
+        Preference nativeRootDetection = findPreference("native_root_detection");
+        nativeRootDetection.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(SettingsActivity.this, NativeRootDetection.class);
+                startActivity(intent);
+                return false;
+            }
+        });
+
+        Preference appLauncherIcon = findPreference("app_launcher_icon");
+        appLauncherIcon.setOnPreferenceChangeListener(
+                new Preference.OnPreferenceChangeListener() {
+
+                    @Override
+                    public boolean onPreferenceChange(Preference preference,
+                                                      Object newValue) {
+                        PackageManager packageManager = getPackageManager();
+                        int state = (boolean) newValue ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                                : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+                        String settings = Common.PACKAGE_NAME + ".Settings";
+                        ComponentName alias = new ComponentName(SettingsActivity.this, settings);
+                        packageManager.setComponentEnabledSetting(alias, state,
+                                PackageManager.DONT_KILL_APP);
+                        return true;
+                    }
+                });
+
+
+        Preference about = findPreference("about");
+        about.setSummary("RootCloak v" + BuildConfig.VERSION_NAME);
     }
+
+
 }

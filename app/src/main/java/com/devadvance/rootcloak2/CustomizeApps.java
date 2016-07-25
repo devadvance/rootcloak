@@ -81,9 +81,7 @@ public class CustomizeApps extends PreferenceActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
+        dismissProgressDialog();
     }
 
     @Override
@@ -164,20 +162,13 @@ public class CustomizeApps extends PreferenceActivity {
             // Now that the list is loaded, show the dialog on the UI thread
             final CustomizeApps callbackReference;
             if ((callbackReference = callbackHolder.get()) != null) {
-                callbackReference.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        callbackReference.onAppListLoaded(nameMap, names);
-                    }
-                });
+                callbackReference.onAppListLoaded(nameMap, names);
             }
         }
     }
 
     public void onAppListLoaded(final HashMap<String, String> nameMap, final String[] names) {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
+        dismissProgressDialog();
         new AlertDialog.Builder(CustomizeApps.this).setTitle(R.string.add_app)
                 .setItems(names, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -185,6 +176,12 @@ public class CustomizeApps extends PreferenceActivity {
                         loadList();
                     }
                 }).show();
+    }
+
+    private void dismissProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
     private void loadDefaults() {
@@ -201,12 +198,12 @@ public class CustomizeApps extends PreferenceActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeApps.this)
                 .setTitle(R.string.reset)
                 .setMessage(getString(R.string.reset_apps))
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         loadDefaults();
                     }
                 });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // Do nothing on cancel
             }
@@ -240,14 +237,14 @@ public class CustomizeApps extends PreferenceActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeApps.this)
                 .setTitle(R.string.clear)
                 .setMessage(R.string.clear_all_apps)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         editor.remove(Common.APPS.getSetKey())
                             .apply();
                         loadList();
                     }
                 });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // Do nothing on cancel
             }

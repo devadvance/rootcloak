@@ -30,19 +30,7 @@
     <string name="instructions2">Для использования RootCloak добавьте приложения через меню добавить/удалить приложения.</string>
     <string name="instructions3">Если приложение запущено, вы должны УБИТЬ его, чтобы настройки начали работать.</string>
     <string name="instructions4">Вы можете изменить скрываемые ключевые слова и команды, используя меню добавить/удалить ключевые слова или команды. НЕ ДЕЛАЙТЕ БЕЗ НЕОБХОДИМОСТИ.</string>
-
-    <string-array name="menu_array">
-        <item>Добавить/удалить приложения</item>
-        <item>Добавить/удалить ключевые слова</item>
-        <item>Добавить/удалить команды</item>
-        <item>Disable native root detection</item>
-        <item>Инструкции</item>
-        <item>Включить/выключить отладку</item>
-        <item>О программе</item>
-    </string-array>
-
-    <string name="ok">ОК</string>
-    <string name="cancel">Отмена</string>
+    
     <string name="title_activity_customize_keywords">Изменить ключевые слова</string>
     <string name="title_activity_customize_commands">Изменить команды</string>
     <string name="about">О программе</string>

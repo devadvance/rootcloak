@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.preference.PreferenceManager;
 
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Set;
 
 import eu.chainfire.libsuperuser.Shell;
 
-public class NativeHookingReceiver extends BroadcastReceiver {
+public class NativeRootDetectionReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent == null) return;
@@ -28,13 +29,15 @@ public class NativeHookingReceiver extends BroadcastReceiver {
     }
 
     public void applyNativeHooks(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(Common.PREFS_NAME, Context.MODE_WORLD_READABLE);
-        Set<String> nativeHookingApps = prefs.getStringSet("native_hooking_apps",
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Set<String> nativeHookingApps = prefs.getStringSet("remove_native_root_detection_apps",
                 new HashSet<String>());
+
         for (String app : nativeHookingApps) {
             String property = packageNameToProperty(app);
             String command = "setprop " + property + " 'logwrapper /data/local/rootcloak-wrapper.sh'";
             Shell.SU.run(command);
+            Shell.SU.run("am force-stop " + app);
         }
     }
 
@@ -43,12 +46,13 @@ public class NativeHookingReceiver extends BroadcastReceiver {
         List<ApplicationInfo> packages = pm
                 .getInstalledApplications(PackageManager.GET_META_DATA);
         for (ApplicationInfo app : packages) {
-            if (!isUserApp(app)) {
+            if (!Common.isUserApp(app)) {
                 continue;
             }
             String property = packageNameToProperty(app.packageName);
             String command = "setprop " + property + " ''";
             Shell.SU.run(command);
+            Shell.SU.run("am force-stop " + app.packageName);
         }
     }
 
@@ -64,12 +68,5 @@ public class NativeHookingReceiver extends BroadcastReceiver {
         }
 
         return property;
-    }
-
-    public boolean isUserApp(ApplicationInfo appInfo) {
-        if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-            return false;
-        }
-        return true;
     }
 }
