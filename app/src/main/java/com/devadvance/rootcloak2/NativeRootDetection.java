@@ -27,6 +27,7 @@ import eu.chainfire.libsuperuser.Shell;
 @SuppressWarnings("deprecation")
 public class NativeRootDetection extends PreferenceActivity {
     private static SharedPreferences mPrefs;
+    private static RootUtil mRootShell;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,8 @@ public class NativeRootDetection extends PreferenceActivity {
                 .setSharedPreferencesMode(MODE_WORLD_READABLE);
         addPreferencesFromResource(R.xml.native_root_detection);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        
+        mRootShell = new RootUtil();
 
         Preference uninstallLibrary = findPreference("uninstall_library");
         uninstallLibrary.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -77,23 +80,23 @@ public class NativeRootDetection extends PreferenceActivity {
     public void installLibrary() {
         String library = getApplicationInfo().nativeLibraryDir + File.separator + "librootcloak.so";
 
-        if (!Shell.SU.available() || !new File(library).exists()) {
+        if (!mRootShell.isSU() || !new File(library).exists()) {
             Toast.makeText(this, R.string.library_installation_failed, Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
-        Shell.SU.run("mkdir /data/local/");
-        Shell.SU.run("chmod 755 /data/local/");
-        Shell.SU.run("cp '" + library + "' /data/local/");
+        mRootShell.runCommand("mkdir /data/local/");
+        mRootShell.runCommand("chmod 755 /data/local/");
+        mRootShell.runCommand("cp '" + library + "' /data/local/");
 
         String wrapper = "#!/system/bin/sh\n" +
                 "export LD_PRELOAD=/data/local/librootcloak.so\n" +
                 "exec $*\n";
-        Shell.SU.run("echo '" + wrapper + "' > /data/local/rootcloak-wrapper.sh");
+        mRootShell.runCommand("echo '" + wrapper + "' > /data/local/rootcloak-wrapper.sh");
 
-        Shell.SU.run("chmod 755 /data/local/librootcloak.so");
-        Shell.SU.run("chmod 755 /data/local/rootcloak-wrapper.sh");
+        mRootShell.runCommand("chmod 755 /data/local/librootcloak.so");
+        mRootShell.runCommand("chmod 755 /data/local/rootcloak-wrapper.sh");
 
         Toast.makeText(this, R.string.successfully_installed, Toast.LENGTH_LONG).show();
 
@@ -101,14 +104,14 @@ public class NativeRootDetection extends PreferenceActivity {
     }
 
     public void uninstallLibrary() {
-        if (!Shell.SU.available()) {
+        if (!mRootShell.isSU()) {
             Toast.makeText(this, R.string.library_uninstallation_failed, Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
-        Shell.SU.run("rm /data/local/librootcloak.so");
-        Shell.SU.run("rm /data/local/rootcloak-wrapper.sh");
+        mRootShell.runCommand("rm /data/local/librootcloak.so");
+        mRootShell.runCommand("rm /data/local/rootcloak-wrapper.sh");
 
         Toast.makeText(this, R.string.successfully_uninstalled, Toast.LENGTH_LONG).show();
 
