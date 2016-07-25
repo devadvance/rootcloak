@@ -108,7 +108,8 @@ int open(const char *path, int oflag, ... ) {
     if (fd != -1) {
         int status;
         regex_t re;
-
+        
+        #if 0
         if (regcomp(&re, "^/proc/[0-9]+/(stat|cmdline)$", REG_EXTENDED | REG_NOSUB) == 0) {
             status = regexec(&re, path, 0, NULL, 0);
             regfree(&re);
@@ -147,6 +148,7 @@ int open(const char *path, int oflag, ... ) {
                 }
             }
         }
+        #endif
     }
     return fd;
 }
