@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.os.Build;
 import android.preference.PreferenceActivity;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,6 +34,22 @@ public class Common {
             return false;
         }
         return true;
+    }
+
+    public static boolean isSELinuxEnforced() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return false;
+        }
+
+        boolean enforced = false;
+        try {
+            Class seLinux = Class.forName("android.os.SELinux");
+            Method isSELinuxEnforced = seLinux.getMethod("isSELinuxEnforced");
+            enforced = (boolean) isSELinuxEnforced.invoke(seLinux.newInstance());
+        } catch (Exception e) {
+            return false;
+        }
+        return enforced;
     }
 
     public static abstract class PrefSet {
