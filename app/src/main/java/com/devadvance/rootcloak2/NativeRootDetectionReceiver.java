@@ -8,6 +8,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +19,12 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent == null) return;
+
+        if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(intent.getAction())) {
+            upgradeLibrary(context);
+            return;
+        }
+
         if (!Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) && !Common.REFRESH_APPS_INTENT.equals(intent.getAction())) {
             return;
         }
@@ -28,7 +35,7 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         applyNativeHooks(context);
     }
 
-    public void applyNativeHooks(Context context) {
+    private void applyNativeHooks(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         Set<String> nativeHookingApps = prefs.getStringSet("remove_native_root_detection_apps",
                 new HashSet<String>());
@@ -41,7 +48,7 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         }
     }
 
-    public void resetNativeHooks(Context context) {
+    private void resetNativeHooks(Context context) {
         PackageManager pm = context.getPackageManager();
         List<ApplicationInfo> packages = pm
                 .getInstalledApplications(PackageManager.GET_META_DATA);
@@ -56,7 +63,7 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         }
     }
 
-    String packageNameToProperty(String packageName) {
+    private String packageNameToProperty(String packageName) {
         String property = "wrap." + packageName;
         if (property.length() > 31) {
             // Avoid creating an illegal property name when truncating.
@@ -69,4 +76,19 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
 
         return property;
     }
+
+    private void upgradeLibrary(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean libraryInstalled = prefs.getBoolean("native_library_installed", false);
+        String library = context.getApplicationInfo().nativeLibraryDir + File.separator + "librootcloak.so";
+
+        if (!libraryInstalled && (!Shell.SU.available() || !new File(library).exists())) {
+            return;
+        }
+
+        Shell.SU.run("cp '" + library + "' /data/local/");
+        Shell.SU.run("chmod 755 /data/local/librootcloak.so");
+    }
+
+
 }
