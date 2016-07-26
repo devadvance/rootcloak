@@ -109,9 +109,11 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
     }
 
     private void disableSELinuxIfNeeded() {
-        if (Common.isSELinuxEnforced()) {
-            mRootShell.runCommand("setenforce 0");
+        if (Build.TYPE.equals("eng") || Build.TYPE.equals("userdebug") || !Common.isSELinuxEnforced()) {
+            return;
         }
+        
+        mRootShell.runCommand("setenforce 0");
     }
 
 }
