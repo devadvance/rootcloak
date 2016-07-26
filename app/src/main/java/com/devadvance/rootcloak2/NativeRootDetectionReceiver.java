@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
 
 import java.io.File;
@@ -56,7 +57,8 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
             mRootShell.runCommand("am force-stop " + app);
         }
 
-        if (libraryInstalled) {
+        if (libraryInstalled && !nativeHookingApps.isEmpty()) {
+            disableSELinuxIfNeeded();
             mRootShell.runCommand("chmod 755 /data/local/");
             mRootShell.runCommand("chmod 755 /data/local/librootcloak.so");
             mRootShell.runCommand("chmod 755 /data/local/rootcloak-wrapper.sh");
@@ -106,5 +108,10 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         mRootShell.runCommand("chmod 755 /data/local/librootcloak.so");
     }
 
+    private void disableSELinuxIfNeeded() {
+        if (Common.isSELinuxEnforced()) {
+            mRootShell.runCommand("setenforce 0");
+        }
+    }
 
 }
