@@ -16,15 +16,23 @@ import java.util.Set;
 import eu.chainfire.libsuperuser.Shell;
 
 public class NativeRootDetectionReceiver extends BroadcastReceiver {
+    private static RootUtil mRootShell;
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent == null) return;
+    	if (intent == null) {
+            return;
+        }
+
+        mRootShell = new RootUtil();
+        if (!mRootShell.isSU()) {
+            return;
+        }
 
         if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(intent.getAction())) {
             upgradeLibrary(context);
             return;
         }
-
+        
         if (!Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) && !Common.REFRESH_APPS_INTENT.equals(intent.getAction())) {
             return;
         }
@@ -39,12 +47,19 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         Set<String> nativeHookingApps = prefs.getStringSet("remove_native_root_detection_apps",
                 new HashSet<String>());
+        boolean libraryInstalled = prefs.getBoolean("native_library_installed", false);
 
         for (String app : nativeHookingApps) {
             String property = packageNameToProperty(app);
             String command = "setprop " + property + " 'logwrapper /data/local/rootcloak-wrapper.sh'";
-            Shell.SU.run(command);
-            Shell.SU.run("am force-stop " + app);
+            mRootShell.runCommand(command);
+            mRootShell.runCommand("am force-stop " + app);
+        }
+
+        if (libraryInstalled) {
+            mRootShell.runCommand("chmod 755 /data/local/");
+            mRootShell.runCommand("chmod 755 /data/local/librootcloak.so");
+            mRootShell.runCommand("chmod 755 /data/local/rootcloak-wrapper.sh");
         }
     }
 
@@ -58,7 +73,9 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
             }
             String property = packageNameToProperty(app.packageName);
             String command = "setprop " + property + " ''";
-            Shell.SU.run(command);
+
+            mRootShell.runCommand(command);
+            mRootShell.runCommand("am force-stop " + app.packageName);
         }
     }
 
@@ -81,12 +98,12 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         boolean libraryInstalled = prefs.getBoolean("native_library_installed", false);
         String library = context.getApplicationInfo().nativeLibraryDir + File.separator + "librootcloak.so";
 
-        if (!libraryInstalled && (!Shell.SU.available() || !new File(library).exists())) {
+        if (!libraryInstalled && (!mRootShell.isSU() || !new File(library).exists())) {
             return;
         }
 
-        Shell.SU.run("cp '" + library + "' /data/local/");
-        Shell.SU.run("chmod 755 /data/local/librootcloak.so");
+        mRootShell.runCommand("cp '" + library + "' /data/local/");
+        mRootShell.runCommand("chmod 755 /data/local/librootcloak.so");
     }
 
 
