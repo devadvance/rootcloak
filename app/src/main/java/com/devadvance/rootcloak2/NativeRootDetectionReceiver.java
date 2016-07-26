@@ -59,7 +59,6 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
             String property = packageNameToProperty(app.packageName);
             String command = "setprop " + property + " ''";
             Shell.SU.run(command);
-            Shell.SU.run("am force-stop " + app.packageName);
         }
     }
 
