@@ -65,7 +65,8 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
             
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 // Allowing wrapping on Lollipop and newer
-                mRootShell.runCommand("supolicy --live 'allow untrusted_app zygote fifo_file { write }'");
+                WrappingSELinuxPolicy policy = new WrappingSELinuxPolicy();
+                policy.inject();
             }
         }
     }
@@ -112,6 +113,13 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         mRootShell.runCommand("cp '" + library + "' /data/local/");
         mRootShell.runCommand("chmod 755 /data/local/librootcloak.so");
     }
-
-
+    
+    private class WrappingSELinuxPolicy extends eu.chainfire.libsuperuser.Policy {
+        @Override
+        protected String[] getPolicies() {
+            return new String[]{
+                    "allow untrusted_app zygote fifo_file { write }"
+            };
+        }
+    }
 }
