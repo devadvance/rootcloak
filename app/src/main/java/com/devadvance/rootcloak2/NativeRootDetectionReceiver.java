@@ -63,7 +63,7 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
             mRootShell.runCommand("chmod 755 /data/local/librootcloak.so");
             mRootShell.runCommand("chmod 755 /data/local/rootcloak-wrapper.sh");
             
-            if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 // Allowing wrapping on Lollipop and newer
                 mRootShell.runCommand("supolicy --live 'allow untrusted_app zygote fifo_file { write }'");
             }
