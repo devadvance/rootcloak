@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
 
 import java.io.File;
@@ -40,6 +41,7 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         if (Common.REFRESH_APPS_INTENT.equals(intent.getAction())) {
             resetNativeHooks(context);
         }
+
         applyNativeHooks(context);
     }
 
@@ -56,10 +58,15 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
             mRootShell.runCommand("am force-stop " + app);
         }
 
-        if (libraryInstalled) {
+        if (libraryInstalled && !nativeHookingApps.isEmpty()) {
             mRootShell.runCommand("chmod 755 /data/local/");
             mRootShell.runCommand("chmod 755 /data/local/librootcloak.so");
             mRootShell.runCommand("chmod 755 /data/local/rootcloak-wrapper.sh");
+            
+            if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.LOLLIPOP) {
+                // Allowing wrapping on Lollipop and newer
+                mRootShell.runCommand("supolicy --live 'allow untrusted_app zygote fifo_file { write }'");
+            }
         }
     }
 
