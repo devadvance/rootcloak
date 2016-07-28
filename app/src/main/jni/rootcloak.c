@@ -105,6 +105,7 @@ int open(const char *path, int oflag, ... ) {
         original_open = dlsym(RTLD_NEXT, "open");
     }
     int fd = original_open(path, oflag);
+    #if !(defined(__i386__) || defined(__x86_64__))
     if (fd != -1) {
         int status;
         regex_t re;
@@ -148,8 +149,8 @@ int open(const char *path, int oflag, ... ) {
                 }
             }
         }
-        #endif
     }
+    #endif
     return fd;
 }
 
