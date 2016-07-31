@@ -93,17 +93,13 @@ public class SettingsActivity extends PreferenceActivity {
         Preference appLauncherIcon = findPreference("app_launcher_icon");
         appLauncherIcon.setOnPreferenceChangeListener(
                 new Preference.OnPreferenceChangeListener() {
-
                     @Override
-                    public boolean onPreferenceChange(Preference preference,
-                                                      Object newValue) {
-                        PackageManager packageManager = getPackageManager();
-                        int state = (boolean) newValue ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-                                : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
-                        String settings = SettingsActivity.class.getPackage().getName() + ".Settings";
-                        ComponentName alias = new ComponentName(SettingsActivity.this, settings);
-                        packageManager.setComponentEnabledSetting(alias, state,
-                                PackageManager.DONT_KILL_APP);
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        int state = (boolean)newValue ?
+                                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
+                                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+                        ComponentName alias = new ComponentName( SettingsActivity.this, "com.devadvance.rootcloak2.Settings" );
+                        getPackageManager().setComponentEnabledSetting( alias, state, PackageManager.DONT_KILL_APP );
                         return true;
                     }
                 });
