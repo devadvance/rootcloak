@@ -12,7 +12,8 @@ import java.util.Set;
 
 public class Common {
     public static final String PREFS_SETTINGS = "CustomizeSettings";
-    public static final String FIRST_RUN_KEY = Common.class.getPackage().getName() + "IS_FIRST_RUN";
+    public static final String PACKAGE_NAME = "com.devadvance.rootcloak2";
+    public static final String FIRST_RUN_KEY = PACKAGE_NAME + "IS_FIRST_RUN";
     public static final String DEBUG_KEY = "debug_logs";
     public static final String SHOW_WARNING = "SHOW_WARNING";
 
@@ -49,7 +50,7 @@ public class Common {
 
     public static class AppsSet extends PrefSet {
         public static final String PREFS_APPS = "CustomizeApps";
-        public static final String APP_SET_KEY = Common.class.getPackage().getName() + "APPS_LIST"; // Uses the name LIST for legacy purposes
+        public static final String APP_SET_KEY = PACKAGE_NAME + "APPS_LIST"; // Uses the name LIST for legacy purposes
         public static final Set<String> DEFAULT_APPS_SET = new HashSet<>(Arrays.asList(DefaultLists.DEFAULT_APPS_LIST));
 
         @Override
@@ -70,7 +71,7 @@ public class Common {
 
     public static class KeywordSet extends PrefSet {
         public static final String PREFS_KEYWORDS = "CustomizeKeywords";
-        public static final String KEYWORD_SET_KEY = Common.class.getPackage().getName() + "KEYWORD_SET";
+        public static final String KEYWORD_SET_KEY = PACKAGE_NAME + "KEYWORD_SET";
         public static final Set<String> DEFAULT_KEYWORD_SET = new HashSet<>(Arrays.asList(DefaultLists.DEFAULT_KEYWORD_LIST));
 
         @Override
@@ -91,7 +92,7 @@ public class Common {
 
     public static class CommandSet extends PrefSet {
         public static final String PREFS_COMMANDS = "CustomizeCommands";
-        public static final String COMMAND_SET_KEY = Common.class.getPackage().getName() + "APPS_SET";
+        public static final String COMMAND_SET_KEY = PACKAGE_NAME + "APPS_SET";
         public static final Set<String> DEFAULT_COMMAND_SET = new HashSet<>(Arrays.asList(DefaultLists.DEFAULT_COMMAND_LIST));
 
         @Override
