@@ -30,7 +30,6 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import de.robv.android.xposed.callbacks.XCallback;
 
-
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findConstructorExact;
 
@@ -49,10 +48,6 @@ public class RootCloak implements IXposedHookLoadPackage {
     public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
         isRootCloakLoadingPref = true;
         Set<String> tmpAppSet = loadSetFromPrefs(Common.APPS); // Load prefs for any app. This way we can determine if it matches the list of apps to hide root from.
-//		if (debugPref) {
-//			XposedBridge.log("Found app: " + lpparam.packageName);
-//		}
-
         if (!(tmpAppSet.contains(lpparam.packageName))) { // If the app doesn't match, don't hook into anything, and just return.
             isRootCloakLoadingPref = false;
         } else {
@@ -248,7 +243,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 }
 
                 List<ApplicationInfo> packages = (List<ApplicationInfo>) param.getResult(); // Get the results from the method call
-                Iterator<ApplicationInfo> iter = packages.iterator(); 
+                Iterator<ApplicationInfo> iter = packages.iterator();
                 ApplicationInfo tempAppInfo;
                 String tempPackageName;
 
@@ -540,7 +535,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 }
             }
         });
-        
+
         /**
          * Hooks loadLibrary() within java.lang.Runtime.
          * There are libraries specifically built to check for root. This helps us block those and others.
@@ -613,7 +608,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                         XposedBridge.log("Hooked ADB debugging info, adb status is off");
                     }
                 }
-                
+
                 if (Settings.Global.DEVELOPMENT_SETTINGS_ENABLED.equals(setting)) { // Hide development options being on from an app
                     param.setResult(0);
                     if (debugPref) {
@@ -625,7 +620,7 @@ public class RootCloak implements IXposedHookLoadPackage {
     }
 
     private void initSettings() {
-        final XSharedPreferences prefSettings = new XSharedPreferences(Common.PACKAGE_NAME, Common.PREFS_SETTINGS);
+        final XSharedPreferences prefSettings = new XSharedPreferences(BuildConfig.APPLICATION_ID, Common.PREFS_SETTINGS);
         prefSettings.makeWorldReadable();
         debugPref = prefSettings.getBoolean(Common.DEBUG_KEY, false);
     }
@@ -642,7 +637,7 @@ public class RootCloak implements IXposedHookLoadPackage {
 
         final Set<String> newSet = new HashSet<>();
         try {
-            final XSharedPreferences loadedPrefs = new XSharedPreferences(Common.PACKAGE_NAME, type.getPrefKey());
+            final XSharedPreferences loadedPrefs = new XSharedPreferences(BuildConfig.APPLICATION_ID, type.getPrefKey());
             loadedPrefs.makeWorldReadable();
 
             final boolean isFirstRun = loadedPrefs.getBoolean(Common.FIRST_RUN_KEY, true); // Load boolean that determines if this is the first run since being installed.

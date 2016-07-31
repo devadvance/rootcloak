@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 
-
 @SuppressWarnings("deprecation")
 public class SettingsActivity extends PreferenceActivity {
 
@@ -101,7 +100,7 @@ public class SettingsActivity extends PreferenceActivity {
                         PackageManager packageManager = getPackageManager();
                         int state = (boolean) newValue ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
                                 : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
-                        String settings = Common.PACKAGE_NAME + ".Settings";
+                        String settings = SettingsActivity.class.getPackage().getName() + ".Settings";
                         ComponentName alias = new ComponentName(SettingsActivity.this, settings);
                         packageManager.setComponentEnabledSetting(alias, state,
                                 PackageManager.DONT_KILL_APP);
