@@ -12,8 +12,8 @@ android {
         applicationId "com.devadvance.rootcloak2"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 17
-        versionName "3.0-beta_20160731_1"
+        versionCode 18
+        versionName "3.0-beta_20160731_2"
         ndk {
             moduleName "rootcloak"
             cFlags "-fPIC -shared"
