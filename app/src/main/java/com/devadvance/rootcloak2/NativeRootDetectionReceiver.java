@@ -83,7 +83,6 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
             String command = "setprop " + property + " ''";
 
             mRootShell.runCommand(command);
-            mRootShell.runCommand("am force-stop " + app.packageName);
         }
     }
 
