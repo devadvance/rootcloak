@@ -102,7 +102,7 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         boolean libraryInstalled = prefs.getBoolean("native_library_installed", false);
         String library = context.getApplicationInfo().nativeLibraryDir + File.separator + "librootcloak.so";
 
-        if (!libraryInstalled && (!mRootShell.isSU() || !new File(library).exists())) {
+        if (!libraryInstalled && !new File(library).exists()) {
             return;
         }
 
