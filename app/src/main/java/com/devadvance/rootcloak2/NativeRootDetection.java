@@ -184,6 +184,11 @@ public class NativeRootDetection extends PreferenceActivity {
                 @Override
                 public boolean onPreferenceChange(
                         Preference preference, Object newValue) {
+                    Set<String> oldSetting = mPrefs.getStringSet("remove_native_root_detection_apps", new HashSet<String>());
+                    Set<String> newSetting = (Set<String>) newValue;
+                    oldSetting.removeAll(newSetting);
+                    mPrefs.edit().putStringSet("reset_native_root_detection_apps", oldSetting).apply();
+                    
                     Intent refreshApps = new Intent(Common.REFRESH_APPS_INTENT);
                     sendBroadcast(refreshApps);
                     return true;
