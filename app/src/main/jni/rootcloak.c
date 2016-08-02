@@ -27,6 +27,7 @@
 #include <fcntl.h>
 
 #define DEBUG_LOGS 0 // 1 to enable logs
+#define REGEX_FILTER 1 // 0 to disable regex filter
 
 char *rootcloak_strcasestr(const char *haystack, const char *needle) {
     static char *(*original_strcasestr)(const char*, const char*) = NULL;
@@ -105,51 +106,52 @@ int open(const char *path, int oflag, ... ) {
         original_open = dlsym(RTLD_NEXT, "open");
     }
     int fd = original_open(path, oflag);
-    #if !(defined(__i386__) || defined(__x86_64__))
-    if (fd != -1) {
-        int status;
-        regex_t re;
-        
-        if (regcomp(&re, "^/proc/[0-9]+/(stat|cmdline)$", REG_EXTENDED | REG_NOSUB) == 0) {
-            status = regexec(&re, path, 0, NULL, 0);
-            regfree(&re);
-            if (status == 0) {
-                if (strcmp(fname, "stat") == 0) {
-                    printf("Opening %s\n", path);
-                    unsigned char buf[4096];
-                    read(fd, buf, sizeof(buf));
-                    char *cmd = malloc(4096);
-                    sscanf(buf, "%*d (%s) %*[^\n]", cmd);
-                    cmd = basename(cmd);
-                    if (str_is_blacklisted(cmd)) {
-                        if (DEBUG_LOGS) {
-                            printf("Found blacklisted process: %s\n", cmd);
+    //#if !(defined(__i386__) || defined(__x86_64__))
+    if (REGEX_FILTER) {
+        if (fd != -1) {
+            int status;
+            regex_t re;
+            
+            if (regcomp(&re, "^/proc/[0-9]+/(stat|cmdline)$", REG_EXTENDED | REG_NOSUB) == 0) {
+                status = regexec(&re, path, 0, NULL, 0);
+                regfree(&re);
+                if (status == 0) {
+                    if (strcmp(fname, "stat") == 0) {
+                        printf("Opening %s\n", path);
+                        unsigned char buf[4096];
+                        read(fd, buf, sizeof(buf));
+                        char *cmd = malloc(4096);
+                        sscanf(buf, "%*d (%s) %*[^\n]", cmd);
+                        cmd = basename(cmd);
+                        if (str_is_blacklisted(cmd)) {
+                            if (DEBUG_LOGS) {
+                                printf("Found blacklisted process: %s\n", cmd);
+                            }
+                            close(fd);
+                            errno = ENOENT;
+                            return -1;
                         }
-                        close(fd);
-                        errno = ENOENT;
-                        return -1;
-                    }
-                    lseek(fd, SEEK_SET, 0);
-
-                } else if (strcmp(fname, "cmdline") == 0) {
-                    printf("Opening %s\n", path);
-                    unsigned char buf[4096];
-                    read(fd, buf, sizeof(buf));
-                    char *tmp = basename(buf);
-                    if (str_is_blacklisted(tmp)) {
-                        if (DEBUG_LOGS) {
-                            printf("Found blacklisted process: %s\n", tmp);
+                        lseek(fd, SEEK_SET, 0);
+    
+                    } else if (strcmp(fname, "cmdline") == 0) {
+                        printf("Opening %s\n", path);
+                        unsigned char buf[4096];
+                        read(fd, buf, sizeof(buf));
+                        char *tmp = basename(buf);
+                        if (str_is_blacklisted(tmp)) {
+                            if (DEBUG_LOGS) {
+                                printf("Found blacklisted process: %s\n", tmp);
+                            }
+                            close(fd);
+                            errno = ENOENT;
+                            return -1;
                         }
-                        close(fd);
-                        errno = ENOENT;
-                        return -1;
+                        lseek(fd, SEEK_SET, 0);
                     }
-                    lseek(fd, SEEK_SET, 0);
                 }
             }
         }
     }
-    #endif
     return fd;
 }
 
