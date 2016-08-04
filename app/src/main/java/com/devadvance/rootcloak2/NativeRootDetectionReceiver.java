@@ -67,6 +67,10 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
                 // Allowing wrapping on Lollipop and newer
                 WrappingSELinuxPolicy policy = new WrappingSELinuxPolicy();
                 policy.inject();
+                if (!policy.haveInjected()) {
+                    // try to use alternative tool
+                    mRootShell.runCommand("sepolicy-inject -s untrusted_app -t zygote -c fifo_file -p write -l");
+                }
             }
         }
     }
