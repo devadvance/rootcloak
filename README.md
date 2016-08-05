@@ -5,6 +5,8 @@ This is a module for Xposed Framework.
 
 This allows you to run apps that detect root without disabling root. You select from a list of your installed apps (or add a custom entry), and using a variety of methods, it will completely hide root from that app. This includes hiding the su binary, superuser/supersu apks, processes run by root, adb, and more.
 
+RootCloak DOES NOT ALLOW YOU TO USE ANDROID PAY.
+
 **Requires:**
 - Xposed Framework
 - Root (otherwise why use this?)
