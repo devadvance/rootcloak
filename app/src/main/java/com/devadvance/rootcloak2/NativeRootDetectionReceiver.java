@@ -4,14 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import java.io.File;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -72,18 +70,16 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
     }
 
     private void resetNativeHooks(Context context) {
-        PackageManager pm = context.getPackageManager();
-        List<ApplicationInfo> packages = pm
-                .getInstalledApplications(PackageManager.GET_META_DATA);
-        for (ApplicationInfo app : packages) {
-            if (!Common.isUserApp(app)) {
-                continue;
-            }
-            String property = packageNameToProperty(app.packageName);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Set<String> nativeHookingApps = prefs.getStringSet("reset_native_root_detection_apps",
+                new HashSet<String>());
+
+        for (String app : nativeHookingApps) {
+            String property = packageNameToProperty(app);
             String command = "setprop " + property + " ''";
 
             mRootShell.runCommand(command);
-            mRootShell.runCommand("am force-stop " + app.packageName);
+            mRootShell.runCommand("am force-stop " + app);
         }
     }
 
@@ -106,7 +102,7 @@ public class NativeRootDetectionReceiver extends BroadcastReceiver {
         boolean libraryInstalled = prefs.getBoolean("native_library_installed", false);
         String library = context.getApplicationInfo().nativeLibraryDir + File.separator + "librootcloak.so";
 
-        if (!libraryInstalled && (!mRootShell.isSU() || !new File(library).exists())) {
+        if (!libraryInstalled && !new File(library).exists()) {
             return;
         }
 
