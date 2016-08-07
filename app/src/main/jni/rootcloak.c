@@ -120,7 +120,7 @@ int open(const char *path, int oflag, ... ) {
                     unsigned char buf[4096];
                     read(fd, buf, sizeof(buf));
                     char *cmd = malloc(4096);
-                    sscanf(buf, "%*d (%s) %*[^\n]", cmd);
+                    sscanf(buf, "%*d (%[^)]) %*[^\n]", cmd);
                     cmd = basename(cmd);
                     if (str_is_blacklisted(cmd)) {
                         if (DEBUG_LOGS) {
