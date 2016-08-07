@@ -52,7 +52,8 @@ public class DefaultLists {
             "chainfire", "titanium", "Titanium",
             "substrate", "greenify", "daemonsu",
             "root", "busybox", "titanium",
-            ".tmpsu", "su", "rootcloak2"};
+            ".tmpsu", "su", "rootcloak2",
+            "xposed"};
 
     public static final String[] DEFAULT_COMMAND_LIST = new String[]{"su", "which", "busybox", "pm", "am", "sh", "ps"};
 
