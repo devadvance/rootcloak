@@ -27,6 +27,7 @@
 #include <fcntl.h>
 
 #define DEBUG_LOGS 0 // 1 to enable logs
+#define REGEX_FILTER 1 // 0 to disable regex filter
 
 char *rootcloak_strcasestr(const char *haystack, const char *needle) {
     static char *(*original_strcasestr)(const char*, const char*) = NULL;
