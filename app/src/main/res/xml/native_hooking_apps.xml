@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <MultiSelectListPreference
+        android:key="native_hooking_apps"
+        android:title="@string/native_hooking_apps" />
+    <Preference
+        android:key="uninstall_library"
+        android:title="@string/uninstall_library" />
+
+</PreferenceScreen>

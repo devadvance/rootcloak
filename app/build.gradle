@@ -12,8 +12,8 @@ android {
         applicationId "com.devadvance.rootcloak2"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 13
-        versionName "2.1.1"
+        versionCode 14
+        versionName "3.0 beta1"
     }
 
     signingConfigs {
@@ -49,8 +49,16 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/libs']
+            jni.srcDirs = []
+        }
+    }
+
 }
 
 dependencies {
     provided 'de.robv.android.xposed:api:82'
+    compile 'eu.chainfire:libsuperuser:1.0.0.+'
 }

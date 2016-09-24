@@ -35,6 +35,7 @@
         <item>新增/移除程式</item>
         <item>新增/移除由 RootCloak 隱藏的關鍵字</item>
         <item>新增/移除由 RootCloak 隱藏的指令</item>
+        <item>Remove native root detection</item>
         <item>說明</item>
         <item>開啟/關閉偵錯</item>
         <item>About</item>

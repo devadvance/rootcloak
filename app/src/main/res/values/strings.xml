@@ -36,8 +36,9 @@
 
     <string-array name="menu_array">
         <item>Add/Remove Apps</item>
-        <item>Add/Remove Keywords Hidden by RootCloak</item>
-        <item>Add/Remove Commands Hidden by RootCloak</item>
+        <item>Add/Remove Keywords</item>
+        <item>Add/Remove Commands</item>
+        <item>Remove native root detection</item>
         <item>Instructions</item>
         <item>Turn On/Off Debug</item>
         <item>About</item>
@@ -72,5 +73,15 @@
     <string name="reset">Reset</string>
     <string name="about">About</string>
     <string name="clear">Clear</string>
+    <string name="native_app_hooking">Remove native root detection</string>
+    <string name="successfully_installed">Successfully installed</string>
+    <string name="library_installation">Library installation</string>
+    <string name="install">Install</string>
+    <string name="library_installation_info">We need to install our support native library to make this feature working.</string>
+    <string name="native_hooking_apps">Remove native root detection for apps</string>
+    <string name="uninstall_library">Uninstall library</string>
+    <string name="library_installation_failed">Installation failed</string>
+    <string name="library_uninstallation_failed">Uninstallation failed</string>
+    <string name="successfully_uninstalled">Successfully uninstalled</string>
 
 </resources>

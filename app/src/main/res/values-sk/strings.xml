@@ -35,6 +35,7 @@
         <item>Pridať/Odstrániť aplikácie</item>
         <item>Pridať/Odstrániť kľúčové slová</item>
         <item>Pridať/Odstrániť príkazy</item>
+        <item>Odstrániť natívnu detekciu rootu</item>
         <item>Pokyny</item>
         <item>Zapnúť/Vypnúť ladenie</item>
         <item>O aplikácii</item>
@@ -70,5 +71,15 @@
     <string name="remove_command_title">Odstrániť príkaz</string>
     <string name="remove_keyword_message">Odstrániť toto kľúčové slovo?</string>
     <string name="remove_keyword_title">Odstrániť kľúčové slovo</string>
+    <string name="successfully_installed">Úspešne nainštalované</string>
+    <string name="native_app_hooking">Odstrániť natívnu detekciu rootu</string>
+    <string name="library_installation">Inštalácia knižnice</string>
+    <string name="library_installation_info">Pre fungovanie tejto funkcie je potrebné nainštalovať podpornú knižnicu.</string>
+    <string name="install">Nainštalovať</string>
+    <string name="native_hooking_apps">Odstrániť natívnu detekciu rootu v aplikáciách</string>
+    <string name="library_installation_failed">Inštalácia zlyhala</string>
+    <string name="library_uninstallation_failed">Odinštalácia zlyhala</string>
+    <string name="successfully_uninstalled">Úspešne odinštalované</string>
+    <string name="uninstall_library">Odinštalovať knižnicu</string>
 
 </resources>

@@ -14,11 +14,14 @@ public class Common {
     public static final String FIRST_RUN_KEY = Common.PACKAGE_NAME + "IS_FIRST_RUN";
     public static final String DEBUG_KEY = Common.PACKAGE_NAME + "DEBUGGERPREF";
     public static final String SHOW_WARNING = "SHOW_WARNING";
+    public static final String PREFS_NAME = PACKAGE_NAME +"_preferences";
 
     public static final PrefSet APPS = new AppsSet();
     public static final PrefSet KEYWORDS = new KeywordSet();
     public static final PrefSet COMMANDS = new CommandSet();
     public static final PrefSet LIBRARIES = new LibrarySet();
+
+    public static final String REFRESH_APPS_INTENT = "com.devadvance.rootcloak2.REFRESH_APPS";
 
     public static abstract class PrefSet {
         abstract String getPrefKey();
