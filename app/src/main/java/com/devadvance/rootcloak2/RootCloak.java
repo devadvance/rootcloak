@@ -30,7 +30,6 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import de.robv.android.xposed.callbacks.XCallback;
 
-
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findConstructorExact;
 
@@ -101,12 +100,12 @@ public class RootCloak implements IXposedHookLoadPackage {
             }
         }
 
-        // Tell the app that SELinux is enforcing, even if it is not.
+        // Tell the app that SELinux is disabled
         findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
                 if (((String) param.args[0]).equals("ro.build.selinux")) {
-                    param.setResult("1");
+                    param.setResult("");
                     if (debugPref) {
                         XposedBridge.log("SELinux is enforced.");
                     }
@@ -128,6 +127,20 @@ public class RootCloak implements IXposedHookLoadPackage {
                 }
             }
         });
+
+        // RootBear checkForRoot hook
+        try {
+            findAndHookMethod("com.scottyab.rootbeer.RootBeerNative", lpparam.classLoader, "checkForRoot",
+                    Object[].class,
+                    new XC_MethodHook() {
+                        @Override
+                        public void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            param.setResult(0);
+                        }
+                    });
+        } catch (XposedHelpers.ClassNotFoundError e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -248,7 +261,7 @@ public class RootCloak implements IXposedHookLoadPackage {
                 }
 
                 List<ApplicationInfo> packages = (List<ApplicationInfo>) param.getResult(); // Get the results from the method call
-                Iterator<ApplicationInfo> iter = packages.iterator(); 
+                Iterator<ApplicationInfo> iter = packages.iterator();
                 ApplicationInfo tempAppInfo;
                 String tempPackageName;
 
@@ -519,6 +532,8 @@ public class RootCloak implements IXposedHookLoadPackage {
                             param.setThrowable(new IOException());
                         } else if (commandSet.contains("sh") && (firstParam.equals("sh") || firstParam.endsWith("/sh"))) {
                             param.setThrowable(new IOException());
+                        } else if (commandSet.contains("getprop") && (firstParam.equals("getprop") || firstParam.endsWith("/getprop"))) {
+                            param.setResult(Runtime.getRuntime().exec("echo"));
                         } else {
                             param.setThrowable(new IOException());
                         }

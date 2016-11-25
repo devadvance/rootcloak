@@ -54,7 +54,7 @@ public class DefaultLists {
             "root", "busybox", "titanium",
             ".tmpsu", "su", "rootcloak2"};
 
-    public static final String[] DEFAULT_COMMAND_LIST = new String[]{"su", "which", "busybox", "pm", "am", "sh", "ps"};
+    public static final String[] DEFAULT_COMMAND_LIST = new String[]{"su", "which", "busybox", "pm", "am", "sh", "ps", "getprop"};
 
-    public static final String[] DEFAULT_LIBNAME_LIST = new String[]{"tool-checker"}; // RootBearNative
+    public static final String[] DEFAULT_LIBNAME_LIST = new String[]{}; // off
 }
