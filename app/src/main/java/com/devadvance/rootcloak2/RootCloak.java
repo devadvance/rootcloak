@@ -128,14 +128,124 @@ public class RootCloak implements IXposedHookLoadPackage {
             }
         });
 
-        // RootBear checkForRoot hook
+        // RootBeer hooks
+
         try {
             findAndHookMethod("com.scottyab.rootbeer.RootBeerNative", lpparam.classLoader, "checkForRoot",
                     Object[].class,
-                    new XC_MethodHook() {
+                    new XC_MethodReplacement() {
                         @Override
-                        public void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(0);
+                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                            return false;
+                        }
+                    });
+        } catch (XposedHelpers.ClassNotFoundError e) {
+            e.printStackTrace();
+        }
+
+        try {
+            findAndHookMethod("com.scottyab.rootbeer.RootBeer", lpparam.classLoader, "detectRootManagementApps",
+                    new XC_MethodReplacement() {
+                        @Override
+                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                            return false;
+                        }
+                    });
+        } catch (XposedHelpers.ClassNotFoundError e) {
+            e.printStackTrace();
+        }
+
+        try {
+            findAndHookMethod("com.scottyab.rootbeer.RootBeer", lpparam.classLoader, "detectPotentiallyDangerousApps",
+                    new XC_MethodReplacement() {
+                        @Override
+                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                            return false;
+                        }
+                    });
+        } catch (XposedHelpers.ClassNotFoundError e) {
+            e.printStackTrace();
+        }
+
+        try {
+            findAndHookMethod("com.scottyab.rootbeer.RootBeer", lpparam.classLoader, "checkForBinary",
+                    String.class,
+                    new XC_MethodReplacement() {
+                        @Override
+                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                            return false;
+                        }
+                    });
+        } catch (XposedHelpers.ClassNotFoundError e) {
+            e.printStackTrace();
+        }
+
+        try {
+            findAndHookMethod("com.scottyab.rootbeer.RootBeer", lpparam.classLoader, "checkForDangerousProps",
+                    new XC_MethodReplacement() {
+                        @Override
+                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                            return false;
+                        }
+                    });
+        } catch (XposedHelpers.ClassNotFoundError e) {
+            e.printStackTrace();
+        }
+
+        try {
+            findAndHookMethod("com.scottyab.rootbeer.RootBeer", lpparam.classLoader, "checkForRWPaths",
+                    new XC_MethodReplacement() {
+                        @Override
+                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                            return false;
+                        }
+                    });
+        } catch (XposedHelpers.ClassNotFoundError e) {
+            e.printStackTrace();
+        }
+
+        try {
+            findAndHookMethod("com.scottyab.rootbeer.RootBeer", lpparam.classLoader, "detectTestKeys",
+                    new XC_MethodReplacement() {
+                        @Override
+                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                            return false;
+                        }
+                    });
+        } catch (XposedHelpers.ClassNotFoundError e) {
+            e.printStackTrace();
+        }
+
+        try {
+            findAndHookMethod("com.scottyab.rootbeer.RootBeer", lpparam.classLoader, "checkSuExists",
+                    new XC_MethodReplacement() {
+                        @Override
+                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                            return false;
+                        }
+                    });
+        } catch (XposedHelpers.ClassNotFoundError e) {
+            e.printStackTrace();
+        }
+
+        try {
+            findAndHookMethod("com.scottyab.rootbeer.RootBeer", lpparam.classLoader, "checkForRootNative",
+                    new XC_MethodReplacement() {
+                        @Override
+                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                            return false;
+                        }
+                    });
+        } catch (XposedHelpers.ClassNotFoundError e) {
+            e.printStackTrace();
+        }
+
+        try {
+            findAndHookMethod("com.scottyab.rootbeer.RootBeer", lpparam.classLoader, "detectRootCloakingApps",
+                    new XC_MethodReplacement() {
+                        @Override
+                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                            return false;
                         }
                     });
         } catch (XposedHelpers.ClassNotFoundError e) {
