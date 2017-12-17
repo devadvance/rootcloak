@@ -70,6 +70,7 @@ public class RootCloak implements IXposedHookLoadPackage {
             initRuntime(lpparam);
             initProcessBuilder(lpparam);
             initSettingsGlobal(lpparam);
+            initSettingsSecure(lpparam);
         }
     }
 
@@ -609,7 +610,32 @@ public class RootCloak implements IXposedHookLoadPackage {
                     }
                 }
 
-                if (Settings.Global.DEVELOPMENT_SETTINGS_ENABLED.equals(setting)) { // Hide development options being on from an app
+                if (Settings.Global.ADB_ENABLED.equals(setting)) { // Hide development options being on from an app
+                    param.setResult(0);
+                    if (debugPref) {
+                        XposedBridge.log("Hooked development options info, development options status is off");
+                    }
+                }
+            }
+        });
+    }
+
+    private void initSettingsSecure(final LoadPackageParam lpparam) {
+        // Hooks android.provider.Settings.Secure.getInt. For this method we will prevent the package info from being obtained for any app in the lis
+        findAndHookMethod(android.provider.Settings.Secure.class, "getInt", ContentResolver.class, String.class, int.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+
+                String setting = (String) param.args[1];
+                if (setting == null) return;
+                if (Settings.Secure.ADB_ENABLED.equals(setting)) { // Hide ADB being on from an app
+                    param.setResult(0);
+                    if (debugPref) {
+                        XposedBridge.log("Hooked ADB debugging info, adb status is off");
+                    }
+                }
+
+                if (Settings.Secure.DEVELOPMENT_SETTINGS_ENABLED.equals(setting)) { // Hide development options being on from an app
                     param.setResult(0);
                     if (debugPref) {
                         XposedBridge.log("Hooked development options info, development options status is off");
