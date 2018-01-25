@@ -75,5 +75,6 @@
     <string name="manage_keywords">Manage Keywords</string>
     <string name="manage_commands">Manage Commands</string>
     <string name="app_launcher_icon">App Launcher Icon</string>
+    <string name="library_no_root">Root permission denied</string>
 
 </resources>
