@@ -41,7 +41,7 @@ public class NativeRootDetection extends PreferenceActivity {
                 .setSharedPreferencesMode(MODE_WORLD_READABLE);
         addPreferencesFromResource(R.xml.native_root_detection);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        
+
         Preference uninstallLibrary = findPreference("uninstall_library");
         uninstallLibrary.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -74,7 +74,7 @@ public class NativeRootDetection extends PreferenceActivity {
 
         reloadAppsList();
     }
-    
+
     @Override
     protected void onResume() {
         mRootShell = new RootUtil();
@@ -85,7 +85,13 @@ public class NativeRootDetection extends PreferenceActivity {
     public void installLibrary() {
         String library = getApplicationInfo().nativeLibraryDir + File.separator + "librootcloak.so";
 
-        if (!mRootShell.isSU() || !new File(library).exists()) {
+        if (!mRootShell.isSU()) {
+            Toast.makeText(this, R.string.library_no_root, Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        if (!new File(library).exists()) {
             Toast.makeText(this, R.string.library_installation_failed, Toast.LENGTH_LONG).show();
             finish();
             return;
@@ -189,7 +195,7 @@ public class NativeRootDetection extends PreferenceActivity {
                     Set<String> newSetting = (Set<String>) newValue;
                     oldSetting.removeAll(newSetting);
                     mPrefs.edit().putStringSet("reset_native_root_detection_apps", oldSetting).apply();
-                    
+
                     Intent refreshApps = new Intent(Common.REFRESH_APPS_INTENT);
                     sendBroadcast(refreshApps);
                     return true;
